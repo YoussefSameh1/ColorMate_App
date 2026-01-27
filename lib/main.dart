@@ -1,3 +1,5 @@
+import 'package:colormate_app/core/utils/app_router.dart';
+import 'package:colormate_app/core/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -9,6 +11,13 @@ class ColorMateApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return MaterialApp.router(
+      routerConfig: AppRouter.router,
+      debugShowCheckedModeBanner: false,
+      title: 'ColorMate App',
+      theme: ThemeData.light().copyWith(
+          scaffoldBackgroundColor: kBackgroundColor,
+      )
+    );
   }
 }
