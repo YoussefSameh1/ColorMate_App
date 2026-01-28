@@ -1,3 +1,4 @@
+import 'package:colormate_app/features/onboarding/presentation/views/widgets/onboarding_view_body.dart';
 import 'package:flutter/material.dart';
 
 class OnboardingView extends StatelessWidget {
@@ -5,6 +6,6 @@ class OnboardingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(body: const OnboardingViewBody());
   }
 }
