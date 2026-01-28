@@ -1,3 +1,5 @@
+import 'package:colormate_app/features/authentication/signup/ui/signup_View.dart';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -9,6 +11,14 @@ class ColorMateApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return MaterialApp(
+      title: 'ColorMate App',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.brown),
+      ),
+      home: const SignupView(),
+    );
   }
 }
