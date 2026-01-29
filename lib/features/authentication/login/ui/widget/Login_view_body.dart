@@ -1,7 +1,12 @@
 import 'package:colormate_app/core/model/text_field_model/text_field_model.dart';
+import 'package:colormate_app/core/theme/app_colors.dart';
+import 'package:colormate_app/core/widget/buttons/primary_shadow_button.dart';
 import 'package:colormate_app/core/widget/custom_text_form_field.dart';
-import 'package:colormate_app/features/authentication/login/ui/validator/login_validators.dart';
+import 'package:colormate_app/core/validation/validation.dart';
+import 'package:colormate_app/features/authentication/signup/ui/signup_View.dart';
+import 'package:colormate_app/core/routing/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginViewBody extends StatefulWidget {
   const LoginViewBody({super.key});
@@ -34,10 +39,10 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                   height: 47,
                   width: 47,
                   decoration: BoxDecoration(
-                    color: Colors.brown,
+                    color: AppColors.primary,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.star, color: Colors.white),
+                  child: const Icon(Icons.star, color: AppColors.white),
                 ),
                 const SizedBox(height: 30),
 
@@ -52,20 +57,19 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                     controller: emailController,
                     keyboardType: TextInputType.emailAddress,
                     hintText: 'Enter your email',
-                    validator: LoginValidators.validateEmail,
+                    validator: Validation.emailValidation,
                     labelText: 'Email Address',
                     icon: Icons.email,
                   ),
                 ),
                 const SizedBox(height: 20),
 
-               
                 CustomTextFormField(
                   textFieldModel: TextFieldModel(
                     controller: passwordController,
                     keyboardType: TextInputType.visiblePassword,
                     hintText: 'Enter your password',
-                    validator: LoginValidators.validatePassword,
+                    validator: Validation.validatePassword,
                     labelText: 'Password',
                     icon: Icons.lock,
                     obscureText: isPasswordObscured,
@@ -77,43 +81,23 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.red.shade100,
+                      color: AppColors.error.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.red, width: 1),
+                      border: Border.all(color: AppColors.error, width: 1),
                     ),
                     child: Text(
                       errorMessage!,
-                      style: TextStyle(
-                        color: Colors.red.shade700,
-                        fontSize: 14,
-                      ),
+                      style: TextStyle(color: AppColors.error, fontSize: 14),
                     ),
                   ),
                 const SizedBox(height: 30),
 
-                SizedBox(
-                  width: double.infinity,
+                PrimaryShadowButton(
+                  text: 'Login',
+                  onPressed: () {
+                    if (!_formKey.currentState!.validate()) return;
+                  },
                   height: 50,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (!_formKey.currentState!.validate()) return;
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.brown,
-                      disabledBackgroundColor: Colors.grey,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text(
-                      'Login',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
                 ),
                 const SizedBox(height: 20),
 
@@ -125,12 +109,12 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                       style: TextStyle(fontSize: 14),
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () => GoRouter.of(context).push(Routes.signupView),
                       child: const Text(
                         'Sign up',
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.brown,
+                          color: AppColors.primary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -143,11 +127,19 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                   children: [
                     IconButton(
                       onPressed: () {},
-                      icon: Icon(Icons.email, size: 30),
+                      icon: Image.asset(
+                        'assets/icons/google_icon.png',
+                        width: 30,
+                        height: 30,
+                      ),
                     ),
                     IconButton(
                       onPressed: () {},
-                      icon: Icon(Icons.facebook, size: 30),
+                      icon: Image.asset(
+                        'assets/icons/facebook_icon.png',
+                        width: 30,
+                        height: 30,
+                      ),
                     ),
                   ],
                 ),

@@ -1,7 +1,11 @@
 import 'package:colormate_app/core/model/text_field_model/text_field_model.dart';
+import 'package:colormate_app/core/theme/app_colors.dart';
+import 'package:colormate_app/core/widget/buttons/primary_shadow_button.dart';
 import 'package:colormate_app/core/widget/custom_text_form_field.dart';
-import 'package:colormate_app/features/authentication/signup/ui/validator/signup_validators.dart';
+import 'package:colormate_app/core/validation/validation.dart';
 import 'package:flutter/material.dart';
+import 'package:colormate_app/core/routing/routes.dart';
+import 'package:go_router/go_router.dart';
 
 class SignupViewBody extends StatefulWidget {
   const SignupViewBody({super.key});
@@ -37,10 +41,10 @@ class _SignupViewBodyState extends State<SignupViewBody> {
                   height: 47,
                   width: 47,
                   decoration: BoxDecoration(
-                    color: Colors.brown,
+                    color: AppColors.primary,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.star, color: Colors.white),
+                  child: const Icon(Icons.star, color: AppColors.white),
                 ),
                 const SizedBox(height: 30),
 
@@ -55,7 +59,7 @@ class _SignupViewBodyState extends State<SignupViewBody> {
                     controller: usernameController,
                     keyboardType: TextInputType.name,
                     hintText: 'Enter your name',
-                    validator: SignupValidators.validateUsername,
+                    validator: Validation.validateUserName,
                     labelText: 'Name',
                     icon: Icons.person,
                   ),
@@ -66,7 +70,7 @@ class _SignupViewBodyState extends State<SignupViewBody> {
                     controller: emailController,
                     keyboardType: TextInputType.emailAddress,
                     hintText: 'Enter your email',
-                    validator: SignupValidators.validateEmail,
+                    validator: Validation.emailValidation,
                     labelText: 'Email Address',
                     icon: Icons.email,
                   ),
@@ -78,7 +82,7 @@ class _SignupViewBodyState extends State<SignupViewBody> {
                     controller: passwordController,
                     keyboardType: TextInputType.visiblePassword,
                     hintText: 'Enter your password',
-                    validator: SignupValidators.validatePassword,
+                    validator: Validation.validatePassword,
                     labelText: 'Password',
                     icon: Icons.lock,
                     obscureText: isPasswordObscured,
@@ -90,11 +94,10 @@ class _SignupViewBodyState extends State<SignupViewBody> {
                     controller: confirmPasswordController,
                     keyboardType: TextInputType.visiblePassword,
                     hintText: 'confirm your password',
-                    validator: (value) =>
-                        SignupValidators.validateConfirmPassword(
-                          value,
-                          passwordController.text,
-                        ),
+                    validator: (value) => Validation.validateConfirmPassword(
+                      value,
+                      passwordController,
+                    ),
                     labelText: 'Confirm Password',
                     icon: Icons.lock,
                     obscureText: isPasswordObscured,
@@ -106,43 +109,23 @@ class _SignupViewBodyState extends State<SignupViewBody> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.red.shade100,
+                      color: AppColors.error.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.red, width: 1),
+                      border: Border.all(color: AppColors.error, width: 1),
                     ),
                     child: Text(
                       errorMessage!,
-                      style: TextStyle(
-                        color: Colors.red.shade700,
-                        fontSize: 14,
-                      ),
+                      style: TextStyle(color: AppColors.error, fontSize: 14),
                     ),
                   ),
                 const SizedBox(height: 30),
 
-                SizedBox(
-                  width: double.infinity,
+                PrimaryShadowButton(
+                  text: 'Sign Up',
+                  onPressed: () {
+                    if (!_formKey.currentState!.validate()) return;
+                  },
                   height: 50,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (!_formKey.currentState!.validate()) return;
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.brown,
-                      disabledBackgroundColor: Colors.grey,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text(
-                      'Sign Up',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
                 ),
                 const SizedBox(height: 20),
 
@@ -154,12 +137,12 @@ class _SignupViewBodyState extends State<SignupViewBody> {
                       style: TextStyle(fontSize: 14),
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () => GoRouter.of(context).push(Routes.loginView),
                       child: const Text(
                         'login',
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.brown,
+                          color: AppColors.primary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -172,11 +155,20 @@ class _SignupViewBodyState extends State<SignupViewBody> {
                   children: [
                     IconButton(
                       onPressed: () {},
-                      icon: Icon(Icons.email, size: 30),
+                      icon: Image.asset(
+                        'assets/icons/google_icon.png',
+                        width: 30,
+                        height: 30,
+                      ),
                     ),
+
                     IconButton(
                       onPressed: () {},
-                      icon: Icon(Icons.facebook, size: 30),
+                      icon: Image.asset(
+                        'assets/icons/facebook_icon.png',
+                        width: 30,
+                        height: 30,
+                      ),
                     ),
                   ],
                 ),
