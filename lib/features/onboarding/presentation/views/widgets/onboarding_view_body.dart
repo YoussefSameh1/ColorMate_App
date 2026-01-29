@@ -17,6 +17,8 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
   late PageController pageController;
   int currentPage = 0;
 
+  bool get lastPage => currentPage == onboardingData.length - 1;
+
   @override
   void initState() {
     pageController = PageController();
@@ -44,7 +46,8 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
                   (context, index) =>
                       OnboardingItem(model: onboardingData[index]),
             ),
-            Positioned(top: 0, right: 0, child: SkipTextButton()),
+            if (!lastPage)
+              Positioned(top: 0, right: 0, child: SkipTextButton()),
             Positioned(
               top: 650.h,
               left: 0,

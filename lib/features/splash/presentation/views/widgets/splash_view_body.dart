@@ -1,5 +1,7 @@
+import 'package:colormate_app/core/services/storage_service.dart';
 import 'package:colormate_app/core/utils/app_router.dart';
 import 'package:colormate_app/core/utils/assets_data.dart';
+import 'package:colormate_app/home_test.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -25,7 +27,7 @@ class _SplashViewBodyState extends State<SplashViewBody> {
       });
     });
 
-    navigateToOnboarding();
+    navigateToNextScreen();
   }
 
   @override
@@ -44,10 +46,21 @@ class _SplashViewBodyState extends State<SplashViewBody> {
     );
   }
 
-  void navigateToOnboarding() {
-    Future.delayed(const Duration(seconds: 2), () {
+  void navigateToNextScreen() {
+    Future.delayed(const Duration(seconds: 2), () async {
       if (!mounted) return;
-      context.go(AppRouter.kOnboardingView);
+
+      final storageService = await StorageService.getInstance();
+      final isOnboardingSeen = await storageService.hasSeenOnboarding();
+
+      if (isOnboardingSeen) {
+        Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const HomeTest()),
+            );
+      } else {
+        context.go(AppRouter.kOnboardingView);
+      }
     });
   }
 }

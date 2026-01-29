@@ -1,9 +1,17 @@
+import 'package:colormate_app/core/services/storage_service.dart';
 import 'package:colormate_app/core/utils/app_router.dart';
 import 'package:colormate_app/core/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await StorageService.getInstance();
+  /*
+  final storageService = await StorageService.getInstance();
+  await storageService.clearOnboarding();
+  */
   runApp(const ColorMateApp());
 }
 
