@@ -50,7 +50,7 @@ class _SignupViewBodyState extends State<SignupViewBody> {
 
                 const Text(
                   'Create New Account',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.primary),
                 ),
                 const SizedBox(height: 30),
 
@@ -61,6 +61,7 @@ class _SignupViewBodyState extends State<SignupViewBody> {
                     hintText: 'Enter your name',
                     validator: Validation.validateUserName,
                     labelText: 'Name',
+                    prefixIcon: Icon(Icons.person, color: AppColors.primary),
                     icon: Icons.person,
                   ),
                 ),
@@ -72,6 +73,7 @@ class _SignupViewBodyState extends State<SignupViewBody> {
                     hintText: 'Enter your email',
                     validator: Validation.emailValidation,
                     labelText: 'Email Address',
+                    prefixIcon: Icon(Icons.email, color: AppColors.primary),
                     icon: Icons.email,
                   ),
                 ),
@@ -86,6 +88,7 @@ class _SignupViewBodyState extends State<SignupViewBody> {
                     labelText: 'Password',
                     icon: Icons.lock,
                     obscureText: isPasswordObscured,
+                    prefixIcon: Icon(Icons.lock, color: AppColors.primary),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -98,6 +101,7 @@ class _SignupViewBodyState extends State<SignupViewBody> {
                       value,
                       passwordController,
                     ),
+                    prefixIcon: Icon(Icons.lock, color: AppColors.primary),
                     labelText: 'Confirm Password',
                     icon: Icons.lock,
                     obscureText: isPasswordObscured,
@@ -157,8 +161,8 @@ class _SignupViewBodyState extends State<SignupViewBody> {
                       onPressed: () {},
                       icon: Image.asset(
                         'assets/icons/google_icon.png',
-                        width: 30,
-                        height: 30,
+                        width: 44,
+                        height: 44,
                       ),
                     ),
 
@@ -166,8 +170,8 @@ class _SignupViewBodyState extends State<SignupViewBody> {
                       onPressed: () {},
                       icon: Image.asset(
                         'assets/icons/facebook_icon.png',
-                        width: 30,
-                        height: 30,
+                        width: 44,
+                        height: 44,
                       ),
                     ),
                   ],

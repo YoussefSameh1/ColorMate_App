@@ -6,14 +6,15 @@ class TextFieldModel {
   final String? labelText;
   final TextInputType keyboardType;
   final String hintText;
-   final List<TextInputFormatter>? inputFormatters;
+  final List<TextInputFormatter>? inputFormatters;
   final IconData? icon;
+  final Widget? prefixIcon;
   final String? Function(String?)? validator;
   final bool obscureText;
   final AutovalidateMode? autovalidateMode;
   final FocusNode? focusNode;
   void Function(String)? onFieldSubmitted;
-  
+
   bool autofocus;
   final String? errorText;
   TextFieldModel({
@@ -22,6 +23,7 @@ class TextFieldModel {
     required this.keyboardType,
     required this.hintText,
     this.icon,
+    this.prefixIcon,
     required this.validator,
     this.obscureText = false,
     this.autovalidateMode,
@@ -29,6 +31,6 @@ class TextFieldModel {
     this.autofocus = false,
     this.onFieldSubmitted,
     this.errorText,
-     this.inputFormatters,
+    this.inputFormatters,
   });
 }
