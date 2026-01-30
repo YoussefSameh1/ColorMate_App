@@ -20,48 +20,6 @@ class AppTextStyles {
   // POPPINS FONTS (DEFAULT)
   // --------------------------------------------------------------
 
-  // -------- 8 sp --------
-  static TextStyle regular8() => _style(8, FontWeight.w400, 6, 12);
-  static TextStyle medium8() => _style(8, FontWeight.w500, 6, 12);
-  static TextStyle semiBold8() => _style(8, FontWeight.w600, 6, 12);
-  static TextStyle bold8() => _style(8, FontWeight.w700, 6, 12);
-
-  // -------- 10 sp --------
-  static TextStyle regular10() => _style(10, FontWeight.w400, 8, 14);
-  static TextStyle medium10() => _style(10, FontWeight.w500, 8, 14);
-  static TextStyle semiBold10() => _style(10, FontWeight.w600, 8, 14);
-  static TextStyle bold10() => _style(10, FontWeight.w700, 8, 14);
-
-  // -------- 11 sp --------
-  static TextStyle regular11() => _style(11, FontWeight.w400, 9, 15);
-  static TextStyle medium11() => _style(11, FontWeight.w500, 9, 15);
-  static TextStyle semiBold11() => _style(11, FontWeight.w600, 9, 15);
-  static TextStyle bold11() => _style(11, FontWeight.w700, 9, 15);
-
-  // -------- 12 sp --------
-  static TextStyle regular12() => _style(12, FontWeight.w400, 10, 16);
-  static TextStyle medium12() => _style(12, FontWeight.w500, 10, 16);
-  static TextStyle semiBold12() => _style(12, FontWeight.w600, 10, 16);
-  static TextStyle bold12() => _style(12, FontWeight.w700, 10, 16);
-
-  // -------- 13 sp --------
-  static TextStyle regular13() => _style(13, FontWeight.w400, 11, 17);
-  static TextStyle medium13() => _style(13, FontWeight.w500, 11, 17);
-  static TextStyle semiBold13() => _style(13, FontWeight.w600, 11, 17);
-  static TextStyle bold13() => _style(13, FontWeight.w700, 11, 17);
-
-  // -------- 14 sp --------
-  static TextStyle regular14() => _style(14, FontWeight.w400, 12, 18);
-  static TextStyle medium14() => _style(14, FontWeight.w500, 12, 18);
-  static TextStyle semiBold14() => _style(14, FontWeight.w600, 12, 18);
-  static TextStyle bold14() => _style(14, FontWeight.w700, 12, 18);
-
-  // -------- 15 sp --------
-  static TextStyle regular15() => _style(15, FontWeight.w400, 13, 18);
-  static TextStyle medium15() => _style(15, FontWeight.w500, 13, 18);
-  static TextStyle semiBold15() => _style(15, FontWeight.w600, 13, 18);
-  static TextStyle bold15() => _style(15, FontWeight.w700, 13, 18);
-
   // -------- 16 sp --------
   static TextStyle regular16() => _style(16, FontWeight.w400, 14, 20);
   static TextStyle medium16() => _style(16, FontWeight.w500, 14, 20);
@@ -157,22 +115,4 @@ class AppTextStyles {
   static TextStyle medium34() => _style(34, FontWeight.w500, 30, 40);
   static TextStyle semiBold34() => _style(34, FontWeight.w600, 30, 40);
   static TextStyle bold34() => _style(34, FontWeight.w700, 30, 40);
-
-  // -------- 36 sp --------
-  static TextStyle regular36() => _style(36, FontWeight.w400, 32, 42);
-  static TextStyle medium36() => _style(36, FontWeight.w500, 32, 42);
-  static TextStyle semiBold36() => _style(36, FontWeight.w600, 32, 42);
-  static TextStyle bold36() => _style(36, FontWeight.w700, 32, 42);
-
-  // -------- 40 sp --------
-  static TextStyle regular40() => _style(40, FontWeight.w400, 36, 46);
-  static TextStyle medium40() => _style(40, FontWeight.w500, 36, 46);
-  static TextStyle semiBold40() => _style(40, FontWeight.w600, 36, 46);
-  static TextStyle bold40() => _style(40, FontWeight.w700, 36, 46);
-
-  // -------- 48 sp --------
-  static TextStyle regular48() => _style(48, FontWeight.w400, 42, 54);
-  static TextStyle medium48() => _style(48, FontWeight.w500, 42, 54);
-  static TextStyle semiBold48() => _style(48, FontWeight.w600, 42, 54);
-  static TextStyle bold48() => _style(48, FontWeight.w700, 42, 54);
 }
