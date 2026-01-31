@@ -1,9 +1,11 @@
+import 'package:colormate_app/core/routing/routes.dart';
 import 'package:colormate_app/core/services/storage_service.dart';
 import 'package:colormate_app/core/utils/constants.dart';
 import 'package:colormate_app/features/onboarding/data/models/onboarding_data.dart';
 import 'package:colormate_app/home_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class OnboardingNavigationButton extends StatelessWidget {
   const OnboardingNavigationButton({
@@ -23,10 +25,7 @@ class OnboardingNavigationButton extends StatelessWidget {
           final storageService = await StorageService.getInstance();
           await storageService.setOnboardingComplete();
           if (context.mounted) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const HomeTest()),
-            );
+            GoRouter.of(context).push(Routes.loginView);
           }
         } else {
           pageController.nextPage(

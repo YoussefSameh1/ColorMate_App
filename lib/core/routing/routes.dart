@@ -12,6 +12,8 @@ class Routes {
 
   // Static route constants
 
+  static const String splashView = '/splash_view';
+  static const String onboardingView = '/onboarding';
   static const String loginView = '/login_view';
   static const String signupView = '/signup_View';
   static const String verifyEmailView = '/verify_email_view';

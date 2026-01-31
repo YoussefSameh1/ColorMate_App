@@ -1,5 +1,7 @@
+import 'package:colormate_app/core/routing/app_router.dart';
+import 'package:colormate_app/core/routing/routes.dart';
 import 'package:colormate_app/core/services/storage_service.dart';
-import 'package:colormate_app/core/utils/app_router.dart';
+// import 'package:colormate_app/core/utils/app_router.dart';
 import 'package:colormate_app/core/utils/assets_data.dart';
 import 'package:colormate_app/home_test.dart';
 import 'package:flutter/material.dart';
@@ -54,12 +56,9 @@ class _SplashViewBodyState extends State<SplashViewBody> {
       final isOnboardingSeen = await storageService.hasSeenOnboarding();
 
       if (isOnboardingSeen) {
-        Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const HomeTest()),
-            );
+        GoRouter.of(context).push(Routes.loginView);
       } else {
-        context.go(AppRouter.kOnboardingView);
+        GoRouter.of(context).push(Routes.onboardingView);
       }
     });
   }
