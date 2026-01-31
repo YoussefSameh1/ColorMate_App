@@ -8,9 +8,11 @@ class VerifyEmailView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         leading: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+
           child: const CustomBackButton(),
         ),
         elevation: 0,

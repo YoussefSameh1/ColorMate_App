@@ -20,6 +20,17 @@ class AppTextStyles {
   // POPPINS FONTS (DEFAULT)
   // --------------------------------------------------------------
 
+ // -------- 8 sp --------
+  static TextStyle regular8() => _style(8, FontWeight.w400, 6, 12);
+  static TextStyle medium8() => _style(8, FontWeight.w500, 6, 12);
+  static TextStyle semiBold8() => _style(8, FontWeight.w600, 6, 12);
+  static TextStyle bold8() => _style(8, FontWeight.w700, 6, 12);
+
+  // -------- 10 sp --------
+  static TextStyle regular10() => _style(10, FontWeight.w400, 8, 14);
+  static TextStyle medium10() => _style(10, FontWeight.w500, 8, 14);
+  static TextStyle semiBold10() => _style(10, FontWeight.w600, 8, 14);
+  static TextStyle bold10() => _style(10, FontWeight.w700, 8, 14);
   // -------- 16 sp --------
   static TextStyle regular16() => _style(16, FontWeight.w400, 14, 20);
   static TextStyle medium16() => _style(16, FontWeight.w500, 14, 20);
