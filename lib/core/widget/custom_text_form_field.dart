@@ -1,4 +1,5 @@
 import 'package:colormate_app/core/model/text_field_model/text_field_model.dart';
+import 'package:colormate_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextFormField extends StatefulWidget {
@@ -40,10 +41,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
               autofocus: widget.textFieldModel.autofocus,
               focusNode: widget.textFieldModel.focusNode,
               onSubmitted: widget.textFieldModel.onFieldSubmitted,
-              style: TextStyle(
-                color: const Color.fromARGB(255, 201, 120, 91),
-                fontSize: 14,
-              ),
+              style: TextStyle(color: AppColors.primary, fontSize: 14),
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.symmetric(
                   horizontal: 10,
@@ -51,14 +49,13 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                 ),
                 labelText: widget.textFieldModel.labelText,
                 labelStyle: TextStyle(
-                  color: const Color.fromARGB(255, 201, 120, 91),
+                  color: AppColors.primary,
                   fontWeight: FontWeight.w500,
                 ),
                 hintText: widget.textFieldModel.hintText,
                 errorText: null,
-                hintStyle: TextStyle(
-                  color: const Color.fromARGB(255, 239, 178, 156),
-                ),
+                hintStyle: TextStyle(color: AppColors.primary),
+                prefixIcon: widget.textFieldModel.prefixIcon,
                 suffixIcon: widget.textFieldModel.obscureText
                     ? GestureDetector(
                         onTap: () {
@@ -77,7 +74,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                 focusedBorder: _customOutlineInputBorder(),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: Colors.brown, width: 1.5),
+                  borderSide: BorderSide(color: AppColors.primary, width: 1.5),
                 ),
               ),
             ),
@@ -86,10 +83,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                 padding: const EdgeInsets.only(left: 8.0, top: 6.0),
                 child: Text(
                   fieldState.errorText!,
-                  style: TextStyle(
-                    color: const Color.fromARGB(255, 198, 40, 40),
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: AppColors.error, fontSize: 12),
                 ),
               ),
           ],

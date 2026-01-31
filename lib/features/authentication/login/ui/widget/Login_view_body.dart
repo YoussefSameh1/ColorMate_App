@@ -47,16 +47,18 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                 const SizedBox(height: 30),
 
                 const Text(
-                  'Login to your account',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  'Login to Your Account',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.primary),
                 ),
                 const SizedBox(height: 30),
 
                 CustomTextFormField(
+                  
                   textFieldModel: TextFieldModel(
                     controller: emailController,
                     keyboardType: TextInputType.emailAddress,
                     hintText: 'Enter your email',
+                    prefixIcon: const Icon(Icons.email, color: AppColors.primary),
                     validator: Validation.emailValidation,
                     labelText: 'Email Address',
                     icon: Icons.email,
@@ -70,6 +72,7 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                     keyboardType: TextInputType.visiblePassword,
                     hintText: 'Enter your password',
                     validator: Validation.validatePassword,
+                    prefixIcon: const Icon(Icons.lock, color: AppColors.primary),
                     labelText: 'Password',
                     icon: Icons.lock,
                     obscureText: isPasswordObscured,
@@ -129,16 +132,16 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                       onPressed: () {},
                       icon: Image.asset(
                         'assets/icons/google_icon.png',
-                        width: 30,
-                        height: 30,
+                        width: 44,
+                        height: 44,
                       ),
                     ),
                     IconButton(
                       onPressed: () {},
                       icon: Image.asset(
                         'assets/icons/facebook_icon.png',
-                        width: 30,
-                        height: 30,
+                        width: 44,
+                        height: 44,
                       ),
                     ),
                   ],
