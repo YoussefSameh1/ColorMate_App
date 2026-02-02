@@ -1,3 +1,4 @@
+import 'package:colormate_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'core/routing/app_router.dart';
@@ -19,7 +20,10 @@ class ColorMateApp extends StatelessWidget {
         return MaterialApp.router(
           title: 'ColorMate App',
           debugShowCheckedModeBanner: false,
-          routerConfig: AppRouter.router, 
+          routerConfig: AppRouter.router,
+          theme: ThemeData.light().copyWith(
+            scaffoldBackgroundColor: AppColors.white,
+          ),
         );
       },
     );
