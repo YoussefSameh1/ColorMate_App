@@ -99,6 +99,7 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                   text: 'Login',
                   onPressed: () {
                     if (!_formKey.currentState!.validate()) return;
+                    GoRouter.of(context).push(Routes.profileView);
                   },
                   height: 50,
                 ),
