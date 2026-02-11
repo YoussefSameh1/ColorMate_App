@@ -1,16 +1,18 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:colormate_app/features/profile/data/models/user_profile_model.dart';
 import 'package:colormate_app/features/profile/data/repositories/profile_repository.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:colormate_app/core/services/image_picker_service.dart';
 
 part 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
   final ProfileRepository _repository;
-  final ImagePicker _imagePicker = ImagePicker();
+  final ImagePickerService _imagePickerService;
   String? _selectedImagePath;
 
-  ProfileCubit(this._repository) : super(const ProfileInitial()) {
+  ProfileCubit(this._repository, {ImagePickerService? imagePickerService})
+    : _imagePickerService = imagePickerService ?? ImagePickerService(),
+      super(const ProfileInitial()) {
     fetchUserProfile();
   }
 
@@ -29,7 +31,6 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   Future<void> pickImageFromGallery() async {
     try {
-  
       UserProfileModel? currentProfile;
       final currentState = state;
       if (currentState is ProfileLoaded) {
@@ -39,23 +40,18 @@ class ProfileCubit extends Cubit<ProfileState> {
       }
 
       emit(const ProfileImagePicking());
-      final XFile? image = await _imagePicker.pickImage(
-        source: ImageSource.gallery,
-        maxWidth: 1024,
-        maxHeight: 1024,
-        imageQuality: 85,
-      );
+      final String? imagePath =
+          await _imagePickerService.pickImageFromGallery();
 
-      if (image != null && currentProfile != null) {
-        _selectedImagePath = image.path;
+      if (imagePath != null && currentProfile != null) {
+        _selectedImagePath = imagePath;
         emit(
           ProfileImageSelected(
-            imagePath: image.path,
+            imagePath: imagePath,
             currentProfile: currentProfile,
           ),
         );
       } else {
-       
         await fetchUserProfile();
       }
     } catch (e) {
@@ -66,7 +62,6 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   Future<void> pickImageFromCamera() async {
     try {
-     
       UserProfileModel? currentProfile;
       final currentState = state;
       if (currentState is ProfileLoaded) {
@@ -76,23 +71,17 @@ class ProfileCubit extends Cubit<ProfileState> {
       }
 
       emit(const ProfileImagePicking());
-      final XFile? image = await _imagePicker.pickImage(
-        source: ImageSource.camera,
-        maxWidth: 1024,
-        maxHeight: 1024,
-        imageQuality: 85,
-      );
+      final String? imagePath = await _imagePickerService.pickImageFromCamera();
 
-      if (image != null && currentProfile != null) {
-        _selectedImagePath = image.path;
+      if (imagePath != null && currentProfile != null) {
+        _selectedImagePath = imagePath;
         emit(
           ProfileImageSelected(
-            imagePath: image.path,
+            imagePath: imagePath,
             currentProfile: currentProfile,
           ),
         );
       } else {
-       
         await fetchUserProfile();
       }
     } catch (e) {
@@ -120,7 +109,6 @@ class ProfileCubit extends Cubit<ProfileState> {
         currentProfile = previousState.userProfile;
       }
 
-      
       if (currentProfile == null) {
         currentProfile = await _repository.getUserProfile();
       }
@@ -144,7 +132,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       emit(ProfileLoaded(userProfile: updatedProfile));
     } catch (e) {
       emit(ProfileError(message: 'Failed to update profile: ${e.toString()}'));
-      
+
       await fetchUserProfile();
     }
   }
