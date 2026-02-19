@@ -9,13 +9,13 @@ class CustomPinTheme {
   /// Default state for the OTP box
   static PinTheme get defaultPinTheme {
     return PinTheme(
-      width: 74.w,
-      height: 72.w,
+      width: 40.w,
+      height: 40.w,
       textStyle: AppTextStyles.semiBold24().copyWith(color: AppColors.black),
       decoration: BoxDecoration(
-        color: AppColors.secondary,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.transparent),
+        color: AppColors.white,
+        border: Border.all(color: AppColors.primary,width: 3),
+        borderRadius: BorderRadius.circular(6),
         boxShadow: [
           BoxShadow(
             color: AppColors.shadow,
@@ -32,7 +32,7 @@ class CustomPinTheme {
     final defaultTheme = defaultPinTheme;
     return defaultTheme.copyWith(
       decoration: defaultTheme.decoration!.copyWith(
-        border: Border.all(color: AppColors.primary, width: 1),
+        border: Border.all(color: AppColors.primary, width: 3),
       ),
     );
   }
