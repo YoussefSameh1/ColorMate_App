@@ -1,4 +1,4 @@
-import 'package:colormate_app/features/onboarding/data/models/onboarding_data.dart';
+import 'package:colormate_app/features/onboarding/data/onboarding_data.dart';
 import 'package:colormate_app/features/onboarding/presentation/views/widgets/onboarding_indicator.dart';
 import 'package:colormate_app/features/onboarding/presentation/views/widgets/onboarding_item.dart';
 import 'package:colormate_app/features/onboarding/presentation/views/widgets/onboarding_navigation_button.dart';

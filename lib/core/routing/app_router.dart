@@ -4,12 +4,17 @@ import 'package:colormate_app/features/authentication/signup/ui/signup_View.dart
 import 'package:colormate_app/features/authentication/verify_email/verify_email_view.dart';
 import 'package:colormate_app/features/onboarding/presentation/views/onboarding_view.dart';
 import 'package:colormate_app/features/splash/presentation/views/splash_view.dart';
+import 'package:colormate_app/features/test/presentation/cubit/test_cubit.dart';
+import 'package:colormate_app/features/test/presentation/views/test_intro_view.dart';
+import 'package:colormate_app/features/test/presentation/views/test_result_view.dart';
+import 'package:colormate_app/features/test/presentation/views/test_view.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'animation_route.dart';
 
 abstract class AppRouter {
   static final router = GoRouter(
-    initialLocation: Routes.splashView,
+    initialLocation: Routes.testIntroView,
     routes: [
       GoRoute(
         path: Routes.splashView,
@@ -48,6 +53,31 @@ abstract class AppRouter {
         pageBuilder:
             (context, state) =>
                 slideTransitionPage(child: const VerifyEmailView()),
+      ),
+      ShellRoute(
+        builder: (context, state, child) {
+          return BlocProvider(create: (_) => TestCubit(), child: child);
+        },
+        routes: [
+          GoRoute(
+            path: Routes.testIntroView,
+            pageBuilder:
+                (context, state) =>
+                    slideTransitionPage(child: const TestIntroView()),
+          ),
+          GoRoute(
+            path: Routes.testView,
+            pageBuilder:
+                (context, state) =>
+                    slideTransitionPage(child: const TestView()),
+          ),
+          GoRoute(
+            path: Routes.testResultView,
+            pageBuilder:
+                (context, state) =>
+                    slideTransitionPage(child: const TestResultView()),
+          ),
+        ],
       ),
     ],
   );

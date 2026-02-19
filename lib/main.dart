@@ -1,6 +1,8 @@
 import 'package:colormate_app/core/services/storage_service.dart';
 import 'package:colormate_app/core/utils/constants.dart';
+import 'package:colormate_app/core/utils/simple_bloc_observer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'core/routing/app_router.dart';
 
@@ -12,6 +14,7 @@ void main() async {
   final storageService = await StorageService.getInstance();
   await storageService.clearOnboarding();
   */
+  Bloc.observer = SimpleBlocObserver();
   runApp(const ColorMateApp());
 }
 

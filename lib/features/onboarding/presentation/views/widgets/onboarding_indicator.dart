@@ -1,5 +1,5 @@
 import 'package:colormate_app/core/utils/constants.dart';
-import 'package:colormate_app/features/onboarding/data/models/onboarding_data.dart';
+import 'package:colormate_app/features/onboarding/data/onboarding_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
