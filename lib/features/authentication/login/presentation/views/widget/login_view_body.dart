@@ -1,6 +1,7 @@
 import 'package:colormate_app/core/theme/app_colors.dart';
+import 'package:colormate_app/features/authentication/login/presentation/views/widget/login_form_section.dart';
 import 'package:flutter/material.dart';
-import 'package:colormate_app/features/authentication/login/ui/widget/login_form_section.dart';
+
 
 class LoginViewBody extends StatefulWidget {
   const LoginViewBody({super.key});

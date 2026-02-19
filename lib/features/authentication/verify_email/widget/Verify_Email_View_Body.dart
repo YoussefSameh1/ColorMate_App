@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:colormate_app/core/theme/app_colors.dart';
 import 'package:colormate_app/core/theme/custom_pin_theme.dart';
 import 'package:colormate_app/core/theme/text_style.dart';
 
@@ -16,16 +17,21 @@ class VerifyEmailViewBody extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
+        
         children: [
           SizedBox(height: 40),
           Image.asset('assets/icons/flight.png', height: 160.h),
           SizedBox(height: 5),
-          Text('Verify your email', style: AppTextStyles.bold32()),
+          Text(
+            'Verify your email',
+            style: AppTextStyles.bold32().copyWith(color: AppColors.primary),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 38, vertical: 20),
             child: Text(
               'Please enter the verification code we sent to your email address to complete the verification process.',
               style: AppTextStyles.regular16(),
+              textAlign: TextAlign.center,
             ),
           ),
           SizedBox(height: 10),

@@ -1,5 +1,6 @@
 import 'package:colormate_app/core/routing/routes.dart';
-import 'package:colormate_app/features/authentication/login/ui/login_view.dart';
+import 'package:colormate_app/features/authentication/login/presentation/views/login_view.dart';
+
 import 'package:colormate_app/features/authentication/signup/ui/signup_View.dart';
 import 'package:colormate_app/features/authentication/verify_email/verify_email_view.dart';
 import 'package:colormate_app/features/fruits/presentation/views/fruit_intro_view.dart';

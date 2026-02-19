@@ -4,9 +4,7 @@ class AppColors {
   // Private constructor to prevent instantiation
   AppColors._();
 
-  // Background Colors
-  static const Color backgroundColor = Color(0xFFFFFFFF);
-
+  static const kAccentColor = Color(0xFFaf8f6f);
   // Primary Colors
   static const Color primary = Color(0xFF543310);
   static const Color primaryDark = Color(0xFF3d2409);
@@ -24,8 +22,6 @@ class AppColors {
   // Functional Colors
   static const Color error = Color(0xFFC62828);
   static const Color success = Color(0xFF2E7D32);
-
-  static const Color info = Color(0xFF0288D1);
 
   // Shadow Colors
   static const Color shadow = Color(0x1A000000);
