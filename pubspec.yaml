@@ -41,6 +41,7 @@ dependencies:
   easy_localization: ^3.0.8
   shared_preferences: ^2.5.4
   image_picker: ^1.0.7
+  dotted_border: ^2.1.0
   
 
 dev_dependencies:

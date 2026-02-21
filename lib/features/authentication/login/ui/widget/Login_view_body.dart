@@ -48,17 +48,23 @@ class _LoginViewBodyState extends State<LoginViewBody> {
 
                 const Text(
                   'Login to Your Account',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.primary),
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
                 ),
                 const SizedBox(height: 30),
 
                 CustomTextFormField(
-                  
                   textFieldModel: TextFieldModel(
                     controller: emailController,
                     keyboardType: TextInputType.emailAddress,
                     hintText: 'Enter your email',
-                    prefixIcon: const Icon(Icons.email, color: AppColors.primary),
+                    prefixIcon: const Icon(
+                      Icons.email,
+                      color: AppColors.primary,
+                    ),
                     validator: Validation.emailValidation,
                     labelText: 'Email Address',
                     icon: Icons.email,
@@ -72,7 +78,10 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                     keyboardType: TextInputType.visiblePassword,
                     hintText: 'Enter your password',
                     validator: Validation.validatePassword,
-                    prefixIcon: const Icon(Icons.lock, color: AppColors.primary),
+                    prefixIcon: const Icon(
+                      Icons.lock,
+                      color: AppColors.primary,
+                    ),
                     labelText: 'Password',
                     icon: Icons.lock,
                     obscureText: isPasswordObscured,
@@ -99,6 +108,9 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                   text: 'Login',
                   onPressed: () {
                     if (!_formKey.currentState!.validate()) return;
+                    GoRouter.of(
+                      context,
+                    ).push(Routes.objectAndColorDetectionView);
                   },
                   height: 50,
                 ),

@@ -17,4 +17,7 @@ class Routes {
   static const String loginView = '/login_view';
   static const String signupView = '/signup_View';
   static const String verifyEmailView = '/verify_email_view';
+  static const String objectAndColorDetectionView =
+      '/object_and_color_detection_view';
+  static const String imageCorrectionView = '/image_correction_view';
 }
