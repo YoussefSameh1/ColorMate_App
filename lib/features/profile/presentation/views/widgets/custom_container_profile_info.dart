@@ -30,9 +30,15 @@ class CustomContainerProfileInfo extends StatelessWidget {
           CircleAvatar(
             radius: 50,
             backgroundImage:
-                userProfile.profileImage != null
-                    ? AssetImage(userProfile.profileImage!)
-                    : const AssetImage('assets/images/image_profile.png'),
+              userProfile.profileImage != null &&
+                  userProfile.profileImage!.isNotEmpty
+                ? AssetImage(userProfile.profileImage!)
+                : null,
+            child:
+              userProfile.profileImage == null ||
+                  userProfile.profileImage!.isEmpty
+                ? const Icon(Icons.person, size: 50)
+                : null,
           ),
           Text(
             userProfile.name,

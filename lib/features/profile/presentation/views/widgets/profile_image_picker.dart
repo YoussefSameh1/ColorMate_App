@@ -18,6 +18,8 @@ class ProfileImagePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final imageProvider = _getImageProvider();
+
     return Stack(
       children: [
         Container(
@@ -37,7 +39,7 @@ class ProfileImagePicker extends StatelessWidget {
             child: CircleAvatar(
               radius: 60,
               backgroundColor: AppColors.primary.withOpacity(0.1),
-              backgroundImage: _getImageProvider(),
+              backgroundImage: imageProvider,
               child:
                   isLoading
                       ? Container(
@@ -52,6 +54,8 @@ class ProfileImagePicker extends StatelessWidget {
                           ),
                         ),
                       )
+                      : imageProvider == null
+                      ? const Icon(Icons.person, size: 60)
                       : null,
             ),
           ),
@@ -92,7 +96,6 @@ class ProfileImagePicker extends StatelessWidget {
           ),
         ),
 
-       
         if (imagePath != null)
           Positioned(
             top: 0,
@@ -119,12 +122,12 @@ class ProfileImagePicker extends StatelessWidget {
   }
 
   ImageProvider? _getImageProvider() {
-    if (imagePath != null) {
+    if (imagePath != null && imagePath!.isNotEmpty) {
       return FileImage(File(imagePath!));
-    } else if (imageUrl != null) {
+    } else if (imageUrl != null && imageUrl!.isNotEmpty) {
       return NetworkImage(imageUrl!);
     } else {
-      return const AssetImage('assets/images/image_profile.png');
+      return null;
     }
   }
 }
