@@ -10,7 +10,7 @@ import 'animation_route.dart';
 
 abstract class AppRouter {
   static final router = GoRouter(
-    initialLocation: Routes.verifyEmailView,
+    initialLocation: Routes.loginView,
     routes: [
       GoRoute(
         path: Routes.signupView,
