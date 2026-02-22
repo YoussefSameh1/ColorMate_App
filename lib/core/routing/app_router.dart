@@ -2,6 +2,7 @@ import 'package:colormate_app/core/routing/routes.dart';
 import 'package:colormate_app/features/authentication/login/ui/login_view.dart';
 import 'package:colormate_app/features/authentication/signup/ui/signup_View.dart';
 import 'package:colormate_app/features/authentication/verify_email/verify_email_view.dart';
+import 'package:colormate_app/features/matching/presentation/views/matching_view.dart';
 import 'package:colormate_app/features/onboarding/presentation/views/onboarding_view.dart';
 import 'package:colormate_app/features/splash/presentation/views/splash_view.dart';
 import 'package:go_router/go_router.dart';
@@ -9,7 +10,7 @@ import 'animation_route.dart';
 
 abstract class AppRouter {
   static final router = GoRouter(
-    initialLocation: Routes.splashView,
+    initialLocation: Routes.matchingView,
     routes: [
       GoRoute(
         path: Routes.splashView,
@@ -48,6 +49,12 @@ abstract class AppRouter {
         pageBuilder:
             (context, state) =>
                 slideTransitionPage(child: const VerifyEmailView()),
+      ),
+      GoRoute(
+        path: Routes.matchingView,
+        pageBuilder:
+            (context, state) =>
+                slideTransitionPage(child: const MatchingView()),
       ),
     ],
   );
