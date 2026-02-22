@@ -8,6 +8,7 @@ class PrimaryShadowButton extends StatelessWidget {
     super.key,
     required this.text,
     required this.onPressed,
+    this.icon,
     this.width = 343,
     this.height = 56,
     this.backgroundColor,
@@ -17,6 +18,7 @@ class PrimaryShadowButton extends StatelessWidget {
   });
 
   final String text;
+  final IconData? icon;
   final TextStyle? textStyle;
   final double? radius;
   final VoidCallback onPressed;
@@ -57,21 +59,33 @@ class PrimaryShadowButton extends StatelessWidget {
           ),
           padding: const EdgeInsets.all(8),
         ).copyWith(overlayColor: WidgetStateProperty.all(Colors.transparent)),
-        child: isLoading
-            ? SizedBox(
-                height: 24,
-                width: 24,
-                child: CircularProgressIndicator(
-                  color: AppColors.white,
-                  strokeWidth: 2,
+        child:
+            isLoading
+                ? SizedBox(
+                  height: 24,
+                  width: 24,
+                  child: CircularProgressIndicator(
+                    color: AppColors.white,
+                    strokeWidth: 2,
+                  ),
+                )
+                : Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (icon != null) ...[
+                      Icon(icon, color: AppColors.white, size: 20),
+                      const SizedBox(width: 8),
+                    ],
+                    Text(
+                      text,
+                      style:
+                          textStyle ??
+                          AppTextStyles.semiBold16().copyWith(
+                            color: AppColors.white,
+                          ),
+                    ),
+                  ],
                 ),
-              )
-            : Text(
-                text,
-                style:
-                    textStyle ??
-                    AppTextStyles.semiBold16().copyWith(color: AppColors.white),
-              ),
       ),
     );
   }

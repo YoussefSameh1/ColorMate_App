@@ -26,4 +26,7 @@ class Routes {
   static const String profileView = '/profile_view';
   static const String editProfileView = '/edit_profile_view';
   static const String changePasswordView = '/change_password_view';
+  static const String objectAndColorDetectionView =
+      '/object_and_color_detection_view';
+  static const String imageCorrectionView = '/image_correction_view';
 }
