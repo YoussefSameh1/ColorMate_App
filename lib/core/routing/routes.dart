@@ -23,4 +23,7 @@ class Routes {
   static const String fruitIntroView = '/fruit_intro_view';
   static const String fruitResultView = '/fruit_result_view';
   static const String matchingView = '/matching_view';
+  static const String profileView = '/profile_view';
+  static const String editProfileView = '/edit_profile_view';
+  static const String changePasswordView = '/change_password_view';
 }

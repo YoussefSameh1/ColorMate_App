@@ -1,5 +1,5 @@
 import 'package:colormate_app/core/services/storage_service.dart';
-import 'package:colormate_app/core/utils/constants.dart';
+import 'package:colormate_app/core/theme/app_colors.dart';
 import 'package:colormate_app/core/utils/simple_bloc_observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,10 +33,11 @@ class ColorMateApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'ColorMate App',
           theme: ThemeData.light().copyWith(
-            scaffoldBackgroundColor: kBackgroundColor,
+            scaffoldBackgroundColor: AppColors.white,
           ),
         );
       },
     );
   }
 }
+  

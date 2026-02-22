@@ -7,11 +7,19 @@ import 'package:colormate_app/features/fruits/presentation/views/fruit_intro_vie
 import 'package:colormate_app/features/fruits/presentation/views/fruit_result_view.dart';
 import 'package:colormate_app/features/matching/presentation/views/matching_view.dart';
 import 'package:colormate_app/features/onboarding/presentation/views/onboarding_view.dart';
+import 'package:colormate_app/features/profile/data/repositories/change_password_repository_impl.dart';
+import 'package:colormate_app/features/profile/data/repositories/profile_repository_impl.dart';
+import 'package:colormate_app/features/profile/presentation/cubit/cubit_change_password/change_password_cubit.dart';
+import 'package:colormate_app/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
+import 'package:colormate_app/features/profile/presentation/views/change_password_view.dart';
+import 'package:colormate_app/features/profile/presentation/views/edit_profile_view.dart';
+import 'package:colormate_app/features/profile/presentation/views/profile_view.dart';
 import 'package:colormate_app/features/splash/presentation/views/splash_view.dart';
 import 'package:colormate_app/features/test/presentation/cubit/test_cubit.dart';
 import 'package:colormate_app/features/test/presentation/views/test_intro_view.dart';
 import 'package:colormate_app/features/test/presentation/views/test_result_view.dart';
 import 'package:colormate_app/features/test/presentation/views/test_view.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'animation_route.dart';
@@ -100,6 +108,38 @@ abstract class AppRouter {
         pageBuilder:
             (context, state) =>
                 slideTransitionPage(child: const MatchingView()),
+      ),
+      GoRoute(
+        path: Routes.editProfileView,
+        pageBuilder:
+            (context, state) => slideTransitionPage(
+              child: BlocProvider(
+                create: (context) => ProfileCubit(ProfileRepositoryImpl()),
+                child: const EditProfileView(),
+              ),
+            ),
+      ),
+      GoRoute(
+        path: Routes.changePasswordView,
+        pageBuilder:
+            (context, state) => slideTransitionPage(
+              child: BlocProvider(
+                create:
+                    (context) =>
+                        ChangePasswordCubit(ChangePasswordRepositoryImpl()),
+                child: const ChangePasswordView(),
+              ),
+            ),
+      ),
+      GoRoute(
+        path: Routes.profileView,
+        pageBuilder:
+            (context, state) => slideTransitionPage(
+              child: BlocProvider(
+                create: (_) => ProfileCubit(ProfileRepositoryImpl()),
+                child: const ProfileView(),
+              ),
+            ),
       ),
     ],
   );
