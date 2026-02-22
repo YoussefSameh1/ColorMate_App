@@ -22,4 +22,5 @@ class Routes {
   static const String testResultView = '/test_result_view';
   static const String fruitIntroView = '/fruit_intro_view';
   static const String fruitResultView = '/fruit_result_view';
+  static const String matchingView = '/matching_view';
 }
