@@ -1,4 +1,5 @@
 import 'package:colormate_app/core/routing/routes.dart';
+import 'package:colormate_app/core/widget/custom_app_bar.dart';
 import 'package:colormate_app/core/widget/loaders.dart';
 import 'package:colormate_app/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:colormate_app/features/profile/presentation/views/widgets/profile_view_body.dart';
@@ -25,7 +26,7 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Center(child: Text('My profile'))),
+    
       body: BlocListener<ProfileCubit, ProfileState>(
         listener: (context, state) {
           if (state is ProfileError) {

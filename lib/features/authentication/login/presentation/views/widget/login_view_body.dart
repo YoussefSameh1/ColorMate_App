@@ -1,7 +1,8 @@
+import 'package:colormate_app/core/routing/routes.dart';
 import 'package:colormate_app/core/theme/app_colors.dart';
 import 'package:colormate_app/features/authentication/login/presentation/views/widget/login_form_section.dart';
 import 'package:flutter/material.dart';
-
+import 'package:go_router/go_router.dart';
 
 class LoginViewBody extends StatefulWidget {
   const LoginViewBody({super.key});
@@ -27,7 +28,7 @@ class _LoginViewBodyState extends State<LoginViewBody> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 50),
+              const SizedBox(height: 130),
               Container(
                 height: 47,
                 width: 47,
@@ -55,6 +56,7 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                 errorMessage: errorMessage,
                 onSubmit: () {
                   if (!_formKey.currentState!.validate()) return;
+                
                 },
               ),
             ],

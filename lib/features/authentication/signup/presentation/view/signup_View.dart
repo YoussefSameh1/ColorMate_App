@@ -1,4 +1,5 @@
-import 'package:colormate_app/features/authentication/signup/ui/widget/signup_View_Body.dart';
+
+import 'package:colormate_app/features/authentication/signup/presentation/view/widget/Signup_View_Body.dart';
 import 'package:flutter/material.dart';
 
 class SignupView extends StatelessWidget {

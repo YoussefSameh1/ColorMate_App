@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'widget/object_and_color_detection_body.dart';
 
@@ -7,7 +8,7 @@ class ObjectAndColorDetectionView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Object & Color Detection')),
+     
       body: const ObjectAndColorDetectionBody(),
     );
   }

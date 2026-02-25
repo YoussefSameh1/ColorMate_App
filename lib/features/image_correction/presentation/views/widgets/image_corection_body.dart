@@ -1,5 +1,6 @@
 import 'package:colormate_app/core/theme/app_colors.dart';
 import 'package:colormate_app/core/theme/text_style.dart';
+import 'package:colormate_app/core/widget/custom_app_bar.dart';
 import 'package:colormate_app/features/image_correction/presentation/view_model/image_correction_view_model.dart';
 import 'package:colormate_app/features/image_correction/presentation/views/widgets/correction_actions_section.dart';
 import 'package:colormate_app/features/image_correction/presentation/views/widgets/correction_filter_card.dart';
@@ -52,6 +53,7 @@ class _ImageCorrectionBodyState extends State<ImageCorrectionBody> {
             return ListView(
               padding: const EdgeInsets.only(top: 0, bottom: 28),
               children: [
+                 CustomAppBar(title: 'Image Correction'),
                 ImageUploadSection(
                   isLoading: isLoading,
                   imagePath: imagePath,

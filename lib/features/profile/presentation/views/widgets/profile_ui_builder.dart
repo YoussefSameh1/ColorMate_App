@@ -2,6 +2,7 @@ import 'package:colormate_app/core/routing/routes.dart';
 import 'package:colormate_app/core/theme/app_colors.dart';
 import 'package:colormate_app/core/theme/text_style.dart';
 import 'package:colormate_app/core/widget/buttons/primary_shadow_button.dart';
+import 'package:colormate_app/core/widget/custom_app_bar.dart';
 import 'package:colormate_app/core/widget/loading/custom_loading_indicator.dart';
 import 'package:colormate_app/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:colormate_app/features/profile/presentation/views/widgets/form_edit_profile.dart';
@@ -48,56 +49,64 @@ class ProfileUIBuilder extends StatelessWidget {
             state is ProfileLoading || state is ProfileImagePicking;
 
         return SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(18.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              CustomAppBar(title: 'Edit Profile'),
+              Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 20),
 
-                ProfileImagePicker(
-                  imagePath: imagePath,
-                  imageUrl: profileImageUrl,
-                  isLoading: isLoading,
-                  onTap: onImagePickerTap,
-                ),
+                    ProfileImagePicker(
+                      imagePath: imagePath,
+                      imageUrl: profileImageUrl,
+                      isLoading: isLoading,
+                      onTap: onImagePickerTap,
+                    ),
 
-                const SizedBox(height: 20),
+                    const SizedBox(height: 20),
 
-                FormEditProfile(
-                  formKey: formKey,
-                  emailController: emailController,
-                  passwordController: passwordController,
-                  isPasswordObscured: isPasswordObscured,
-                  usernameController: usernameController,
-                ),
+                    FormEditProfile(
+                      formKey: formKey,
+                      emailController: emailController,
+                      passwordController: passwordController,
+                      isPasswordObscured: isPasswordObscured,
+                      usernameController: usernameController,
+                    ),
 
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {
-                      context.push(Routes.changePasswordView);
-                    },
-                    child: Text(
-                      'change password',
-                      style: AppTextStyles.regular18().copyWith(
-                        color: AppColors.primary,
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () {
+                          context.push(Routes.changePasswordView);
+                        },
+                        child: Text(
+                          'change password',
+                          style: AppTextStyles.regular18().copyWith(
+                            color: AppColors.primary,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+
+                    SizedBox(height: 20),
+
+                    isLoading
+                        ? const CustomLoadingIndicator(
+                          message: 'Saving changes...',
+                        )
+                        : PrimaryShadowButton(
+                          text: 'Save Changes',
+                          onPressed: onSavePressed,
+                        ),
+
+                    const SizedBox(height: 20),
+                  ],
                 ),
-                SizedBox(height: 20),
-
-                isLoading
-                    ? const CustomLoadingIndicator(message: 'Saving changes...')
-                    : PrimaryShadowButton(
-                      text: 'Save Changes',
-                      onPressed: onSavePressed,
-                    ),
-
-                const SizedBox(height: 20),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

@@ -1,5 +1,6 @@
 import 'package:colormate_app/core/routing/routes.dart';
 import 'package:colormate_app/core/widget/buttons/primary_shadow_button.dart';
+import 'package:colormate_app/core/widget/custom_app_bar.dart';
 import 'package:colormate_app/features/object&color_detection/presentation/cubit/image_picker_cubit.dart';
 import 'package:colormate_app/features/object&color_detection/presentation/cubit/image_picker_state.dart';
 import 'package:colormate_app/features/object&color_detection/presentation/views/widget/image_upload_section.dart';
@@ -27,6 +28,7 @@ class ObjectAndColorDetectionBody extends StatelessWidget {
 
         return Column(
           children: [
+            CustomAppBar(title: 'Object & Color Detection'),
             ImageUploadSection(
               isLoading: isLoading,
               imagePath: imagePath,

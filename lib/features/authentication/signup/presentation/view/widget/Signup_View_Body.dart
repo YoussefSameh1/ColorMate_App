@@ -1,6 +1,7 @@
 import 'package:colormate_app/core/theme/app_colors.dart';
+import 'package:colormate_app/features/authentication/signup/presentation/view/widget/signup_form_section.dart';
 import 'package:flutter/material.dart';
-import 'package:colormate_app/features/authentication/signup/ui/widget/signup_form_section.dart';
+
 
 class SignupViewBody extends StatefulWidget {
   const SignupViewBody({super.key});
