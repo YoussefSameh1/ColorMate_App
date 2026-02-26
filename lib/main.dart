@@ -1,14 +1,18 @@
 import 'package:colormate_app/core/services/storage_service.dart';
 import 'package:colormate_app/core/theme/app_colors.dart';
+import 'package:colormate_app/core/utils/constants.dart';
 import 'package:colormate_app/core/utils/simple_bloc_observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'core/routing/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await dotenv.load(fileName: '.env', isOptional: true);
+  Gemini.init(apiKey: kGeminiApiKey);
   await StorageService.getInstance();
   /*
   final storageService = await StorageService.getInstance();
@@ -40,4 +44,3 @@ class ColorMateApp extends StatelessWidget {
     );
   }
 }
-  

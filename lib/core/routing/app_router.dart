@@ -4,6 +4,10 @@ import 'package:colormate_app/features/authentication/login/presentation/views/l
 import 'package:colormate_app/features/authentication/signup/presentation/view/signup_View.dart';
 
 import 'package:colormate_app/features/authentication/verify_email/verify_email_view.dart';
+import 'package:colormate_app/features/chatbot/data/repositories/chatbot_repository_impl.dart';
+import 'package:colormate_app/features/chatbot/data/services/gemini_service.dart';
+import 'package:colormate_app/features/chatbot/presentation/cubit/chatbot_cubit.dart';
+import 'package:colormate_app/features/chatbot/presentation/views/chatbot_view.dart';
 import 'package:colormate_app/features/fruits/presentation/views/fruit_intro_view.dart';
 import 'package:colormate_app/features/fruits/presentation/views/fruit_result_view.dart';
 import 'package:colormate_app/features/matching/presentation/views/matching_view.dart';
@@ -25,6 +29,7 @@ import 'package:colormate_app/features/test/presentation/views/test_result_view.
 import 'package:colormate_app/features/test/presentation/views/test_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../utils/constants.dart';
 import 'animation_route.dart';
 
 abstract class AppRouter {
@@ -161,6 +166,21 @@ abstract class AppRouter {
         pageBuilder:
             (context, state) =>
                 slideTransitionPage(child: const MatchingView()),
+      ),
+      GoRoute(
+        path: Routes.chatbotView,
+        pageBuilder:
+            (context, state) => slideTransitionPage(
+              child: BlocProvider(
+                create:
+                    (_) => ChatbotCubit(
+                      ChatbotRepositoryImpl(
+                        GeminiService(apiKey: kGeminiApiKey),
+                      ),
+                    ),
+                child: const ChatbotView(),
+              ),
+            ),
       ),
     ],
   );

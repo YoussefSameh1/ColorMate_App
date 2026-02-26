@@ -43,6 +43,8 @@ dependencies:
   shared_preferences: ^2.5.4
   permission_handler: ^11.2.0
   dotted_border: ^2.1.0
+  flutter_gemini: ^3.0.0
+  flutter_dotenv: ^5.0.2
   
 
 dev_dependencies:
@@ -63,6 +65,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - .env
     - assets/images/
     - assets/images/ishihara_test/
     - assets/icons/
