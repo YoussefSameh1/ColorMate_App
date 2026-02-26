@@ -1,10 +1,13 @@
 import 'package:colormate_app/core/routing/routes.dart';
 import 'package:colormate_app/core/services/image_picker_service.dart';
+import 'package:colormate_app/core/utils/main_layout.dart';
 import 'package:colormate_app/features/authentication/login/presentation/views/login_view.dart';
 import 'package:colormate_app/features/authentication/signup/ui/signup_View.dart';
 import 'package:colormate_app/features/authentication/verify_email/verify_email_view.dart';
+import 'package:colormate_app/features/chat_view.dart';
 import 'package:colormate_app/features/fruits/presentation/views/fruit_intro_view.dart';
 import 'package:colormate_app/features/fruits/presentation/views/fruit_result_view.dart';
+import 'package:colormate_app/features/home/presentation/views/home_view.dart';
 import 'package:colormate_app/features/matching/presentation/views/matching_view.dart';
 import 'package:colormate_app/features/image_correction/presentation/views/image_correction_view.dart';
 import 'package:colormate_app/features/object&color_detection/presentation/cubit/image_picker_cubit.dart';
@@ -28,7 +31,7 @@ import 'animation_route.dart';
 
 abstract class AppRouter {
   static final router = GoRouter(
-    initialLocation: Routes.splashView,
+    initialLocation: Routes.homeView,
     routes: [
       GoRoute(
         path: Routes.splashView,
@@ -68,6 +71,35 @@ abstract class AppRouter {
             (context, state) =>
                 slideTransitionPage(child: const VerifyEmailView()),
       ),
+      ShellRoute(
+        builder: (context, state, child) {
+          return MainLayout(child: child);
+        },
+        routes: [
+          GoRoute(
+            path: Routes.homeView,
+            pageBuilder:
+                (context, state) =>
+                    slideTransitionPage(child: const HomeView()),
+          ),
+          GoRoute(
+            path: Routes.chatView,
+            pageBuilder:
+                (context, state) =>
+                    slideTransitionPage(child: const ChatView()),
+          ),
+          GoRoute(
+            path: Routes.profileView,
+            pageBuilder:
+                (context, state) => slideTransitionPage(
+                  child: BlocProvider(
+                    create: (_) => ProfileCubit(ProfileRepositoryImpl()),
+                    child: const ProfileView(),
+                  ),
+                ),
+          ),
+        ],
+      ),
       GoRoute(
         path: Routes.editProfileView,
         pageBuilder:
@@ -87,16 +119,6 @@ abstract class AppRouter {
                     (context) =>
                         ChangePasswordCubit(ChangePasswordRepositoryImpl()),
                 child: const ChangePasswordView(),
-              ),
-            ),
-      ),
-      GoRoute(
-        path: Routes.profileView,
-        pageBuilder:
-            (context, state) => slideTransitionPage(
-              child: BlocProvider(
-                create: (_) => ProfileCubit(ProfileRepositoryImpl()),
-                child: const ProfileView(),
               ),
             ),
       ),

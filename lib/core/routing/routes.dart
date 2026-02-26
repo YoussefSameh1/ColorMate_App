@@ -29,4 +29,6 @@ class Routes {
   static const String objectAndColorDetectionView =
       '/object_and_color_detection_view';
   static const String imageCorrectionView = '/image_correction_view';
+  static const String homeView = '/home_view';
+  static const String chatView = '/chat_view';
 }
