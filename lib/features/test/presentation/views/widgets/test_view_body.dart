@@ -24,68 +24,93 @@ class TestViewBody extends StatelessWidget {
           final question = state.questions[state.currentIndex];
           return Column(
             children: [
-              CustomAppBar(title: 'Color Vision Test'),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  children: [
-                    SizedBox(height: 30.h),
-                    Text(
-                      'What number do you see in the circle?',
-                      style: Styles.testQuestionTextStyle,
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 16.h),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Question ${question.questionNumber} of ${state.questions.length}',
-                        style: Styles.descriptionStyle.copyWith(
-                          fontSize: 14.sp,
+              const CustomAppBar(title: 'Color Vision Test'),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 16.h),
+                      Text(
+                        'What number do you see in the circle?',
+                        style: Styles.testQuestionTextStyle,
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 8.h),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Question ${question.questionNumber} of ${state.questions.length}',
+                          style: Styles.descriptionStyle.copyWith(
+                            fontSize: 14.sp,
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: 30.h),
-                    Image.asset(
-                      question.image,
-                      height: 270.h,
-                      width: 270.w,
-                      fit: BoxFit.cover,
-                    ),
-                    SizedBox(height: 20.h),
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            childAspectRatio: 3.5,
-                            crossAxisSpacing: 16,
-                            mainAxisSpacing: 16,
+                      SizedBox(height: 16.h),
+                      Expanded(
+                        flex: 6,
+                        child: AspectRatio(
+                          aspectRatio: 1,
+                          child: Image.asset(
+                            question.image,
+                            fit: BoxFit.contain,
                           ),
-                      itemCount: 4,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () => context.read<TestCubit>().selectAnswer(),
-                          child: AnswerOptionButton(
-                            option: '${question.options[index]}',
-                          ),
-                        );
-                      },
-                    ),
-                    SizedBox(height: 16.h),
-                    GestureDetector(
-                      onTap: () => context.read<TestCubit>().selectAnswer(),
-                      child: AnswerOptionButton(option: 'None of the above'),
-                    ),
-                    TextButton(
-                      onPressed: () => context.read<TestCubit>().selectAnswer(),
-                      child: Text(
-                        'Didn\'t see it!',
-                        style: Styles.textButtonTextStyle,
+                        ),
                       ),
-                    ),
-                  ],
+                      Expanded(
+                        flex: 5,
+                        child: Column(
+                          children: [
+                            GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    childAspectRatio: 3.5,
+                                    crossAxisSpacing: 16.w,
+                                    mainAxisSpacing: 12.h,
+                                  ),
+                              itemCount: 4,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  onTap:
+                                      () =>
+                                          context
+                                              .read<TestCubit>()
+                                              .selectAnswer(),
+                                  child: AnswerOptionButton(
+                                    option: '${question.options[index]}',
+                                  ),
+                                );
+                              },
+                            ),
+                            SizedBox(height: 12.h),
+                            GestureDetector(
+                              onTap:
+                                  () =>
+                                      context.read<TestCubit>().selectAnswer(),
+                              child: const AnswerOptionButton(
+                                option: 'None of the above',
+                              ),
+                            ),
+                            SizedBox(height: 4.h),
+                            TextButton(
+                              onPressed:
+                                  () =>
+                                      context.read<TestCubit>().selectAnswer(),
+                              child: Text(
+                                'Didn\'t see it!',
+                                style: Styles.textButtonTextStyle,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                    ],
+                  ),
                 ),
               ),
             ],
