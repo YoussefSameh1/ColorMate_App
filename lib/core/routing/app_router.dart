@@ -2,6 +2,12 @@ import 'package:colormate_app/core/routing/routes.dart';
 import 'package:colormate_app/features/authentication/login/ui/login_view.dart';
 import 'package:colormate_app/features/authentication/signup/ui/signup_View.dart';
 import 'package:colormate_app/features/authentication/verify_email/verify_email_view.dart';
+import 'package:colormate_app/features/games/color_collector_game/presentation/views/color_collector_game_view.dart';
+import 'package:colormate_app/features/games/color_the_picture_game/presentation/views/color_the_picture_game_view.dart';
+import 'package:colormate_app/features/games/find_the_object_game/presentation/views/find_the_object_game.dart';
+import 'package:colormate_app/features/games/memory_match_game/presentation/views/memory_match_game_view.dart';
+import 'package:colormate_app/features/games/presentation/views/game_selection_view.dart';
+import 'package:colormate_app/features/games/sequence_game/presentation/views/sequence_game_view.dart';
 import 'package:colormate_app/features/onboarding/presentation/views/onboarding_view.dart';
 import 'package:colormate_app/features/splash/presentation/views/splash_view.dart';
 import 'package:colormate_app/features/test/presentation/cubit/test_cubit.dart';
@@ -14,7 +20,7 @@ import 'animation_route.dart';
 
 abstract class AppRouter {
   static final router = GoRouter(
-    initialLocation: Routes.testIntroView,
+    initialLocation: Routes.gameSelectionView,
     routes: [
       GoRoute(
         path: Routes.splashView,
@@ -76,6 +82,42 @@ abstract class AppRouter {
             pageBuilder:
                 (context, state) =>
                     slideTransitionPage(child: const TestResultView()),
+          ),
+          GoRoute(
+            path: Routes.gameSelectionView,
+            pageBuilder:
+                (context, state) =>
+                    slideTransitionPage(child: const GameSelectionView()),
+          ),
+          GoRoute(
+            path: Routes.colorCollectorGameView,
+            pageBuilder:
+                (context, state) =>
+                    slideTransitionPage(child: const ColorCollectorGameView()),
+          ),
+          GoRoute(
+            path: Routes.memoryMatchGameView,
+            pageBuilder:
+                (context, state) =>
+                    slideTransitionPage(child: const MemoryMatchGameView()),
+          ),
+          GoRoute(
+            path: Routes.colorThePictureGameView,
+            pageBuilder:
+                (context, state) =>
+                    slideTransitionPage(child: const ColorThePictureGameView()),
+          ),
+          GoRoute(
+            path: Routes.sequenceGameView,
+            pageBuilder:
+                (context, state) =>
+                    slideTransitionPage(child: const SequenceGameView()),
+          ),
+          GoRoute(
+            path: Routes.findTheObjectGameView,
+            pageBuilder:
+                (context, state) =>
+                    slideTransitionPage(child: const FindTheObjectGameView()),
           ),
         ],
       ),

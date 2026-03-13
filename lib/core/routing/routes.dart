@@ -20,4 +20,10 @@ class Routes {
   static const String testIntroView = '/test_intro_view';
   static const String testView = '/test_view';
   static const String testResultView = '/test_result_view';
+  static const String gameSelectionView = '/game_selection_view';
+  static const String colorCollectorGameView = '/color_collector_game_view';
+  static const String memoryMatchGameView = '/memory_match_game_view';
+  static const String colorThePictureGameView = '/color_the_picture_game_view';
+  static const String sequenceGameView = '/sequence_game_view';
+  static const String findTheObjectGameView = '/find_the_object_game_view';
 }
