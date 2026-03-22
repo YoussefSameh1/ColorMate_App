@@ -1,9 +1,5 @@
-import 'dart:math';
-
-import 'package:colormate_app/core/theme/app_colors.dart';
 import 'package:colormate_app/core/theme/custom_pin_theme.dart';
 import 'package:colormate_app/core/theme/text_style.dart';
-import 'package:colormate_app/core/widget/buttons/custom_back_button.dart';
 import 'package:colormate_app/core/widget/buttons/secondary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

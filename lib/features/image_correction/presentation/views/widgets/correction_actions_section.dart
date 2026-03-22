@@ -1,13 +1,17 @@
-import 'package:colormate_app/features/image_correction/presentation/view_model/image_correction_view_model.dart';
 import 'package:colormate_app/features/image_correction/presentation/views/widgets/correction_action_button.dart';
-import 'package:colormate_app/features/object&color_detection/presentation/cubit/image_picker_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CorrectionActionsSection extends StatelessWidget {
-  const CorrectionActionsSection({super.key, required this.viewModel});
+  const CorrectionActionsSection({
+    super.key,
+    required this.onReset,
+    required this.onDownload,
+    required this.canDownload,
+  });
 
-  final ImageCorrectionViewModel viewModel;
+  final VoidCallback onReset;
+  final VoidCallback onDownload;
+  final bool canDownload;
 
   @override
   Widget build(BuildContext context) {
@@ -20,18 +24,15 @@ class CorrectionActionsSection extends StatelessWidget {
               text: 'Reset',
               icon: Icons.delete_outline_rounded,
               isPrimary: false,
-              onTap: () {
-                viewModel.resetSelection();
-                context.read<ImagePickerCubit>().reset();
-              },
+              onTap: onReset,
             ),
           ),
           const SizedBox(width: 12),
           CorrectionActionButton(
-            text: 'Download',
+            text: canDownload ? 'Download' : 'No Output',
             icon: Icons.file_download_outlined,
             isPrimary: true,
-            onTap: () {},
+            onTap: onDownload,
           ),
         ],
       ),

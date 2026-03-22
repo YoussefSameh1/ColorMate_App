@@ -3,7 +3,6 @@ import 'package:colormate_app/core/theme/app_colors.dart';
 import 'package:colormate_app/core/widget/buttons/primary_shadow_button.dart';
 import 'package:colormate_app/core/widget/custom_text_form_field.dart';
 import 'package:colormate_app/core/validation/validation.dart';
-import 'package:colormate_app/features/authentication/signup/ui/signup_View.dart';
 import 'package:colormate_app/core/routing/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -110,7 +109,7 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                     if (!_formKey.currentState!.validate()) return;
                     GoRouter.of(
                       context,
-                    ).push(Routes.objectAndColorDetectionView);
+                    ).push(Routes.imageCorrectionView);
                   },
                   height: 50,
                 ),

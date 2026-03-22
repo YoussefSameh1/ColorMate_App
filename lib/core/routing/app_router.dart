@@ -1,10 +1,10 @@
 import 'package:colormate_app/core/routing/routes.dart';
-import 'package:colormate_app/core/services/image_picker_service.dart';
 import 'package:colormate_app/features/authentication/login/ui/login_view.dart';
 import 'package:colormate_app/features/authentication/signup/ui/signup_View.dart';
 import 'package:colormate_app/features/authentication/verify_email/verify_email_view.dart';
+import 'package:colormate_app/features/image_correction/di/image_correction_di.dart';
 import 'package:colormate_app/features/image_correction/presentation/views/image_correction_view.dart';
-import 'package:colormate_app/features/object&color_detection/presentation/cubit/image_picker_cubit.dart';
+import 'package:colormate_app/features/object&color_detection/di/object_and_color_detection_di.dart';
 import 'package:colormate_app/features/object&color_detection/presentation/views/object_and_color_detection_view.dart';
 import 'package:colormate_app/features/onboarding/presentation/views/onboarding_view.dart';
 import 'package:colormate_app/features/splash/presentation/views/splash_view.dart';
@@ -37,7 +37,7 @@ abstract class AppRouter {
         path: Routes.objectAndColorDetectionView,
         builder: (context, state) {
           return BlocProvider(
-            create: (_) => ImagePickerCubit(ImagePickerService()),
+            create: (_) => buildObjectAndColorDetectionCubit(),
             child: const ObjectAndColorDetectionView(),
           );
         },
@@ -45,8 +45,11 @@ abstract class AppRouter {
       GoRoute(
         path: Routes.imageCorrectionView,
         builder: (context, state) {
-          return BlocProvider(
-            create: (_) => ImagePickerCubit(ImagePickerService()),
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (_) => buildObjectAndColorDetectionCubit()),
+              BlocProvider(create: (_) => buildImageCorrectionCubit()),
+            ],
             child: const ImageCorrectionView(),
           );
         },
