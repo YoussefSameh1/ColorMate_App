@@ -43,6 +43,8 @@ dependencies:
   provider: ^6.1.5+1
   shared_preferences: ^2.5.4
   permission_handler: ^11.2.0
+  image: ^4.5.4
+  gal: ^2.3.1
   dotted_border: ^2.1.0
   flutter_gemini: ^3.0.0
   flutter_dotenv: ^5.0.2

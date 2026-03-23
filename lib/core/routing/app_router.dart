@@ -18,7 +18,7 @@ import 'package:colormate_app/features/fruits/presentation/views/fruit_intro_vie
 import 'package:colormate_app/features/fruits/presentation/views/fruit_result_view.dart';
 import 'package:colormate_app/features/matching/presentation/views/matching_view.dart';
 import 'package:colormate_app/features/image_correction/presentation/views/image_correction_view.dart';
-import 'package:colormate_app/features/object&color_detection/presentation/cubit/image_picker_cubit.dart';
+import 'package:colormate_app/features/object&color_detection/di/object_and_color_detection_di.dart';
 import 'package:colormate_app/features/object&color_detection/presentation/views/object_and_color_detection_view.dart';
 import 'package:colormate_app/features/onboarding/presentation/views/onboarding_view.dart';
 import 'package:colormate_app/features/profile/data/repositories/change_password_repository_impl.dart';
