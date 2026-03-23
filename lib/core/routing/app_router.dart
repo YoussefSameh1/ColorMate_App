@@ -16,6 +16,7 @@ import 'package:colormate_app/features/chatbot/presentation/cubit/chatbot_cubit.
 import 'package:colormate_app/features/chatbot/presentation/views/chatbot_view.dart';
 import 'package:colormate_app/features/fruits/presentation/views/fruit_intro_view.dart';
 import 'package:colormate_app/features/fruits/presentation/views/fruit_result_view.dart';
+import 'package:colormate_app/features/image_correction/di/image_correction_di.dart';
 import 'package:colormate_app/features/matching/presentation/views/matching_view.dart';
 import 'package:colormate_app/features/image_correction/presentation/views/image_correction_view.dart';
 import 'package:colormate_app/features/object&color_detection/di/object_and_color_detection_di.dart';
@@ -58,6 +59,29 @@ abstract class AppRouter {
               key: state.pageKey,
             ),
       ),
+
+      GoRoute(
+        path: Routes.objectAndColorDetectionView,
+        builder: (context, state) {
+          return BlocProvider(
+            create: (_) => buildObjectAndColorDetectionCubit(),
+            child: const ObjectAndColorDetectionView(),
+          );
+        },
+      ),
+      GoRoute(
+        path: Routes.imageCorrectionView,
+        builder: (context, state) {
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (_) => buildObjectAndColorDetectionCubit()),
+              BlocProvider(create: (_) => buildImageCorrectionCubit()),
+            ],
+            child: const ImageCorrectionView(),
+          );
+        },
+      ),
+
       GoRoute(
         path: Routes.signupView,
         pageBuilder:
@@ -136,24 +160,6 @@ abstract class AppRouter {
                     slideTransitionPage(child: const TestResultView()),
           ),
         ],
-      ),
-      GoRoute(
-        path: Routes.objectAndColorDetectionView,
-        builder: (context, state) {
-          return BlocProvider(
-            create: (_) => ImagePickerCubit(ImagePickerService()),
-            child: const ObjectAndColorDetectionView(),
-          );
-        },
-      ),
-      GoRoute(
-        path: Routes.imageCorrectionView,
-        builder: (context, state) {
-          return BlocProvider(
-            create: (_) => ImagePickerCubit(ImagePickerService()),
-            child: const ImageCorrectionView(),
-          );
-        },
       ),
       GoRoute(
         path: Routes.fruitIntroView,

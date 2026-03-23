@@ -1,3 +1,4 @@
+import 'package:colormate_app/core/theme/app_colors.dart';
 import 'package:colormate_app/core/theme/custom_pin_theme.dart';
 import 'package:colormate_app/core/theme/text_style.dart';
 
