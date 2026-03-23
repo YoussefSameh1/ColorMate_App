@@ -4,6 +4,12 @@ import 'package:colormate_app/features/authentication/login/presentation/views/l
 import 'package:colormate_app/features/authentication/signup/presentation/view/signup_View.dart';
 
 import 'package:colormate_app/features/authentication/verify_email/verify_email_view.dart';
+import 'package:colormate_app/features/games/color_collector_game/presentation/views/color_collector_game_view.dart';
+import 'package:colormate_app/features/games/color_the_picture_game/presentation/views/color_the_picture_game_view.dart';
+import 'package:colormate_app/features/games/find_the_object_game/presentation/views/find_the_object_game.dart';
+import 'package:colormate_app/features/games/memory_match_game/presentation/views/memory_match_game_view.dart';
+import 'package:colormate_app/features/games/presentation/views/game_selection_view.dart';
+import 'package:colormate_app/features/games/sequence_game/presentation/views/sequence_game_view.dart';
 import 'package:colormate_app/features/chatbot/data/repositories/chatbot_repository_impl.dart';
 import 'package:colormate_app/features/chatbot/data/services/gemini_service.dart';
 import 'package:colormate_app/features/chatbot/presentation/cubit/chatbot_cubit.dart';
