@@ -1,8 +1,6 @@
 import 'package:colormate_app/core/routing/routes.dart';
-import 'package:colormate_app/core/services/image_picker_service.dart';
 import 'package:colormate_app/features/authentication/login/presentation/views/login_view.dart';
 import 'package:colormate_app/features/authentication/signup/presentation/view/signup_View.dart';
-
 import 'package:colormate_app/features/authentication/verify_email/verify_email_view.dart';
 import 'package:colormate_app/features/games/color_collector_game/presentation/views/color_collector_game_view.dart';
 import 'package:colormate_app/features/games/color_the_picture_game/presentation/views/color_the_picture_game_view.dart';
@@ -178,6 +176,42 @@ abstract class AppRouter {
         pageBuilder:
             (context, state) =>
                 slideTransitionPage(child: const MatchingView()),
+      ),
+      GoRoute(
+        path: Routes.gameSelectionView,
+        pageBuilder:
+            (context, state) =>
+                slideTransitionPage(child: const GameSelectionView()),
+      ),
+      GoRoute(
+        path: Routes.colorCollectorGameView,
+        pageBuilder:
+            (context, state) =>
+                slideTransitionPage(child: const ColorCollectorGameView()),
+      ),
+      GoRoute(
+        path: Routes.memoryMatchGameView,
+        pageBuilder:
+            (context, state) =>
+                slideTransitionPage(child: const MemoryMatchGameView()),
+      ),
+      GoRoute(
+        path: Routes.colorThePictureGameView,
+        pageBuilder:
+            (context, state) =>
+                slideTransitionPage(child: const ColorThePictureGameView()),
+      ),
+      GoRoute(
+        path: Routes.sequenceGameView,
+        pageBuilder:
+            (context, state) =>
+                slideTransitionPage(child: const SequenceGameView()),
+      ),
+      GoRoute(
+        path: Routes.findTheObjectGameView,
+        pageBuilder:
+            (context, state) =>
+                slideTransitionPage(child: const FindTheObjectGameView()),
       ),
       GoRoute(
         path: Routes.chatbotView,
