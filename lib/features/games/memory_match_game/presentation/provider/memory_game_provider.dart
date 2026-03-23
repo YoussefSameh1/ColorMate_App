@@ -109,14 +109,13 @@ class MemoryGameProvider extends ChangeNotifier {
   void showWinDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder:
-          (_) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
             title: const Text('🎉 Congratulations!'),
             content: Text('You matched all colors in $moves moves!'),
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.pop(dialogContext);
                   setupGame();
                 },
                 child: const Text('Play Again'),
