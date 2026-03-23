@@ -30,4 +30,13 @@ class AppColors {
   // Button Colors
 
   static const Color buttonDisabled = Color(0xFFE0E0E0);
+
+
+  // Feature card colors
+  static const Color testColor = Color(0xFFE8E8E8);
+  static const Color detectImageColor = Color(0xFFB3E5F0);
+  static const Color filterImageColor = Color(0xFFFFB3D9);
+  static const Color rateOutfitColor = Color(0xFFD4C5E8);
+  static const Color scanFruitColor = Color(0xFFAFE8DC);
+  static const Color gamingColor = Color(0xFFE8A87C);
 }

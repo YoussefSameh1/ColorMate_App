@@ -36,4 +36,5 @@ class Routes {
   static const String colorThePictureGameView = '/color_the_picture_game_view';
   static const String sequenceGameView = '/sequence_game_view';
   static const String findTheObjectGameView = '/find_the_object_game_view';
+  static const String homeView = '/home_view';
 }
