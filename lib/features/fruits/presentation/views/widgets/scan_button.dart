@@ -1,6 +1,8 @@
+import 'package:colormate_app/core/routing/routes.dart';
 import 'package:colormate_app/core/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class ScanButton extends StatelessWidget {
   const ScanButton({super.key});
@@ -8,7 +10,9 @@ class ScanButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
-      onPressed: () {},
+      onPressed: () {
+        GoRouter.of(context).go(Routes.fruitResultView);
+      },
       icon: const Icon(
         Icons.cloud_upload_outlined,
         color: Colors.white,

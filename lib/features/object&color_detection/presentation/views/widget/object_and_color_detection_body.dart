@@ -36,7 +36,7 @@ class ObjectAndColorDetectionBody extends StatelessWidget {
 
         return Column(
           children: [
-            CustomAppBar(title: 'Object & Color Detection'),
+            CustomAppBar(title: 'Object & Color Detection', isTitleLong: true),
             ImageUploadSection(
               isLoading: isLoading,
               imagePath: imagePath,

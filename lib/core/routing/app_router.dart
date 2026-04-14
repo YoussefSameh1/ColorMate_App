@@ -41,7 +41,7 @@ import 'animation_route.dart';
 
 abstract class AppRouter {
   static final router = GoRouter(
-    initialLocation: Routes.homeView,
+    initialLocation: Routes.splashView,
     routes: [
       GoRoute(
         path: Routes.splashView,
@@ -59,7 +59,6 @@ abstract class AppRouter {
               key: state.pageKey,
             ),
       ),
-
       GoRoute(
         path: Routes.objectAndColorDetectionView,
         builder: (context, state) {
@@ -81,7 +80,6 @@ abstract class AppRouter {
           );
         },
       ),
-
       GoRoute(
         path: Routes.signupView,
         pageBuilder:

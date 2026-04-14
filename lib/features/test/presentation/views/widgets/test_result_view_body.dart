@@ -40,14 +40,18 @@ class TestResultViewBody extends StatelessWidget {
                   text: 'Learn More About Deuteranomaly',
                   textColor: kPrimaryColor,
                   backgroundColor: kSecondaryColor,
-                  onPressed: () {},
+                  onPressed: () {
+                    GoRouter.of(context).push(Routes.chatbotView);
+                  },
                 ),
                 SizedBox(height: 16.h),
                 TestResultButton(
                   text: 'Back To Home',
                   textColor: kPrimaryColor,
                   backgroundColor: Colors.white,
-                  onPressed: () {},
+                  onPressed: () {
+                    GoRouter.of(context).push(Routes.homeView);
+                  },
                 ),
               ],
             ),
