@@ -1,5 +1,6 @@
 import 'package:colormate_app/core/theme/app_colors.dart';
 import 'package:colormate_app/core/theme/text_style.dart';
+import 'package:colormate_app/core/widget/custom_app_bar.dart';
 import 'package:colormate_app/features/image_correction/domain/entities/cvd_filter_option.dart';
 import 'package:colormate_app/features/image_correction/presentation/view_model/cubit/image_correction_cubit.dart';
 import 'package:colormate_app/features/image_correction/presentation/view_model/cubit/image_correction_state.dart';
@@ -75,6 +76,7 @@ class ImageCorrectionBody extends StatelessWidget {
               return ListView(
                 padding: const EdgeInsets.only(top: 0, bottom: 28),
                 children: [
+                  CustomAppBar(title: 'Image Correction'),
                   ImageUploadSection(
                     isLoading: isImageLoading,
                     imagePath: displayedImagePath,

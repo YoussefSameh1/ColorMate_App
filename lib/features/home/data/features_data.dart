@@ -44,6 +44,6 @@ final List<FeatureModel> features = [
     icon: Icons.games_outlined,
     color: Colors.red,
     bgColor: AppColors.gamingColor,
-    route: Routes.fruitIntroView,
+    route: Routes.gameSelectionView,
   ),
 ];

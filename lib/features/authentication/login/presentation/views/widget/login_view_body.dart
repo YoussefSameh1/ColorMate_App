@@ -56,7 +56,7 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                 errorMessage: errorMessage,
                 onSubmit: () {
                   if (!_formKey.currentState!.validate()) return;
-                  GoRouter.of(context).push(Routes.chatbotView);
+                  GoRouter.of(context).push(Routes.homeView);
                 },
               ),
             ],

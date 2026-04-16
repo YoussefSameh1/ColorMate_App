@@ -11,14 +11,14 @@ import 'core/routing/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await dotenv.load(fileName: '.env', isOptional: true);
   Gemini.init(apiKey: kGeminiApiKey);
+
   await StorageService.getInstance();
-  /*
-  final storageService = await StorageService.getInstance();
-  await storageService.clearOnboarding();
-  */
+
   Bloc.observer = SimpleBlocObserver();
+  
   runApp(const ColorMateApp());
 }
 

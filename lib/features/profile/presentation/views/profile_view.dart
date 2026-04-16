@@ -1,5 +1,4 @@
 import 'package:colormate_app/core/routing/routes.dart';
-import 'package:colormate_app/core/widget/custom_app_bar.dart';
 import 'package:colormate_app/core/widget/loaders.dart';
 import 'package:colormate_app/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:colormate_app/features/profile/presentation/views/widgets/profile_view_body.dart';
