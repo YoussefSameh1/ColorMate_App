@@ -7,10 +7,12 @@ class CustomAppBar extends StatelessWidget {
     super.key,
     required this.title,
     this.isBackButtonVisible = true,
+    this.onBackPressed,
   });
 
   final String title;
   final bool isBackButtonVisible;
+  final VoidCallback? onBackPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,16 @@ class CustomAppBar extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: IconButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () {
+                      if (onBackPressed != null) {
+                        onBackPressed!();
+                        return;
+                      }
+
+                      if (Navigator.of(context).canPop()) {
+                        Navigator.of(context).pop();
+                      }
+                    },
                     icon: Icon(
                       Icons.arrow_back_ios_new_rounded,
                       color: kPrimaryColor,

@@ -32,7 +32,9 @@ class AdvancedGameAppBar extends StatelessWidget
           size: 20.sp,
         ),
         onPressed: () {
-          Navigator.of(context).pop();
+          if (Navigator.of(context).canPop()) {
+            Navigator.of(context).pop();
+          }
         },
       ),
 

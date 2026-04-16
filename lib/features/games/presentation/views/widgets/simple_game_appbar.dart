@@ -18,7 +18,9 @@ class SimpleGameAppBar extends StatelessWidget implements PreferredSizeWidget {
           size: 24.sp,
         ),
         onPressed: () {
-          Navigator.of(context).pop();
+          if (Navigator.of(context).canPop()) {
+            Navigator.of(context).pop();
+          }
         },
       ),
       title: Text(

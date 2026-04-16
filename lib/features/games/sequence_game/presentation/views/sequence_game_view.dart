@@ -1,4 +1,5 @@
 import 'package:colormate_app/core/utils/constants.dart';
+import 'package:colormate_app/core/routing/routes.dart';
 import 'package:colormate_app/features/games/presentation/views/widgets/advanced_game_appbar.dart';
 import 'package:colormate_app/features/games/sequence_game/presentation/views/widgets/color_button_tile.dart';
 import 'package:flutter/material.dart';
@@ -137,15 +138,23 @@ class _GameBody extends StatelessWidget {
                                   actions: [
                                     TextButton(
                                       onPressed: () {
-                                        GoRouter.of(context).pop();
+                                        Navigator.of(
+                                          context,
+                                          rootNavigator: true,
+                                        ).pop();
                                         game.startGame();
                                       },
                                       child: const Text('Play Again'),
                                     ),
                                     TextButton(
                                       onPressed: () {
-                                        GoRouter.of(context).pop();
-                                        GoRouter.of(context).pop();
+                                        Navigator.of(
+                                          context,
+                                          rootNavigator: true,
+                                        ).pop();
+                                        GoRouter.of(
+                                          context,
+                                        ).go(Routes.gameSelectionView);
                                       },
                                       child: const Text('Back to Menu'),
                                     ),
@@ -192,7 +201,11 @@ class _GameBody extends StatelessWidget {
                 child: const Text(
                   '💡 Watch the color pattern, then repeat it!\nEach level adds one more color.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: kPrimaryColor,fontSize: 14, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                    color: kPrimaryColor,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
 
