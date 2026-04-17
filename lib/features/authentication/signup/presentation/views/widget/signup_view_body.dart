@@ -1,38 +1,44 @@
+import 'package:colormate_app/core/routing/routes.dart';
 import 'package:colormate_app/core/theme/app_colors.dart';
-
-import 'package:colormate_app/features/authentication/login/presentation/views/widget/login_form_section.dart';
+import 'package:colormate_app/features/authentication/signup/presentation/views/widget/signup_form_section.dart';
+import 'package:colormate_app/features/authentication/signup/view_model/signup_cubit.dart';
+import 'package:colormate_app/features/authentication/signup/view_model/signup_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:colormate_app/features/authentication/login/view_model/login_cubit.dart';
-import 'package:colormate_app/features/authentication/login/view_model/login_state.dart';
+import 'package:go_router/go_router.dart';
 
-class LoginViewBody extends StatefulWidget {
-  const LoginViewBody({super.key});
+class SignupViewBody extends StatefulWidget {
+  const SignupViewBody({super.key});
 
   @override
-  State<LoginViewBody> createState() => _LoginViewBodyState();
+  State<SignupViewBody> createState() => _SignupViewBodyState();
 }
 
-class _LoginViewBodyState extends State<LoginViewBody> {
+class _SignupViewBodyState extends State<SignupViewBody> {
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool isPasswordObscured = true;
-  bool isRememberMe = true;
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<LoginCubit, LoginState>(
+    return BlocConsumer<SignupCubit, SignupState>(
       listener: (context, state) {
-        if (state.successMessage != null) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.successMessage!)));
-          // context.go(Routes.homeView);
-        }
-
-        if (state.errorMessage != null) {
+        if (state.isSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.successMessage ?? 'Registered successfully.'),
+            ),
+          );
+          final encodedEmail = Uri.encodeComponent(emailController.text.trim());
+          context.push('${Routes.verifyEmailView}?email=$encodedEmail');
+        } else if (state.errorMessage != null) {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
@@ -58,7 +64,7 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                   ),
                   const SizedBox(height: 30),
                   const Text(
-                    'Login to Your Account',
+                    'Create New Account',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -66,23 +72,26 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                     ),
                   ),
                   const SizedBox(height: 30),
-                  LoginFormSection(
+                  SignupFormSection(
                     formKey: _formKey,
+                    firstNameController: firstNameController,
+                    lastNameController: lastNameController,
                     emailController: emailController,
+                    usernameController: usernameController,
                     passwordController: passwordController,
+                    confirmPasswordController: confirmPasswordController,
                     isPasswordObscured: isPasswordObscured,
-                    isRememberMe: isRememberMe,
                     errorMessage: state.errorMessage,
                     isLoading: state.isLoading,
-                    onRememberMeChanged: (value) {
-                      setState(() => isRememberMe = value);
-                    },
                     onSubmit: () {
                       if (!_formKey.currentState!.validate()) return;
-                      context.read<LoginCubit>().login(
-                        userNameOrEmail: emailController.text.trim(),
+                      context.read<SignupCubit>().register(
+                        firstName: firstNameController.text.trim(),
+                        lastName: lastNameController.text.trim(),
+                        email: emailController.text.trim(),
+                        userName: usernameController.text.trim(),
                         password: passwordController.text,
-                        remmberMe: isRememberMe,
+                        confirmPassword: confirmPasswordController.text,
                       );
                     },
                   ),
@@ -97,8 +106,12 @@ class _LoginViewBodyState extends State<LoginViewBody> {
 
   @override
   void dispose() {
+    firstNameController.dispose();
+    lastNameController.dispose();
+    usernameController.dispose();
     emailController.dispose();
     passwordController.dispose();
+    confirmPasswordController.dispose();
     super.dispose();
   }
 }

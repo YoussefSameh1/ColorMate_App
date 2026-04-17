@@ -1,8 +1,8 @@
 import 'package:colormate_app/core/routing/routes.dart';
 import 'package:colormate_app/features/authentication/login/presentation/views/login_view.dart';
 
-import 'package:colormate_app/features/authentication/signup/ui/signup_View.dart';
-import 'package:colormate_app/features/authentication/verify_email/verify_email_view.dart';
+import 'package:colormate_app/features/authentication/signup/presentation/views/signup_view.dart';
+import 'package:colormate_app/features/authentication/verify_email/presentation/views/verify_email_view.dart';
 
 import 'package:go_router/go_router.dart';
 
@@ -26,8 +26,11 @@ abstract class AppRouter {
       ),
       GoRoute(
         path: Routes.verifyEmailView,
-        pageBuilder: (context, state) =>
-            slideTransitionPage(child: const VerifyEmailView()),
+        pageBuilder: (context, state) => slideTransitionPage(
+          child: VerifyEmailView(
+            email: state.uri.queryParameters['email'] ?? '',
+          ),
+        ),
       ),
     ],
   );
