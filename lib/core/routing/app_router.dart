@@ -180,9 +180,11 @@ abstract class AppRouter {
       ),
       GoRoute(
         path: Routes.fruitResultView,
-        pageBuilder:
-            (context, state) =>
-                slideTransitionPage(child: const FruitResultView()),
+        builder: (context, state) {
+          final imagePath = state.extra as String;
+
+          return FruitResultView(imagePath: imagePath);
+        },
       ),
       GoRoute(
         path: Routes.matchingView,

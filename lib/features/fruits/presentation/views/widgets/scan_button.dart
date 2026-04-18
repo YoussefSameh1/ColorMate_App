@@ -1,6 +1,10 @@
 import 'package:colormate_app/core/routing/routes.dart';
 import 'package:colormate_app/core/utils/constants.dart';
+import 'package:colormate_app/features/matching/presentation/cubit/upload_image_cubit.dart';
+import 'package:colormate_app/features/matching/presentation/cubit/upload_image_state.dart';
+import 'package:colormate_app/features/object&color_detection/presentation/views/widget/show_image_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
@@ -11,7 +15,19 @@ class ScanButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
       onPressed: () {
-        GoRouter.of(context).go(Routes.fruitResultView);
+        final cubit = context.read<UploadImageCubit>();
+
+        showImagePicker(
+          context: context,
+          onCameraSelected: () async {
+            await cubit.pickFromCamera();
+            _navigateIfSuccess(context);
+          },
+          onGallerySelected: () async {
+            await cubit.pickFromGallery();
+            _navigateIfSuccess(context);
+          },
+        );
       },
       icon: const Icon(
         Icons.cloud_upload_outlined,
@@ -33,5 +49,13 @@ class ScanButton extends StatelessWidget {
         elevation: 2,
       ),
     );
+  }
+
+  void _navigateIfSuccess(BuildContext context) {
+    final state = context.read<UploadImageCubit>().state;
+
+    if (state is UploadImageSuccess) {
+      GoRouter.of(context).go(Routes.fruitResultView, extra: state.imagePath);
+    }
   }
 }

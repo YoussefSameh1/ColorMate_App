@@ -1,11 +1,17 @@
 import 'package:colormate_app/core/utils/constants.dart';
 import 'package:colormate_app/core/utils/styles.dart';
-import 'package:colormate_app/features/fruits/presentation/views/widgets/scan_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ResultCard extends StatelessWidget {
-  const ResultCard({super.key});
+  final String status;
+  final double spoiledPercent;
+
+  const ResultCard({
+    super.key,
+    required this.status,
+    required this.spoiledPercent,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,11 +29,18 @@ class ResultCard extends StatelessWidget {
             style: Styles.buttonTextStyle.copyWith(color: kPrimaryColor),
           ),
           SizedBox(height: 30.h),
-          Text('Status: not fresh', style: Styles.testQuestionTextStyle),
+
+          Text(
+            'Status: $status',
+            style: Styles.testQuestionTextStyle,
+          ),
+
           SizedBox(height: 6.h),
-          Text('Spoiled area 25%', style: Styles.testQuestionTextStyle),
-          SizedBox(height: 30.h),
-          ScanButton(),
+
+          Text(
+            'Spoiled area ${spoiledPercent.toStringAsFixed(0)}%',
+            style: Styles.testQuestionTextStyle,
+          ),
         ],
       ),
     );
