@@ -1,54 +1,47 @@
-import 'package:colormate_app/core/utils/constants.dart';
+import 'package:colormate_app/features/matching/presentation/cubit/upload_image_cubit.dart';
+import 'package:colormate_app/features/matching/presentation/cubit/upload_image_state.dart';
+import 'package:colormate_app/features/object&color_detection/presentation/views/widget/image_upload_section.dart';
+import 'package:colormate_app/features/object&color_detection/presentation/views/widget/show_image_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UploadImageCard extends StatelessWidget {
   const UploadImageCard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding:  EdgeInsets.all(20.r),
-      decoration: BoxDecoration(
-        border: Border.all(color: kPrimaryColor, width: 1.5.w),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        children: [
-          Icon(Icons.cloud_upload_outlined, size: 60.r, color: kPrimaryColor),
-          SizedBox(height: 12.h),
-          Text(
-            "Upload or Select Image",
-            style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.bold,
-              color: kPrimaryColor,
-            ),
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            "Choose an image from your gallery or take a new one to apply outfit rating.",
-            textAlign: TextAlign.center,
-            style: TextStyle(color: kPrimaryColor),
-          ),
-          SizedBox(height: 20.h),
-          ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: kPrimaryColor,
-              padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 14.h),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.r),
-              ),
-            ),
-            onPressed: () {},
-            icon: const Icon(Icons.upload, color: Colors.white),
-            label: const Text(
-              "Choose Photo",
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
-      ),
+    return BlocConsumer<UploadImageCubit, UploadImageState>(
+      listener: (context, state) {
+        if (state is UploadImageError) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.message)));
+        }
+      },
+      builder: (context, state) {
+        String? imagePath;
+        bool isLoading = false;
+
+        if (state is UploadImageLoading) {
+          isLoading = true;
+        } else if (state is UploadImageSuccess) {
+          imagePath = state.imagePath;
+        }
+
+        return ImageUploadSection(
+          isLoading: isLoading,
+          imagePath: imagePath,
+          onChoosePhoto: () {
+            final cubit = context.read<UploadImageCubit>();
+
+            showImagePicker(
+              context: context,
+              onCameraSelected: cubit.pickFromCamera,
+              onGallerySelected: cubit.pickFromGallery,
+            );
+          },
+        );
+      },
     );
   }
 }

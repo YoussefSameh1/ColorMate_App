@@ -80,7 +80,15 @@ class ImageCorrectionBody extends StatelessWidget {
                   ImageUploadSection(
                     isLoading: isImageLoading,
                     imagePath: displayedImagePath,
-                    onChoosePhoto: () => showImagePicker(context),
+                    onChoosePhoto: () {
+                      final cubit = context.read<ImagePickerCubit>();
+
+                      showImagePicker(
+                        context: context,
+                        onCameraSelected: cubit.pickFromCamera,
+                        onGallerySelected: cubit.pickFromGallery,
+                      );
+                    },
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 18),

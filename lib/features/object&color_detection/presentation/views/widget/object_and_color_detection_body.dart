@@ -40,7 +40,15 @@ class ObjectAndColorDetectionBody extends StatelessWidget {
             ImageUploadSection(
               isLoading: isLoading,
               imagePath: imagePath,
-              onChoosePhoto: () => showImagePicker(context),
+              onChoosePhoto: () {
+                final cubit = context.read<ImagePickerCubit>();
+
+                showImagePicker(
+                  context: context,
+                  onCameraSelected: cubit.pickFromCamera,
+                  onGallerySelected: cubit.pickFromGallery,
+                );
+              },
               detectedObjects: successState?.detectedObjects ?? const [],
               originalImageSize: successState?.originalImageSize,
               selectedObjectId: successState?.selectedObjectId,
