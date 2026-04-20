@@ -32,7 +32,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   dartz: ^0.10.1
   dio: ^5.9.0
-  dotted_border: ^2.1.0
+  
   easy_localization: ^3.0.8
   flutter:
     sdk: flutter
@@ -47,6 +47,7 @@ dependencies:
   shared_preferences: ^2.5.4
   image: ^4.5.4
   gal: ^2.3.1
+  dotted_border: ^2.1.0
   flutter_gemini: ^3.0.0
   flutter_dotenv: ^5.0.2
   

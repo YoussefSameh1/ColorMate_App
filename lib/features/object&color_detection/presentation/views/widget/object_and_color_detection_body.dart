@@ -29,10 +29,9 @@ class ObjectAndColorDetectionBody extends StatelessWidget {
         final isDetecting = successState?.isDetecting ?? false;
         final hasDetections =
             (successState?.detectedObjects.isNotEmpty ?? false);
-        final selectedObject =
-            successState == null
-                ? null
-                : context.read<ImagePickerCubit>().getSelectedDetectedObject();
+        final selectedObject = successState == null
+            ? null
+            : context.read<ImagePickerCubit>().getSelectedDetectedObject();
 
         return Column(
           children: [
@@ -40,33 +39,31 @@ class ObjectAndColorDetectionBody extends StatelessWidget {
             ImageUploadSection(
               isLoading: isLoading,
               imagePath: imagePath,
-              onChoosePhoto: () {
-                final cubit = context.read<ImagePickerCubit>();
-
-                showImagePicker(
-                  context: context,
-                  onCameraSelected: cubit.pickFromCamera,
-                  onGallerySelected: cubit.pickFromGallery,
-                );
-              },
+              onChoosePhoto: () => showImagePicker(
+                context: context,
+                onCameraSelected: () {
+                  context.read<ImagePickerCubit>().pickFromCamera();
+                },
+                onGallerySelected: () {
+                  context.read<ImagePickerCubit>().pickFromGallery();
+                },
+              ),
               detectedObjects: successState?.detectedObjects ?? const [],
               originalImageSize: successState?.originalImageSize,
               selectedObjectId: successState?.selectedObjectId,
               imageFit: BoxFit.contain,
-              onObjectTap:
-                  successState == null
-                      ? null
-                      : (object) {
-                        context.read<ImagePickerCubit>().onDetectedObjectTapped(
-                          object,
-                        );
-                      },
-              onImageTap:
-                  successState == null
-                      ? null
-                      : (point) {
-                        context.read<ImagePickerCubit>().onImageTapped(point);
-                      },
+              onObjectTap: successState == null
+                  ? null
+                  : (object) {
+                      context.read<ImagePickerCubit>().onDetectedObjectTapped(
+                        object,
+                      );
+                    },
+              onImageTap: successState == null
+                  ? null
+                  : (point) {
+                      context.read<ImagePickerCubit>().onImageTapped(point);
+                    },
             ),
             const SizedBox(height: 20),
             if (imagePath != null)
