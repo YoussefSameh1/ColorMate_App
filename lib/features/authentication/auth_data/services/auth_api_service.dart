@@ -46,6 +46,16 @@ class AuthApiService {
     });
   }
 
+  Future<String> loginWithGoogle({required String idToken}) async {
+    return _runRequest(() async {
+      final response = await _dio.post(
+        '/api/Users/LoginWithGoogle',
+        data: {'idToken': idToken},
+      );
+      return _extractMessage(response.data) ?? 'Google login successful.';
+    });
+  }
+
   Future<String> verifyEmailOtp({
     required String email,
     required String code,
@@ -75,11 +85,50 @@ class AuthApiService {
     } on DioException catch (error) {
       final serverMessage = _extractMessage(error.response?.data);
       throw AuthApiException(
-        serverMessage ?? error.message ?? 'Unexpected network error.',
+        _toUserFriendlyMessage(serverMessage: serverMessage, error: error),
       );
     } catch (_) {
       throw const AuthApiException('Unexpected error happened.');
     }
+  }
+
+  String _toUserFriendlyMessage({
+    required DioException error,
+    String? serverMessage,
+  }) {
+    if (error.type == DioExceptionType.connectionTimeout ||
+        error.type == DioExceptionType.sendTimeout ||
+        error.type == DioExceptionType.receiveTimeout) {
+      return 'Request timed out. Please check your internet and try again.';
+    }
+
+    if (error.type == DioExceptionType.connectionError) {
+      return 'Cannot reach the server now. Please try again later.';
+    }
+
+    final statusCode = error.response?.statusCode ?? 0;
+    if (statusCode >= 500) {
+      return 'Server is temporarily unavailable. Please try again later.';
+    }
+
+    if (serverMessage != null && serverMessage.trim().isNotEmpty) {
+      if (_looksLikeStackTrace(serverMessage)) {
+        return 'Server is temporarily unavailable. Please try again later.';
+      }
+      return serverMessage;
+    }
+
+    return error.message ?? 'Unexpected network error.';
+  }
+
+  bool _looksLikeStackTrace(String message) {
+    final normalized = message.toLowerCase();
+    return normalized.contains('exception') ||
+        normalized.contains('stack trace') ||
+        normalized.contains('microsoft.data.sqlclient') ||
+        normalized.contains('named pipes provider') ||
+        normalized.contains(' at ') ||
+        normalized.contains('system.');
   }
 
   String? _extractMessage(dynamic data) {

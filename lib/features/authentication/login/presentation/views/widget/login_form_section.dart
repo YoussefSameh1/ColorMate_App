@@ -21,6 +21,7 @@ class LoginFormSection extends StatelessWidget {
     required this.onRememberMeChanged,
     this.errorMessage,
     this.onSubmit,
+    this.onGooglePressed,
   });
 
   final GlobalKey<FormState> formKey;
@@ -32,6 +33,7 @@ class LoginFormSection extends StatelessWidget {
   final ValueChanged<bool> onRememberMeChanged;
   final String? errorMessage;
   final VoidCallback? onSubmit;
+  final VoidCallback? onGooglePressed;
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +125,11 @@ class LoginFormSection extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 20),
-          const SocialAuthButtons(iconSize: 44, spacing: 16),
+          SocialAuthButtons(
+            iconSize: 44,
+            spacing: 16,
+            onGooglePressed: onGooglePressed,
+          ),
         ],
       ),
     );

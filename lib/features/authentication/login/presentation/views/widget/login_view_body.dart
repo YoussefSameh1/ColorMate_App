@@ -1,8 +1,11 @@
 import 'package:colormate_app/core/theme/app_colors.dart';
+import 'package:colormate_app/core/routing/routes.dart';
+import 'package:colormate_app/core/storage/simple_auth_storage.dart';
 
 import 'package:colormate_app/features/authentication/login/presentation/views/widget/login_form_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:colormate_app/features/authentication/login/view_model/login_cubit.dart';
 import 'package:colormate_app/features/authentication/login/view_model/login_state.dart';
 
@@ -22,6 +25,24 @@ class _LoginViewBodyState extends State<LoginViewBody> {
   bool isRememberMe = true;
 
   @override
+  void initState() {
+    super.initState();
+    _autoLoginIfSavedCredentialsExist();
+  }
+
+  Future<void> _autoLoginIfSavedCredentialsExist() async {
+    final storage = SimpleAuthStorage();
+    await storage.init();
+
+    if (!mounted) return;
+
+    final hasCredentials = await storage.hasCredentials();
+    if (hasCredentials) {
+      context.read<LoginCubit>().autoLogin();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<LoginCubit, LoginState>(
       listener: (context, state) {
@@ -29,7 +50,7 @@ class _LoginViewBodyState extends State<LoginViewBody> {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text(state.successMessage!)));
-          // context.go(Routes.homeView);
+          context.go(Routes.loginSuccessTestView);
         }
 
         if (state.errorMessage != null) {
@@ -84,6 +105,10 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                         password: passwordController.text,
                         remmberMe: isRememberMe,
                       );
+                    },
+                    onGooglePressed: () {
+                      if (state.isLoading) return;
+                      context.read<LoginCubit>().loginWithGoogle();
                     },
                   ),
                 ],
