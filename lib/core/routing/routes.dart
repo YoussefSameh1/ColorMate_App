@@ -17,6 +17,7 @@ class Routes {
   static const String loginView = '/login_view';
   static const String signupView = '/signup_View';
   static const String verifyEmailView = '/verify_email_view';
+  static const String loginSuccessTestView = '/login_success_test_view';
   static const String testIntroView = '/test_intro_view';
   static const String testView = '/test_view';
   static const String testResultView = '/test_result_view';

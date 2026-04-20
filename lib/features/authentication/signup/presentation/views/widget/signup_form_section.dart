@@ -1,33 +1,39 @@
 import 'package:colormate_app/core/model/text_field_model/text_field_model.dart';
+import 'package:colormate_app/core/routing/routes.dart';
 import 'package:colormate_app/core/theme/app_colors.dart';
 import 'package:colormate_app/core/theme/text_style.dart';
+import 'package:colormate_app/core/validation/validation.dart';
 import 'package:colormate_app/core/widget/buttons/primary_shadow_button.dart';
 import 'package:colormate_app/core/widget/buttons/social_auth_buttons.dart';
 import 'package:colormate_app/core/widget/custom_text_form_field.dart';
-import 'package:colormate_app/core/validation/validation.dart';
 import 'package:flutter/material.dart';
-import 'package:colormate_app/core/routing/routes.dart';
 import 'package:go_router/go_router.dart';
 
 class SignupFormSection extends StatelessWidget {
   const SignupFormSection({
     super.key,
     required this.formKey,
+    required this.firstNameController,
+    required this.lastNameController,
     required this.emailController,
     required this.usernameController,
     required this.passwordController,
     required this.confirmPasswordController,
     required this.isPasswordObscured,
+    required this.isLoading,
     this.errorMessage,
     this.onSubmit,
   });
 
   final GlobalKey<FormState> formKey;
+  final TextEditingController firstNameController;
+  final TextEditingController lastNameController;
   final TextEditingController emailController;
   final TextEditingController usernameController;
   final TextEditingController passwordController;
   final TextEditingController confirmPasswordController;
   final bool isPasswordObscured;
+  final bool isLoading;
   final String? errorMessage;
   final VoidCallback? onSubmit;
 
@@ -40,11 +46,37 @@ class SignupFormSection extends StatelessWidget {
         children: [
           CustomTextFormField(
             textFieldModel: TextFieldModel(
+              controller: firstNameController,
+              keyboardType: TextInputType.name,
+              hintText: 'Enter your first name',
+              validator: (value) =>
+                  Validation.validateEmptyText('First name', value),
+              labelText: 'First Name',
+              prefixIcon: Icon(Icons.person_outline, color: AppColors.primary),
+              icon: Icons.person,
+            ),
+          ),
+          const SizedBox(height: 20),
+          CustomTextFormField(
+            textFieldModel: TextFieldModel(
+              controller: lastNameController,
+              keyboardType: TextInputType.name,
+              hintText: 'Enter your last name',
+              validator: (value) =>
+                  Validation.validateEmptyText('Last name', value),
+              labelText: 'Last Name',
+              prefixIcon: Icon(Icons.person_outline, color: AppColors.primary),
+              icon: Icons.person,
+            ),
+          ),
+          const SizedBox(height: 20),
+          CustomTextFormField(
+            textFieldModel: TextFieldModel(
               controller: usernameController,
               keyboardType: TextInputType.name,
-              hintText: 'Enter your name',
+              hintText: 'Enter your username',
               validator: Validation.validateUserName,
-              labelText: 'Name',
+              labelText: 'Username',
               prefixIcon: Icon(Icons.person, color: AppColors.primary),
               icon: Icons.person,
             ),
@@ -107,6 +139,7 @@ class SignupFormSection extends StatelessWidget {
             text: 'Sign Up',
             onPressed: onSubmit ?? () {},
             height: 50,
+            isLoading: isLoading,
           ),
           const SizedBox(height: 20),
           Row(

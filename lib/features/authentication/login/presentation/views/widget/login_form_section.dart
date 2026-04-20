@@ -16,16 +16,24 @@ class LoginFormSection extends StatelessWidget {
     required this.emailController,
     required this.passwordController,
     required this.isPasswordObscured,
+    required this.isRememberMe,
+    required this.isLoading,
+    required this.onRememberMeChanged,
     this.errorMessage,
     this.onSubmit,
+    this.onGooglePressed,
   });
 
   final GlobalKey<FormState> formKey;
   final TextEditingController emailController;
   final TextEditingController passwordController;
   final bool isPasswordObscured;
+  final bool isRememberMe;
+  final bool isLoading;
+  final ValueChanged<bool> onRememberMeChanged;
   final String? errorMessage;
   final VoidCallback? onSubmit;
+  final VoidCallback? onGooglePressed;
 
   @override
   Widget build(BuildContext context) {
@@ -37,11 +45,12 @@ class LoginFormSection extends StatelessWidget {
           CustomTextFormField(
             textFieldModel: TextFieldModel(
               controller: emailController,
-              keyboardType: TextInputType.emailAddress,
-              hintText: 'Enter your email',
-              prefixIcon: const Icon(Icons.email, color: AppColors.primary),
-              validator: Validation.emailValidation,
-              labelText: 'Email Address',
+              keyboardType: TextInputType.text,
+              hintText: 'Enter your email or username',
+              prefixIcon: const Icon(Icons.person, color: AppColors.primary),
+              validator: (value) =>
+                  Validation.validateEmptyText('Email or username', value),
+              labelText: 'Email or Username',
               icon: Icons.email,
             ),
           ),
@@ -51,19 +60,34 @@ class LoginFormSection extends StatelessWidget {
               controller: passwordController,
               keyboardType: TextInputType.visiblePassword,
               hintText: 'Enter your password',
-              validator: Validation.validatePassword,
+              validator: (value) =>
+                  Validation.validateEmptyText('Password', value),
               prefixIcon: const Icon(Icons.lock, color: AppColors.primary),
               labelText: 'Password',
               icon: Icons.lock,
               obscureText: isPasswordObscured,
             ),
           ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Checkbox(
+                value: isRememberMe,
+                onChanged: (value) {
+                  if (value != null) {
+                    onRememberMeChanged(value);
+                  }
+                },
+              ),
+              const Text('Remember me'),
+            ],
+          ),
           const SizedBox(height: 20),
           if (errorMessage != null)
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppColors.error.withOpacity(0.1),
+                color: AppColors.error.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: AppColors.error, width: 1),
               ),
@@ -77,6 +101,7 @@ class LoginFormSection extends StatelessWidget {
             text: 'Login',
             onPressed: onSubmit ?? () {},
             height: 50,
+            isLoading: isLoading,
           ),
           const SizedBox(height: 20),
           Row(
@@ -100,7 +125,11 @@ class LoginFormSection extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 20),
-          const SocialAuthButtons(iconSize: 44, spacing: 16),
+          SocialAuthButtons(
+            iconSize: 44,
+            spacing: 16,
+            onGooglePressed: onGooglePressed,
+          ),
         ],
       ),
     );

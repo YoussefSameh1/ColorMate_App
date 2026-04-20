@@ -44,3 +44,4 @@ class ColorMateApp extends StatelessWidget {
     );
   }
 }
+

@@ -1,8 +1,6 @@
 import 'package:colormate_app/core/routing/routes.dart';
 import 'package:colormate_app/core/utils/main_layout.dart';
 import 'package:colormate_app/features/authentication/login/presentation/views/login_view.dart';
-import 'package:colormate_app/features/authentication/signup/presentation/view/signup_View.dart';
-import 'package:colormate_app/features/authentication/verify_email/verify_email_view.dart';
 import 'package:colormate_app/features/games/color_collector_game/presentation/views/color_collector_game_view.dart';
 import 'package:colormate_app/features/games/color_the_picture_game/presentation/views/color_the_picture_game_view.dart';
 import 'package:colormate_app/features/games/find_the_object_game/presentation/views/find_the_object_game.dart';
@@ -35,13 +33,18 @@ import 'package:colormate_app/features/test/presentation/views/test_intro_view.d
 import 'package:colormate_app/features/test/presentation/views/test_result_view.dart';
 import 'package:colormate_app/features/test/presentation/views/test_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:colormate_app/features/authentication/login/presentation/views/login_success_test_view.dart';
+
+import 'package:colormate_app/features/authentication/signup/presentation/views/signup_view.dart';
+import 'package:colormate_app/features/authentication/verify_email/presentation/views/verify_email_view.dart';
+
 import 'package:go_router/go_router.dart';
 import '../utils/constants.dart';
 import 'animation_route.dart';
 
 abstract class AppRouter {
   static final router = GoRouter(
-    initialLocation: Routes.splashView,
+    initialLocation: Routes.loginView,
     routes: [
       GoRoute(
         path: Routes.splashView,
@@ -82,6 +85,7 @@ abstract class AppRouter {
       ),
       GoRoute(
         path: Routes.signupView,
+
         pageBuilder:
             (context, state) => slideTransitionPage(
               child: const SignupView(),
@@ -99,8 +103,19 @@ abstract class AppRouter {
       GoRoute(
         path: Routes.verifyEmailView,
         pageBuilder:
-            (context, state) =>
-                slideTransitionPage(child: const VerifyEmailView()),
+            (context, state) => slideTransitionPage(
+              child: VerifyEmailView(
+                email: state.uri.queryParameters['email'] ?? '',
+              ),
+            ),
+      ),
+      GoRoute(
+        path: Routes.loginSuccessTestView,
+        pageBuilder:
+            (context, state) => slideTransitionPage(
+              child: const LoginSuccessTestView(),
+              key: state.pageKey,
+            ),
       ),
       ShellRoute(
         builder: (context, state, child) {
