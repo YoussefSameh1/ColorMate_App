@@ -12,6 +12,13 @@ class AuthApiException implements Exception {
   String toString() => message;
 }
 
+class LoginResponse {
+  final String token;
+  final String message;
+
+  LoginResponse({required this.token, required this.message});
+}
+
 class AuthApiService {
   AuthApiService({Dio? dio})
     : _dio =
@@ -36,24 +43,50 @@ class AuthApiService {
     });
   }
 
-  Future<String> login(LoginRequestModel request) async {
-    return _runRequest(() async {
+  Future<LoginResponse> login(LoginRequestModel request) async {
+    return _runLoginRequest(() async {
       final response = await _dio.post(
         '/api/Users/Login',
         data: request.toJson(),
       );
-      return _extractMessage(response.data) ?? 'Login successful.';
+      final token =
+          _extractToken(response.data) ??
+          _extractTokenFromHeaders(response.headers) ??
+          '';
+      final message = _extractMessage(response.data) ?? 'Login successful.';
+      return LoginResponse(token: token, message: message);
     });
   }
 
-  Future<String> loginWithGoogle({required String idToken}) async {
-    return _runRequest(() async {
+  Future<LoginResponse> loginWithGoogle({required String idToken}) async {
+    return _runLoginRequest(() async {
       final response = await _dio.post(
         '/api/Users/LoginWithGoogle',
         data: {'idToken': idToken},
       );
-      return _extractMessage(response.data) ?? 'Google login successful.';
+      final token =
+          _extractToken(response.data) ??
+          _extractTokenFromHeaders(response.headers) ??
+          '';
+      final message =
+          _extractMessage(response.data) ?? 'Google login successful.';
+      return LoginResponse(token: token, message: message);
     });
+  }
+
+  Future<LoginResponse> _runLoginRequest(
+    Future<LoginResponse> Function() request,
+  ) async {
+    try {
+      return await request();
+    } on DioException catch (error) {
+      final serverMessage = _extractMessage(error.response?.data);
+      throw AuthApiException(
+        _toUserFriendlyMessage(serverMessage: serverMessage, error: error),
+      );
+    } catch (_) {
+      throw const AuthApiException('Unexpected error happened.');
+    }
   }
 
   Future<String> verifyEmailOtp({
@@ -157,6 +190,52 @@ class AuthApiService {
       }
     }
 
+    return null;
+  }
+
+  String? _extractToken(dynamic data) {
+    if (data == null) return null;
+
+    if (data is Map) {
+      final map = data.map((key, value) => MapEntry(key.toString(), value));
+      final keys = [
+        'token',
+        'Token',
+        'accessToken',
+        'access_token',
+        'accesstoken',
+        'jwt',
+        'jwtToken',
+        'Authorization',
+        'authorization',
+      ];
+
+      for (final key in keys) {
+        final value = map[key];
+        if (value is String && value.trim().isNotEmpty) {
+          return value;
+        }
+      }
+
+      for (final entry in map.entries) {
+        if (entry.value is Map) {
+          final nestedToken = _extractToken(entry.value);
+          if (nestedToken != null) return nestedToken;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  String? _extractTokenFromHeaders(Headers headers) {
+    final headerKeys = ['authorization', 'Authorization', 'x-access-token'];
+    for (final key in headerKeys) {
+      final value = headers.value(key);
+      if (value != null && value.trim().isNotEmpty) {
+        return value;
+      }
+    }
     return null;
   }
 }

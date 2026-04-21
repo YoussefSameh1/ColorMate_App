@@ -13,9 +13,8 @@ class LoginCubit extends Cubit<LoginState> {
           googleSignIn ??
           GoogleSignIn(
             scopes: const ['email', 'profile'],
-            serverClientId: _googleServerClientId.isEmpty
-                ? null
-                : _googleServerClientId,
+            serverClientId:
+                _googleServerClientId.isEmpty ? null : _googleServerClientId,
           ),
       super(LoginState.initial());
 
@@ -46,13 +45,26 @@ class LoginCubit extends Cubit<LoginState> {
     );
 
     try {
-      final successMessage = await _authApiService.login(request);
+      final response = await _authApiService.login(request);
+      final preview =
+          response.token.isEmpty
+              ? 'EMPTY'
+              : response.token.substring(
+                0,
+                response.token.length < 20 ? response.token.length : 20,
+              );
 
-     
-      await SimpleAuthStorage().saveCredentials(userNameOrEmail, password);
+      print('📝 Saving credentials with token: $preview...');
+      await SimpleAuthStorage().saveCredentials(
+        userNameOrEmail,
+        password,
+        token: response.token,
+      );
+      print('✓ Credentials saved');
 
-      emit(state.copyWith(isLoading: false, successMessage: successMessage));
+      emit(state.copyWith(isLoading: false, successMessage: response.message));
     } on AuthApiException catch (error) {
+      print('✗ Login error: ${error.message}');
       emit(state.copyWith(isLoading: false, errorMessage: error.message));
     } on PlatformException catch (error) {
       emit(
@@ -62,6 +74,7 @@ class LoginCubit extends Cubit<LoginState> {
         ),
       );
     } catch (error) {
+      print('✗ Unexpected error: $error');
       emit(
         state.copyWith(
           isLoading: false,
@@ -107,13 +120,25 @@ class LoginCubit extends Cubit<LoginState> {
         return;
       }
 
-      final successMessage = await _authApiService.loginWithGoogle(
-        idToken: idToken,
-      );
-      emit(state.copyWith(isLoading: false, successMessage: successMessage));
+      final response = await _authApiService.loginWithGoogle(idToken: idToken);
+      final preview =
+          response.token.isEmpty
+              ? 'EMPTY'
+              : response.token.substring(
+                0,
+                response.token.length < 20 ? response.token.length : 20,
+              );
+
+      print('📝 Saving credentials from Google with token: $preview...');
+      await SimpleAuthStorage().saveCredentials('', '', token: response.token);
+      print('✓ Google credentials saved');
+
+      emit(state.copyWith(isLoading: false, successMessage: response.message));
     } on AuthApiException catch (error) {
+      print('✗ Google login error: ${error.message}');
       emit(state.copyWith(isLoading: false, errorMessage: error.message));
     } catch (error) {
+      print('✗ Google login unexpected error: $error');
       emit(
         state.copyWith(
           isLoading: false,
@@ -160,6 +185,18 @@ class LoginCubit extends Cubit<LoginState> {
       await storage.init();
       final email = storage.getSavedEmail();
       final password = storage.getSavedPassword();
+      final token = storage.getSavedToken();
+
+      if (token != null && token.isNotEmpty) {
+        // إذا كان عندنا token محفوظ، نعتبر أن المستخدم مسجل
+        emit(
+          state.copyWith(
+            isLoading: false,
+            successMessage: 'Auto-login successful.',
+          ),
+        );
+        return;
+      }
 
       if (email == null || password == null) {
         emit(
@@ -172,7 +209,7 @@ class LoginCubit extends Cubit<LoginState> {
       }
 
       // دخول بالبيانات المحفوظة
-      final successMessage = await _authApiService.login(
+      final response = await _authApiService.login(
         LoginRequestModel(
           userNameOrEmail: email,
           password: password,
@@ -180,7 +217,9 @@ class LoginCubit extends Cubit<LoginState> {
         ),
       );
 
-      emit(state.copyWith(isLoading: false, successMessage: successMessage));
+      await storage.saveCredentials(email, password, token: response.token);
+
+      emit(state.copyWith(isLoading: false, successMessage: response.message));
     } on AuthApiException catch (error) {
       emit(state.copyWith(isLoading: false, errorMessage: error.message));
     } catch (error) {
@@ -192,7 +231,4 @@ class LoginCubit extends Cubit<LoginState> {
       );
     }
   }
-
-
-  
 }

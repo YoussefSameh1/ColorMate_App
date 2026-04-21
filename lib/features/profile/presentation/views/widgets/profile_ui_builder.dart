@@ -14,6 +14,7 @@ import 'package:go_router/go_router.dart';
 class ProfileUIBuilder extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final TextEditingController emailController;
+  final TextEditingController phoneController;
   final TextEditingController passwordController;
   final TextEditingController usernameController;
   final VoidCallback onSavePressed;
@@ -24,6 +25,7 @@ class ProfileUIBuilder extends StatelessWidget {
     super.key,
     required this.formKey,
     required this.emailController,
+    required this.phoneController,
     required this.passwordController,
     required this.usernameController,
     required this.onSavePressed,
@@ -71,6 +73,7 @@ class ProfileUIBuilder extends StatelessWidget {
                     FormEditProfile(
                       formKey: formKey,
                       emailController: emailController,
+                      phoneController: phoneController,
                       passwordController: passwordController,
                       isPasswordObscured: isPasswordObscured,
                       usernameController: usernameController,

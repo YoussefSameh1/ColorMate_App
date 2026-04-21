@@ -3,6 +3,8 @@ import 'package:colormate_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class ProfileImagePicker extends StatelessWidget {
+  static const String _baseUrl = 'http://colormate.runasp.net';
+
   final String? imagePath;
   final String? imageUrl;
   final bool isLoading;
@@ -18,7 +20,13 @@ class ProfileImagePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageProvider = _getImageProvider();
+    final localImageProvider = _getLocalImageProvider();
+    final resolvedImageUrl =
+        (imagePath == null || imagePath!.isEmpty) &&
+                imageUrl != null &&
+                imageUrl!.isNotEmpty
+            ? _resolveImageUrl(imageUrl!)
+            : null;
 
     return Stack(
       children: [
@@ -39,7 +47,7 @@ class ProfileImagePicker extends StatelessWidget {
             child: CircleAvatar(
               radius: 60,
               backgroundColor: AppColors.primary.withOpacity(0.1),
-              backgroundImage: imageProvider,
+              backgroundImage: localImageProvider,
               child:
                   isLoading
                       ? Container(
@@ -54,9 +62,21 @@ class ProfileImagePicker extends StatelessWidget {
                           ),
                         ),
                       )
-                      : imageProvider == null
-                      ? const Icon(Icons.person, size: 60)
-                      : null,
+                      : localImageProvider != null
+                      ? null
+                      : resolvedImageUrl != null
+                      ? ClipOval(
+                        child: Image.network(
+                          resolvedImageUrl,
+                          width: 120,
+                          height: 120,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Icon(Icons.person, size: 60);
+                          },
+                        ),
+                      )
+                      : const Icon(Icons.person, size: 60),
             ),
           ),
         ),
@@ -121,13 +141,24 @@ class ProfileImagePicker extends StatelessWidget {
     );
   }
 
-  ImageProvider? _getImageProvider() {
+  ImageProvider? _getLocalImageProvider() {
     if (imagePath != null && imagePath!.isNotEmpty) {
       return FileImage(File(imagePath!));
-    } else if (imageUrl != null && imageUrl!.isNotEmpty) {
-      return NetworkImage(imageUrl!);
-    } else {
-      return null;
     }
+
+    return null;
+  }
+
+  String _resolveImageUrl(String rawUrl) {
+    final trimmed = rawUrl.trim();
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+      return trimmed;
+    }
+
+    if (trimmed.startsWith('/')) {
+      return '$_baseUrl$trimmed';
+    }
+
+    return '$_baseUrl/$trimmed';
   }
 }

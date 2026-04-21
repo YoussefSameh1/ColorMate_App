@@ -16,16 +16,24 @@ class ProfileCubit extends Cubit<ProfileState> {
     fetchUserProfile();
   }
 
+  void _safeEmit(ProfileState state) {
+    if (!isClosed) emit(state);
+  }
+
   String? get selectedImagePath => _selectedImagePath;
 
+  void syncProfile(UserProfileModel profile) {
+    _safeEmit(ProfileLoaded(userProfile: profile));
+  }
+
   Future<void> fetchUserProfile() async {
-    emit(const ProfileLoading());
+    _safeEmit(const ProfileLoading());
 
     try {
       final userProfile = await _repository.getUserProfile();
-      emit(ProfileLoaded(userProfile: userProfile));
+      _safeEmit(ProfileLoaded(userProfile: userProfile));
     } catch (e) {
-      emit(ProfileError(message: e.toString()));
+      _safeEmit(ProfileError(message: e.toString()));
     }
   }
 
@@ -39,13 +47,13 @@ class ProfileCubit extends Cubit<ProfileState> {
         currentProfile = currentState.currentProfile;
       }
 
-      emit(const ProfileImagePicking());
+      _safeEmit(const ProfileImagePicking());
       final String? imagePath =
           await _imagePickerService.pickImageFromGallery();
 
       if (imagePath != null && currentProfile != null) {
         _selectedImagePath = imagePath;
-        emit(
+        _safeEmit(
           ProfileImageSelected(
             imagePath: imagePath,
             currentProfile: currentProfile,
@@ -55,7 +63,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         await fetchUserProfile();
       }
     } catch (e) {
-      emit(ProfileError(message: 'Failed to pick image: ${e.toString()}'));
+      _safeEmit(ProfileError(message: 'Failed to pick image: ${e.toString()}'));
       await fetchUserProfile();
     }
   }
@@ -70,12 +78,12 @@ class ProfileCubit extends Cubit<ProfileState> {
         currentProfile = currentState.currentProfile;
       }
 
-      emit(const ProfileImagePicking());
+      _safeEmit(const ProfileImagePicking());
       final String? imagePath = await _imagePickerService.pickImageFromCamera();
 
       if (imagePath != null && currentProfile != null) {
         _selectedImagePath = imagePath;
-        emit(
+        _safeEmit(
           ProfileImageSelected(
             imagePath: imagePath,
             currentProfile: currentProfile,
@@ -85,18 +93,19 @@ class ProfileCubit extends Cubit<ProfileState> {
         await fetchUserProfile();
       }
     } catch (e) {
-      emit(ProfileError(message: 'Failed to take photo: ${e.toString()}'));
+      _safeEmit(ProfileError(message: 'Failed to take photo: ${e.toString()}'));
       await fetchUserProfile();
     }
   }
 
   Future<void> updateUserProfile({
-    required String name,
+    required String fullName,
     required String email,
+    required String phoneNumber,
     String? password,
   }) async {
     try {
-      emit(const ProfileLoading());
+      _safeEmit(const ProfileLoading());
 
       UserProfileModel? currentProfile;
       final previousState = state;
@@ -118,20 +127,36 @@ class ProfileCubit extends Cubit<ProfileState> {
               ? _selectedImagePath
               : currentProfile.profileImage;
 
+      if (_selectedImagePath != null && _selectedImagePath!.isNotEmpty) {
+        final uploadedImageUrl = await _repository.updateProfilePicture(
+          _selectedImagePath!,
+        );
+        imageUrl = uploadedImageUrl ?? imageUrl;
+      }
+
+      final nameParts = fullName.trim().split(RegExp(r'\s+'));
+      final firstName = nameParts.isNotEmpty ? nameParts.first : '';
+      final lastName =
+          nameParts.length > 1
+              ? nameParts.sublist(1).join(' ')
+              : currentProfile.lastName;
+
       final updatedProfile = currentProfile.copyWith(
-        name: name,
+        firstName: firstName,
+        lastName: lastName,
+        name: fullName,
         email: email,
+        phoneNumber: phoneNumber,
         profileImage: imageUrl,
       );
 
       await _repository.updateUserProfile(updatedProfile);
       _selectedImagePath = null;
-      emit(ProfileUpdateSuccess(userProfile: updatedProfile));
-
-      await Future.delayed(const Duration(milliseconds: 500));
-      emit(ProfileLoaded(userProfile: updatedProfile));
+      _safeEmit(ProfileUpdateSuccess(userProfile: updatedProfile));
     } catch (e) {
-      emit(ProfileError(message: 'Failed to update profile: ${e.toString()}'));
+      _safeEmit(
+        ProfileError(message: 'Failed to update profile: ${e.toString()}'),
+      );
 
       await fetchUserProfile();
     }
