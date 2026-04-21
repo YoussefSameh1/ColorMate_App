@@ -33,8 +33,6 @@ import 'package:colormate_app/features/test/presentation/views/test_intro_view.d
 import 'package:colormate_app/features/test/presentation/views/test_result_view.dart';
 import 'package:colormate_app/features/test/presentation/views/test_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:colormate_app/features/authentication/login/presentation/views/login_success_test_view.dart';
-
 import 'package:colormate_app/features/authentication/signup/presentation/views/signup_view.dart';
 import 'package:colormate_app/features/authentication/verify_email/presentation/views/verify_email_view.dart';
 
@@ -109,14 +107,7 @@ abstract class AppRouter {
               ),
             ),
       ),
-      GoRoute(
-        path: Routes.loginSuccessTestView,
-        pageBuilder:
-            (context, state) => slideTransitionPage(
-              child: const LoginSuccessTestView(),
-              key: state.pageKey,
-            ),
-      ),
+    
       ShellRoute(
         builder: (context, state, child) {
           return MainLayout(child: child);

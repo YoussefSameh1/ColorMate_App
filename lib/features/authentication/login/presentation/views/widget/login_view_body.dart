@@ -1,6 +1,6 @@
 import 'package:colormate_app/core/routing/routes.dart';
 import 'package:colormate_app/core/theme/app_colors.dart';
-import 'package:colormate_app/core/routing/routes.dart';
+
 import 'package:colormate_app/core/storage/simple_auth_storage.dart';
 
 import 'package:colormate_app/features/authentication/login/presentation/views/widget/login_form_section.dart';
@@ -51,7 +51,7 @@ class _LoginViewBodyState extends State<LoginViewBody> {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text(state.successMessage!)));
-          context.go(Routes.loginSuccessTestView);
+          context.go(Routes.homeView);
         }
 
         if (state.errorMessage != null) {
