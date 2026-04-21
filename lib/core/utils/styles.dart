@@ -10,15 +10,41 @@ abstract class Styles {
     decoration: TextDecoration.underline,
     decorationColor: kAccentColor,
   );
-  static TextStyle onboardingTitleStyle = TextStyle(
+  static TextStyle titleStyle = TextStyle(
     fontSize: 32,
     color: kPrimaryColor,
     fontWeight: FontWeight.bold,
     fontFamily: kPoppinsFont,
   );
-  static TextStyle onboardingDescriptionStyle = TextStyle(
+  static TextStyle descriptionStyle = TextStyle(
     fontSize: 18,
     color: kSubTitleColor,
+    fontWeight: FontWeight.w400,
+    fontFamily: kPoppinsFont,
+  );
+  static TextStyle buttonTextStyle = TextStyle(
+    fontSize: 24,
+    color: Colors.white,
+    fontWeight: FontWeight.bold,
+    fontFamily: kPoppinsFont,
+  );
+  static TextStyle testQuestionTextStyle = TextStyle(
+    fontSize: 18,
+    color: kPrimaryColor,
+    fontWeight: FontWeight.w600,
+    fontFamily: kPoppinsFont,
+  );
+  static TextStyle textButtonTextStyle = TextStyle(
+    fontSize: 14,
+    color: kPrimaryColor,
+    fontWeight: FontWeight.bold,
+    fontFamily: kPoppinsFont,
+    decoration: TextDecoration.underline,
+    decorationColor: kPrimaryColor,
+  );
+  static TextStyle testResultTextStyle = TextStyle(
+    fontSize: 14,
+    color: kPrimaryColor,
     fontWeight: FontWeight.w400,
     fontFamily: kPoppinsFont,
   );

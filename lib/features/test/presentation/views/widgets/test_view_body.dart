@@ -1,0 +1,123 @@
+import 'package:colormate_app/core/routing/routes.dart';
+import 'package:colormate_app/core/utils/styles.dart';
+import 'package:colormate_app/core/widget/custom_app_bar.dart';
+import 'package:colormate_app/features/test/presentation/cubit/test_cubit.dart';
+import 'package:colormate_app/features/test/presentation/views/widgets/answer_option_button.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+
+class TestViewBody extends StatelessWidget {
+  const TestViewBody({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<TestCubit, TestState>(
+      listener: (context, state) {
+        if (state is TestFinished) {
+          GoRouter.of(context).push(Routes.testResultView);
+        }
+      },
+      builder: (context, state) {
+        if (state is TestQuestionLoaded) {
+          final question = state.questions[state.currentIndex];
+          return Column(
+            children: [
+              const CustomAppBar(title: 'Color Vision Test'),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 16.h),
+                      Text(
+                        'What number do you see in the circle?',
+                        style: Styles.testQuestionTextStyle,
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 8.h),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Question ${question.questionNumber} of ${state.questions.length}',
+                          style: Styles.descriptionStyle.copyWith(
+                            fontSize: 14.sp,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 16.h),
+                      Expanded(
+                        flex: 6,
+                        child: AspectRatio(
+                          aspectRatio: 1,
+                          child: Image.asset(
+                            question.image,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 5,
+                        child: Column(
+                          children: [
+                            GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    childAspectRatio: 3.5,
+                                    crossAxisSpacing: 16.w,
+                                    mainAxisSpacing: 12.h,
+                                  ),
+                              itemCount: 4,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  onTap:
+                                      () =>
+                                          context
+                                              .read<TestCubit>()
+                                              .selectAnswer(),
+                                  child: AnswerOptionButton(
+                                    option: '${question.options[index]}',
+                                  ),
+                                );
+                              },
+                            ),
+                            SizedBox(height: 12.h),
+                            GestureDetector(
+                              onTap:
+                                  () =>
+                                      context.read<TestCubit>().selectAnswer(),
+                              child: const AnswerOptionButton(
+                                option: 'None of the above',
+                              ),
+                            ),
+                            SizedBox(height: 4.h),
+                            TextButton(
+                              onPressed:
+                                  () =>
+                                      context.read<TestCubit>().selectAnswer(),
+                              child: Text(
+                                'Didn\'t see it!',
+                                style: Styles.textButtonTextStyle,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        }
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
+  }
+}

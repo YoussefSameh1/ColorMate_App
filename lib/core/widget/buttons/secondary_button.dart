@@ -7,12 +7,14 @@ class SecondaryButton extends StatelessWidget {
   const SecondaryButton({
     super.key,
     required this.text,
+    this.icon,
     this.onPressed,
     this.width = 164,
     this.height = 48,
   });
 
   final String text;
+  final IconData? icon;
   final VoidCallback? onPressed;
   final double width;
   final double height;
@@ -22,9 +24,8 @@ class SecondaryButton extends StatelessWidget {
     final bool isEnabled = onPressed != null;
 
     // Styles based on State
-    final borderColor = isEnabled
-        ? AppColors.primary
-        : AppColors.buttonDisabled;
+    final borderColor =
+        isEnabled ? AppColors.primary : AppColors.buttonDisabled;
 
     final textColor = isEnabled ? AppColors.primary : AppColors.greyDark;
 
@@ -50,11 +51,18 @@ class SecondaryButton extends StatelessWidget {
         child: InkWell(
           onTap: onPressed,
           borderRadius: BorderRadius.circular(20),
-          child: Center(
-            child: Text(
-              text,
-              style: AppTextStyles.medium16().copyWith(color: textColor),
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (icon != null) ...[
+                Icon(icon, color: textColor, size: 20),
+                const SizedBox(width: 8),
+              ],
+              Text(
+                text,
+                style: AppTextStyles.medium16().copyWith(color: textColor),
+              ),
+            ],
           ),
         ),
       ),

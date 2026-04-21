@@ -1,4 +1,5 @@
 import 'package:colormate_app/core/widget/loaders.dart';
+import 'package:colormate_app/core/widget/custom_app_bar.dart';
 import 'package:colormate_app/features/profile/presentation/cubit/cubit_change_password/change_password_cubit.dart';
 import 'package:colormate_app/features/profile/presentation/views/widgets/change_password_form.dart';
 import 'package:flutter/material.dart';
@@ -50,22 +51,27 @@ class _ChangePasswordBodyState extends State<ChangePasswordBody> {
         }
       },
       child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: BlocBuilder<ChangePasswordCubit, ChangePasswordState>(
-            builder: (context, state) {
-              final isSubmitting = state is ChangePasswordSubmitting;
+        child: Column(
+          children: [
+            CustomAppBar(title: 'Change Password'),
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: BlocBuilder<ChangePasswordCubit, ChangePasswordState>(
+                builder: (context, state) {
+                  final isSubmitting = state is ChangePasswordSubmitting;
 
-              return ChangePasswordForm(
-                formKey: _formKey,
-                oldPasswordController: _oldPasswordController,
-                newPasswordController: _newPasswordController,
-                confirmPasswordController: _confirmPasswordController,
-                isSubmitting: isSubmitting,
-                onSubmit: _submitChangePassword,
-              );
-            },
-          ),
+                  return ChangePasswordForm(
+                    formKey: _formKey,
+                    oldPasswordController: _oldPasswordController,
+                    newPasswordController: _newPasswordController,
+                    confirmPasswordController: _confirmPasswordController,
+                    isSubmitting: isSubmitting,
+                    onSubmit: _submitChangePassword,
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );

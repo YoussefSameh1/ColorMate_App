@@ -25,7 +25,7 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Center(child: Text('My profile'))),
+    
       body: BlocListener<ProfileCubit, ProfileState>(
         listener: (context, state) {
           if (state is ProfileError) {

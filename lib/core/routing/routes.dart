@@ -17,7 +17,25 @@ class Routes {
   static const String loginView = '/login_view';
   static const String signupView = '/signup_View';
   static const String verifyEmailView = '/verify_email_view';
+  static const String loginSuccessTestView = '/login_success_test_view';
+  static const String testIntroView = '/test_intro_view';
+  static const String testView = '/test_view';
+  static const String testResultView = '/test_result_view';
+  static const String fruitIntroView = '/fruit_intro_view';
+  static const String fruitResultView = '/fruit_result_view';
+  static const String matchingView = '/matching_view';
   static const String profileView = '/profile_view';
   static const String editProfileView = '/edit_profile_view';
   static const String changePasswordView = '/change_password_view';
+  static const String objectAndColorDetectionView =
+      '/object_and_color_detection_view';
+  static const String imageCorrectionView = '/image_correction_view';
+  static const String chatbotView = '/chatbot_view';
+  static const String gameSelectionView = '/game_selection_view';
+  static const String colorCollectorGameView = '/color_collector_game_view';
+  static const String memoryMatchGameView = '/memory_match_game_view';
+  static const String colorThePictureGameView = '/color_the_picture_game_view';
+  static const String sequenceGameView = '/sequence_game_view';
+  static const String findTheObjectGameView = '/find_the_object_game_view';
+  static const String homeView = '/home_view';
 }

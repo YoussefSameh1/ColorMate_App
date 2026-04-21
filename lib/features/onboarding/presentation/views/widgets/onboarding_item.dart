@@ -15,11 +15,11 @@ class OnboardingItem extends StatelessWidget {
         children: [
           Image.asset(model.image, height: 250.h, width: 250.w, fit: BoxFit.fill),
           SizedBox(height: 60.h),
-          Text(model.title, style: Styles.onboardingTitleStyle, textAlign: TextAlign.center),
+          Text(model.title, style: Styles.titleStyle, textAlign: TextAlign.center),
           SizedBox(height: 40.h),
           Text(
             model.description,
-            style: Styles.onboardingDescriptionStyle,
+            style: Styles.descriptionStyle,
             textAlign: TextAlign.center,
           ),
         ],
