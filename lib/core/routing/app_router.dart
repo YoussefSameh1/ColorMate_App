@@ -42,7 +42,7 @@ import 'animation_route.dart';
 
 abstract class AppRouter {
   static final router = GoRouter(
-    initialLocation: Routes.loginView,
+    initialLocation: Routes.splashView,
     routes: [
       GoRoute(
         path: Routes.splashView,
@@ -107,7 +107,7 @@ abstract class AppRouter {
               ),
             ),
       ),
-    
+
       ShellRoute(
         builder: (context, state, child) {
           return MainLayout(child: child);
@@ -118,6 +118,21 @@ abstract class AppRouter {
             pageBuilder:
                 (context, state) =>
                     slideTransitionPage(child: const HomeView()),
+          ),
+          GoRoute(
+            path: Routes.chatbotView,
+            pageBuilder:
+                (context, state) => slideTransitionPage(
+                  child: BlocProvider(
+                    create:
+                        (_) => ChatbotCubit(
+                          ChatbotRepositoryImpl(
+                            GeminiService(apiKey: kGeminiApiKey),
+                          ),
+                        ),
+                    child: const ChatbotView(),
+                  ),
+                ),
           ),
           GoRoute(
             path: Routes.profileView,
@@ -233,21 +248,6 @@ abstract class AppRouter {
         pageBuilder:
             (context, state) =>
                 slideTransitionPage(child: const FindTheObjectGameView()),
-      ),
-      GoRoute(
-        path: Routes.chatbotView,
-        pageBuilder:
-            (context, state) => slideTransitionPage(
-              child: BlocProvider(
-                create:
-                    (_) => ChatbotCubit(
-                      ChatbotRepositoryImpl(
-                        GeminiService(apiKey: kGeminiApiKey),
-                      ),
-                    ),
-                child: const ChatbotView(),
-              ),
-            ),
       ),
     ],
   );

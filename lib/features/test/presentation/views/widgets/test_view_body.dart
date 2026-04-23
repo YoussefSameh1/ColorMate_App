@@ -24,7 +24,7 @@ class TestViewBody extends StatelessWidget {
           final question = state.questions[state.currentIndex];
           return Column(
             children: [
-              const CustomAppBar(title: 'Color Vision Test'),
+              const CustomAppBar(title: 'Color Vision Test', isBackButtonVisible: false,),
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.w),

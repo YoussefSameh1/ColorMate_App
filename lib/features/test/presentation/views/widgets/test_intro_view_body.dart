@@ -1,3 +1,4 @@
+import 'package:colormate_app/core/routing/routes.dart';
 import 'package:colormate_app/core/utils/assets_data.dart';
 import 'package:colormate_app/core/utils/constants.dart';
 import 'package:colormate_app/core/utils/styles.dart';
@@ -5,6 +6,7 @@ import 'package:colormate_app/core/widget/custom_app_bar.dart';
 import 'package:colormate_app/features/test/presentation/views/widgets/start_test_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class TestIntroViewBody extends StatelessWidget {
   const TestIntroViewBody({super.key});
@@ -13,7 +15,10 @@ class TestIntroViewBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CustomAppBar(title: 'Test'),
+        CustomAppBar(
+          title: 'Test',
+          onBackPressed: () => context.go(Routes.homeView),
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
