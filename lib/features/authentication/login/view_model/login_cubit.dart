@@ -46,6 +46,10 @@ class LoginCubit extends Cubit<LoginState> {
 
     try {
       final response = await _authApiService.login(request);
+      if (!response.isAuthenticated || response.token.isEmpty) {
+        throw const AuthApiException('Login failed. Please try again.');
+      }
+
       final preview =
           response.token.isEmpty
               ? 'EMPTY'
@@ -55,10 +59,12 @@ class LoginCubit extends Cubit<LoginState> {
               );
 
       print('📝 Saving credentials with token: $preview...');
-      await SimpleAuthStorage().saveCredentials(
-        userNameOrEmail,
-        password,
+      await SimpleAuthStorage().saveSession(
+        email: userNameOrEmail,
         token: response.token,
+        refreshToken: response.refreshToken,
+        tokenExpiry: response.expiresOn,
+        refreshTokenExpiry: response.refreshTokenExpiration,
       );
       print('✓ Credentials saved');
 
@@ -121,6 +127,10 @@ class LoginCubit extends Cubit<LoginState> {
       }
 
       final response = await _authApiService.loginWithGoogle(idToken: idToken);
+      if (!response.isAuthenticated || response.token.isEmpty) {
+        throw const AuthApiException('Google login failed. Please try again.');
+      }
+
       final preview =
           response.token.isEmpty
               ? 'EMPTY'
@@ -130,7 +140,12 @@ class LoginCubit extends Cubit<LoginState> {
               );
 
       print('📝 Saving credentials from Google with token: $preview...');
-      await SimpleAuthStorage().saveCredentials('', '', token: response.token);
+      await SimpleAuthStorage().saveSession(
+        token: response.token,
+        refreshToken: response.refreshToken,
+        tokenExpiry: response.expiresOn,
+        refreshTokenExpiry: response.refreshTokenExpiration,
+      );
       print('✓ Google credentials saved');
 
       emit(state.copyWith(isLoading: false, successMessage: response.message));
@@ -170,7 +185,6 @@ class LoginCubit extends Cubit<LoginState> {
     return 'Google sign-in failed. Please try again.';
   }
 
-  /// الدخول التلقائي بالبيانات المحفوظة
   Future<void> autoLogin() async {
     emit(
       state.copyWith(
@@ -183,46 +197,73 @@ class LoginCubit extends Cubit<LoginState> {
     try {
       final storage = SimpleAuthStorage();
       await storage.init();
-      final email = storage.getSavedEmail();
-      final password = storage.getSavedPassword();
       final token = storage.getSavedToken();
 
       if (token != null && token.isNotEmpty) {
-        // إذا كان عندنا token محفوظ، نعتبر أن المستخدم مسجل
+        if (!storage.isTokenExpired()) {
+          emit(
+            state.copyWith(
+              isLoading: false,
+              successMessage: 'Auto-login successful.',
+            ),
+          );
+          return;
+        }
+
+        final refreshToken = storage.getSavedRefreshToken();
+        if (refreshToken != null && refreshToken.isNotEmpty) {
+          print(
+            '[AUTH][AUTO] Access token expired. Trying refresh. old=${_tokenPreview(token)}',
+          );
+
+          final refreshed = await _authApiService.refreshToken(
+            refreshToken: refreshToken,
+            accessToken: token,
+          );
+
+          if (refreshed.isAuthenticated && refreshed.token.isNotEmpty) {
+            print(
+              '[AUTH][AUTO] Refresh succeeded. new=${_tokenPreview(refreshed.token)}',
+            );
+
+            await storage.saveSession(
+              token: refreshed.token,
+              refreshToken: refreshed.refreshToken ?? refreshToken,
+              tokenExpiry: refreshed.expiresOn,
+              refreshTokenExpiry: refreshed.refreshTokenExpiration,
+            );
+
+            emit(
+              state.copyWith(
+                isLoading: false,
+                successMessage: 'Auto-login successful.',
+              ),
+            );
+            return;
+          }
+        }
+
+        await storage.clearCredentials();
         emit(
           state.copyWith(
             isLoading: false,
-            successMessage: 'Auto-login successful.',
+            errorMessage: 'Session expired. Please login again.',
           ),
         );
         return;
       }
 
-      if (email == null || password == null) {
-        emit(
-          state.copyWith(
-            isLoading: false,
-            errorMessage: 'No saved credentials found.',
-          ),
-        );
-        return;
-      }
-
-      // دخول بالبيانات المحفوظة
-      final response = await _authApiService.login(
-        LoginRequestModel(
-          userNameOrEmail: email,
-          password: password,
-          remmberMe: true,
+      emit(
+        state.copyWith(
+          isLoading: false,
+          errorMessage: 'No saved session found.',
         ),
       );
-
-      await storage.saveCredentials(email, password, token: response.token);
-
-      emit(state.copyWith(isLoading: false, successMessage: response.message));
     } on AuthApiException catch (error) {
+      await SimpleAuthStorage().clearCredentials();
       emit(state.copyWith(isLoading: false, errorMessage: error.message));
     } catch (error) {
+      await SimpleAuthStorage().clearCredentials();
       emit(
         state.copyWith(
           isLoading: false,
@@ -230,5 +271,18 @@ class LoginCubit extends Cubit<LoginState> {
         ),
       );
     }
+  }
+
+  String _tokenPreview(String? token) {
+    if (token == null || token.isEmpty) {
+      return 'EMPTY';
+    }
+
+    final normalized = token.replaceFirst(
+      RegExp(r'^Bearer\s+', caseSensitive: false),
+      '',
+    );
+    final previewLength = normalized.length < 20 ? normalized.length : 20;
+    return '${normalized.substring(0, previewLength)}...';
   }
 }

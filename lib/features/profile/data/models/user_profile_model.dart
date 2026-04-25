@@ -27,6 +27,7 @@ class UserProfileModel {
     final firstName = (json['firstName'] ?? '').toString();
     final lastName = (json['lastName'] ?? '').toString();
     final fullName = '$firstName $lastName'.trim();
+    final profileImage = _extractProfileImage(json);
 
     return UserProfileModel(
       id: (json['id'] ?? '').toString(),
@@ -35,11 +36,41 @@ class UserProfileModel {
       name: fullName.isNotEmpty ? fullName : (json['name'] ?? '').toString(),
       email: (json['email'] ?? '').toString(),
       phoneNumber: (json['phoneNumber'] ?? '').toString(),
-      profileImage: json['profilePictureUrl'] ?? json['profileImage'],
+      profileImage: profileImage,
       lastTestDate: json['lastTestDate'],
       colorblindnessType: json['colorblindnessType'],
       testDescription: json['testDescription'],
     );
+  }
+
+  static String? _extractProfileImage(Map<String, dynamic> json) {
+    const imageKeys = [
+      'profilePictureUrl',
+      'profileImage',
+      'imageUrl',
+      'pictureUrl',
+      'avatar',
+      'photoUrl',
+    ];
+
+    for (final key in imageKeys) {
+      final value = json[key];
+      if (value is String && value.trim().isNotEmpty) {
+        return value.trim();
+      }
+    }
+
+    final nestedData = json['data'];
+    if (nestedData is Map<String, dynamic>) {
+      for (final key in imageKeys) {
+        final value = nestedData[key];
+        if (value is String && value.trim().isNotEmpty) {
+          return value.trim();
+        }
+      }
+    }
+
+    return null;
   }
 
   Map<String, dynamic> toJson() {
@@ -47,7 +78,6 @@ class UserProfileModel {
       'id': id,
       'firstName': firstName,
       'lastName': lastName,
-      'name': name,
       'email': email,
       'phoneNumber': phoneNumber,
       'profilePictureUrl': profileImage,

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 
 import 'package:colormate_app/features/authentication/auth_data/models/login_request_model.dart';
@@ -14,9 +16,24 @@ class AuthApiException implements Exception {
 
 class LoginResponse {
   final String token;
+  final String? refreshToken;
+  final String? expiresOn;
+  final String? refreshTokenExpiration;
+  final bool isAuthenticated;
+  final String? username;
+  final String? email;
   final String message;
 
-  LoginResponse({required this.token, required this.message});
+  LoginResponse({
+    required this.token,
+    required this.message,
+    this.refreshToken,
+    this.expiresOn,
+    this.refreshTokenExpiration,
+    this.isAuthenticated = true,
+    this.username,
+    this.email,
+  });
 }
 
 class AuthApiService {
@@ -49,12 +66,11 @@ class AuthApiService {
         '/api/Users/Login',
         data: request.toJson(),
       );
-      final token =
-          _extractToken(response.data) ??
-          _extractTokenFromHeaders(response.headers) ??
-          '';
-      final message = _extractMessage(response.data) ?? 'Login successful.';
-      return LoginResponse(token: token, message: message);
+      return _parseLoginResponse(
+        response.data,
+        response.headers,
+        fallbackMessage: 'Login successful.',
+      );
     });
   }
 
@@ -64,13 +80,108 @@ class AuthApiService {
         '/api/Users/LoginWithGoogle',
         data: {'idToken': idToken},
       );
-      final token =
-          _extractToken(response.data) ??
-          _extractTokenFromHeaders(response.headers) ??
-          '';
-      final message =
-          _extractMessage(response.data) ?? 'Google login successful.';
-      return LoginResponse(token: token, message: message);
+      return _parseLoginResponse(
+        response.data,
+        response.headers,
+        fallbackMessage: 'Google login successful.',
+      );
+    });
+  }
+
+  Future<LoginResponse> refreshToken({
+    required String refreshToken,
+    String? accessToken,
+  }) async {
+    return _runLoginRequest(() async {
+      final normalizedAccessToken = _normalizeToken(accessToken);
+      final attempts = _buildTokenExchangeAttempts(
+        refreshToken: refreshToken,
+        accessToken: normalizedAccessToken,
+      );
+
+      DioException? lastError;
+
+      for (final attempt in attempts) {
+        try {
+          final response = await _dio.post(
+            '/api/Users/refreshToken',
+            data: attempt.body,
+            queryParameters: attempt.query,
+            options: Options(
+              contentType: attempt.contentType,
+              headers:
+                  normalizedAccessToken == null
+                      ? null
+                      : {'Authorization': 'Bearer $normalizedAccessToken'},
+            ),
+          );
+
+          return _parseLoginResponse(
+            response.data,
+            response.headers,
+            fallbackMessage: 'Token refreshed successfully.',
+          );
+        } on DioException catch (error) {
+          lastError = error;
+          final statusCode = error.response?.statusCode ?? 0;
+          if (statusCode != 400 && statusCode != 401) {
+            rethrow;
+          }
+        }
+      }
+
+      if (lastError != null) {
+        throw lastError;
+      }
+
+      throw const AuthApiException('Unable to refresh token now.');
+    });
+  }
+
+  Future<String> revokeToken({
+    required String refreshToken,
+    String? accessToken,
+  }) async {
+    return _runRequest(() async {
+      final normalizedAccessToken = _normalizeToken(accessToken);
+      final attempts = _buildTokenExchangeAttempts(
+        refreshToken: refreshToken,
+        accessToken: normalizedAccessToken,
+      );
+
+      DioException? lastError;
+
+      for (final attempt in attempts) {
+        try {
+          final response = await _dio.post(
+            '/api/Users/revokeToken',
+            data: attempt.body,
+            queryParameters: attempt.query,
+            options: Options(
+              contentType: attempt.contentType,
+              headers:
+                  normalizedAccessToken == null
+                      ? null
+                      : {'Authorization': 'Bearer $normalizedAccessToken'},
+            ),
+          );
+
+          return _extractMessage(response.data) ??
+              'Token revoked successfully.';
+        } on DioException catch (error) {
+          lastError = error;
+          final statusCode = error.response?.statusCode ?? 0;
+          if (statusCode != 400 && statusCode != 401) {
+            rethrow;
+          }
+        }
+      }
+
+      if (lastError != null) {
+        throw lastError;
+      }
+
+      throw const AuthApiException('Unable to revoke token now.');
     });
   }
 
@@ -164,6 +275,40 @@ class AuthApiService {
         normalized.contains('system.');
   }
 
+  LoginResponse _parseLoginResponse(
+    dynamic data,
+    Headers headers, {
+    required String fallbackMessage,
+  }) {
+    final token =
+        _extractToken(data) ?? _extractTokenFromHeaders(headers) ?? '';
+    final refreshToken = _extractRefreshToken(data);
+    final expiresOn = _extractStringByKeys(data, [
+      'expiresOn',
+      'expires',
+      'exp',
+    ]);
+    final refreshTokenExpiration = _extractStringByKeys(data, [
+      'refreshTokenExpiration',
+      'refreshExpiresOn',
+    ]);
+    final isAuthenticated = _extractBoolByKeys(data, [
+      'isAuthenticated',
+      'authenticated',
+    ]);
+
+    return LoginResponse(
+      token: token,
+      refreshToken: refreshToken,
+      expiresOn: expiresOn,
+      refreshTokenExpiration: refreshTokenExpiration,
+      isAuthenticated: isAuthenticated ?? token.isNotEmpty,
+      username: _extractStringByKeys(data, ['username', 'userName']),
+      email: _extractStringByKeys(data, ['email']),
+      message: _extractMessage(data) ?? fallbackMessage,
+    );
+  }
+
   String? _extractMessage(dynamic data) {
     if (data == null) return null;
 
@@ -228,6 +373,88 @@ class AuthApiService {
     return null;
   }
 
+  String? _extractRefreshToken(dynamic data) {
+    return _extractStringByKeys(data, [
+      'refreshToken',
+      'refresh_token',
+      'refresh',
+    ]);
+  }
+
+  String? _extractStringByKeys(dynamic data, List<String> keys) {
+    if (data is Map) {
+      final map = data.map((key, value) => MapEntry(key.toString(), value));
+      for (final key in keys) {
+        final value = map[key];
+        if (value is String && value.trim().isNotEmpty) {
+          return value;
+        }
+      }
+
+      for (final value in map.values) {
+        if (value is Map) {
+          final nested = _extractStringByKeys(value, keys);
+          if (nested != null) {
+            return nested;
+          }
+        }
+      }
+    }
+
+    return null;
+  }
+
+  bool? _extractBoolByKeys(dynamic data, List<String> keys) {
+    if (data is Map) {
+      final map = data.map((key, value) => MapEntry(key.toString(), value));
+      for (final key in keys) {
+        final value = map[key];
+        if (value is bool) {
+          return value;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  String _asBearer(String rawToken) {
+    final normalized = _normalizeToken(rawToken) ?? rawToken;
+    return 'Bearer $normalized';
+  }
+
+  String? _normalizeToken(String? rawToken) {
+    if (rawToken == null || rawToken.trim().isEmpty) {
+      return null;
+    }
+
+    return rawToken
+        .replaceFirst(RegExp(r'^Bearer\s+', caseSensitive: false), '')
+        .trim();
+  }
+
+  List<_TokenExchangeAttempt> _buildTokenExchangeAttempts({
+    required String refreshToken,
+    String? accessToken,
+  }) {
+    final _ = accessToken;
+    final normalizedRefreshToken = refreshToken.trim();
+    final attempts = <_TokenExchangeAttempt>[
+      // Swagger indicates raw string body; try this first.
+      _TokenExchangeAttempt(
+        body: jsonEncode(normalizedRefreshToken),
+        contentType: Headers.jsonContentType,
+      ),
+      // Lightweight fallback for backends expecting plain text.
+      _TokenExchangeAttempt(
+        body: normalizedRefreshToken,
+        contentType: Headers.textPlainContentType,
+      ),
+    ];
+
+    return attempts;
+  }
+
   String? _extractTokenFromHeaders(Headers headers) {
     final headerKeys = ['authorization', 'Authorization', 'x-access-token'];
     for (final key in headerKeys) {
@@ -238,4 +465,12 @@ class AuthApiService {
     }
     return null;
   }
+}
+
+class _TokenExchangeAttempt {
+  const _TokenExchangeAttempt({this.body, this.query, this.contentType});
+
+  final dynamic body;
+  final Map<String, dynamic>? query;
+  final String? contentType;
 }

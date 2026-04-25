@@ -25,6 +25,41 @@ class _LoginViewBodyState extends State<LoginViewBody> {
   bool isPasswordObscured = true;
   bool isRememberMe = true;
 
+  void _showStatusSnackBar({
+    required String message,
+    required Color backgroundColor,
+    required IconData icon,
+  }) {
+    final messenger = ScaffoldMessenger.of(context);
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: backgroundColor,
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          content: Row(
+            children: [
+              Icon(icon, color: AppColors.white),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  message,
+                  style: const TextStyle(
+                    color: AppColors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -37,8 +72,8 @@ class _LoginViewBodyState extends State<LoginViewBody> {
 
     if (!mounted) return;
 
-    final hasCredentials = await storage.hasCredentials();
-    if (hasCredentials) {
+    final hasSession = await storage.hasSession();
+    if (hasSession) {
       context.read<LoginCubit>().autoLogin();
     }
   }
@@ -48,16 +83,20 @@ class _LoginViewBodyState extends State<LoginViewBody> {
     return BlocConsumer<LoginCubit, LoginState>(
       listener: (context, state) {
         if (state.successMessage != null) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.successMessage!)));
+          _showStatusSnackBar(
+            message: state.successMessage!,
+            backgroundColor: AppColors.success,
+            icon: Icons.check_circle_rounded,
+          );
           context.go(Routes.homeView);
         }
 
         if (state.errorMessage != null) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+          _showStatusSnackBar(
+            message: state.errorMessage!,
+            backgroundColor: AppColors.error,
+            icon: Icons.error_rounded,
+          );
         }
       },
       builder: (context, state) {

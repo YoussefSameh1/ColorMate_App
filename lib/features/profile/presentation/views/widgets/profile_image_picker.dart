@@ -150,15 +150,14 @@ class ProfileImagePicker extends StatelessWidget {
   }
 
   String _resolveImageUrl(String rawUrl) {
-    final trimmed = rawUrl.trim();
+    final trimmed = rawUrl.trim().replaceAll('\\', '/');
     if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
       return trimmed;
     }
 
-    if (trimmed.startsWith('/')) {
-      return '$_baseUrl$trimmed';
-    }
+    final normalized = trimmed.replaceFirst(RegExp(r'^/+'), '');
 
-    return '$_baseUrl/$trimmed';
+    // return '$_baseUrl/$normalized';
+    return Uri.parse('$_baseUrl/$normalized').toString();
   }
 }

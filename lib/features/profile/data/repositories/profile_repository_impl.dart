@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 
 import 'package:colormate_app/core/storage/simple_auth_storage.dart';
+import 'package:colormate_app/features/authentication/auth_data/services/auth_api_service.dart';
 import 'package:colormate_app/features/profile/data/models/user_profile_model.dart';
 import 'package:colormate_app/features/profile/data/repositories/profile_repository.dart';
 
@@ -18,7 +19,7 @@ class ProfileApiException implements Exception {
 class ProfileRepositoryImpl implements ProfileRepository {
   static const int _maxPictureSizeInBytes = 10 * 1024 * 1024;
 
-  ProfileRepositoryImpl({Dio? dio})
+  ProfileRepositoryImpl({Dio? dio, AuthApiService? authApiService})
     : _dio =
           dio ??
           Dio(
@@ -27,55 +28,29 @@ class ProfileRepositoryImpl implements ProfileRepository {
               connectTimeout: const Duration(seconds: 20),
               receiveTimeout: const Duration(seconds: 20),
             ),
-          );
+          ),
+      _authApiService = authApiService ?? AuthApiService();
 
   final Dio _dio;
+  final AuthApiService _authApiService;
 
   @override
   Future<UserProfileModel> getUserProfile() async {
     try {
       final storage = SimpleAuthStorage();
       await storage.init();
-      final token = storage.getSavedToken();
-
-      if (token == null || token.isEmpty) {
-        throw const ProfileApiException('Unauthorized: please login again.');
+      final response = await _runAuthorizedRequest<Response<dynamic>>(
+        storage,
+        (headers) =>
+            _dio.get('/api/Profile', options: Options(headers: headers)),
+      );
+print("PROFILE RESPONSE: ${response.data}");
+      final data = response.data;
+      if (data is Map<String, dynamic>) {
+        return UserProfileModel.fromJson(data);
       }
 
-      final attempts = _buildAuthHeaderAttempts(token);
-
-      DioException? last401;
-
-      for (final headers in attempts) {
-        try {
-          final response = await _dio.get(
-            '/api/Profile',
-            options: Options(headers: headers),
-          );
-
-          final data = response.data;
-          if (data is Map<String, dynamic>) {
-            return UserProfileModel.fromJson(data);
-          }
-
-          throw const ProfileApiException(
-            'Invalid profile response from server.',
-          );
-        } on DioException catch (error) {
-          if ((error.response?.statusCode ?? 0) == 401) {
-            last401 = error;
-            continue;
-          }
-          rethrow;
-        }
-      }
-
-      if (last401 != null) {
-        await storage.clearCredentials();
-        throw last401;
-      }
-
-      throw const ProfileApiException('Unable to fetch profile now.');
+      throw const ProfileApiException('Invalid profile response from server.');
     } on DioException catch (error) {
       throw ProfileApiException(_toUserFriendlyMessage(error));
     } on ProfileApiException {
@@ -90,11 +65,6 @@ class ProfileRepositoryImpl implements ProfileRepository {
     try {
       final storage = SimpleAuthStorage();
       await storage.init();
-      final token = storage.getSavedToken();
-
-      if (token == null || token.isEmpty) {
-        throw const ProfileApiException('Unauthorized: please login again.');
-      }
 
       final normalizedPath = imagePath.replaceFirst('file://', '');
       final pictureFile = File(normalizedPath);
@@ -126,40 +96,26 @@ class ProfileRepositoryImpl implements ProfileRepository {
         );
       }
 
-      final attempts = _buildAuthHeaderAttempts(token);
-      DioException? last401;
+      final response = await _runAuthorizedRequest<Response<dynamic>>(storage, (
+        headers,
+      ) async {
+        final formData = FormData.fromMap({
+          'Picture': await MultipartFile.fromFile(
+            pictureFile.path,
+            filename: pictureFile.uri.pathSegments.last,
+          ),
+        });
 
-      for (final headers in attempts) {
-        try {
-          final formData = FormData.fromMap({
-            'Picture': await MultipartFile.fromFile(
-              pictureFile.path,
-              filename: pictureFile.uri.pathSegments.last,
-            ),
-          });
+        return _dio.put(
+          '/api/Profile/picture',
+          data: formData,
+          options: Options(headers: headers),
+        );
+        
+      });
+      print("UPLOAD RESPONSE: ${response.data}");
 
-          final response = await _dio.put(
-            '/api/Profile/picture',
-            data: formData,
-            options: Options(headers: headers),
-          );
-
-          return _extractImageUrl(response.data);
-        } on DioException catch (error) {
-          if ((error.response?.statusCode ?? 0) == 401) {
-            last401 = error;
-            continue;
-          }
-          rethrow;
-        }
-      }
-
-      if (last401 != null) {
-        await storage.clearCredentials();
-        throw last401;
-      }
-
-      throw const ProfileApiException('Unable to upload profile picture now.');
+      return _extractImageUrl(response.data);
     } on DioException catch (error) {
       throw ProfileApiException(_toUserFriendlyMessage(error));
     } on ProfileApiException {
@@ -174,44 +130,20 @@ class ProfileRepositoryImpl implements ProfileRepository {
     try {
       final storage = SimpleAuthStorage();
       await storage.init();
-      final token = storage.getSavedToken();
-
-      if (token == null || token.isEmpty) {
-        throw const ProfileApiException('Unauthorized: please login again.');
-      }
-
-      final attempts = _buildAuthHeaderAttempts(token);
       final payload = {
         'firstName': profile.firstName,
         'lastName': profile.lastName,
         'phoneNumber': profile.phoneNumber,
       };
 
-      DioException? last401;
-
-      for (final headers in attempts) {
-        try {
-          await _dio.put(
-            '/api/Profile',
-            data: payload,
-            options: Options(headers: headers),
-          );
-          return;
-        } on DioException catch (error) {
-          if ((error.response?.statusCode ?? 0) == 401) {
-            last401 = error;
-            continue;
-          }
-          rethrow;
-        }
-      }
-
-      if (last401 != null) {
-        await storage.clearCredentials();
-        throw last401;
-      }
-
-      throw const ProfileApiException('Unable to update profile now.');
+      await _runAuthorizedRequest<void>(
+        storage,
+        (headers) => _dio.put(
+          '/api/Profile',
+          data: payload,
+          options: Options(headers: headers),
+        ),
+      );
     } on DioException catch (error) {
       throw ProfileApiException(_toUserFriendlyMessage(error));
     } on ProfileApiException {
@@ -221,18 +153,64 @@ class ProfileRepositoryImpl implements ProfileRepository {
     }
   }
 
-  List<Map<String, dynamic>> _buildAuthHeaderAttempts(String rawToken) {
+  Map<String, dynamic> _buildAuthHeaders(String rawToken) {
     final normalizedToken = rawToken.replaceFirst(
       RegExp(r'^Bearer\s+', caseSensitive: false),
       '',
     );
 
-    return [
-      <String, dynamic>{'Authorization': 'Bearer $normalizedToken'},
-      <String, dynamic>{'Authorization': normalizedToken},
-      <String, dynamic>{'token': normalizedToken},
-      <String, dynamic>{'x-access-token': normalizedToken},
-    ];
+    return <String, dynamic>{'Authorization': 'Bearer $normalizedToken'};
+  }
+
+  Future<T> _runAuthorizedRequest<T>(
+    SimpleAuthStorage storage,
+    Future<T> Function(Map<String, dynamic> headers) request,
+  ) async {
+    var token = await _resolveUsableToken(storage);
+
+    try {
+      return await request(_buildAuthHeaders(token));
+    } on DioException catch (error) {
+      if ((error.response?.statusCode ?? 0) != 401) {
+        rethrow;
+      }
+
+      final refreshedToken = await _refreshAccessToken(
+        storage,
+        accessToken: token,
+      );
+
+      if (refreshedToken == null || refreshedToken.isEmpty) {
+        await _revokeAndClearSession(storage, accessToken: token);
+        throw error;
+      }
+
+      token = refreshedToken;
+      return request(_buildAuthHeaders(token));
+    }
+  }
+
+  Future<String> _resolveUsableToken(SimpleAuthStorage storage) async {
+    final token = storage.getSavedToken();
+    if (token == null || token.isEmpty) {
+      throw const ProfileApiException('Unauthorized: please login again.');
+    }
+
+    // Refresh before making the request to avoid a guaranteed 401 roundtrip.
+    if (!storage.isTokenExpired()) {
+      return token;
+    }
+
+    final refreshedToken = await _refreshAccessToken(
+      storage,
+      accessToken: token,
+    );
+    if (refreshedToken == null || refreshedToken.isEmpty) {
+      await _revokeAndClearSession(storage, accessToken: token);
+      throw const ProfileApiException('Unauthorized: please login again.');
+    }
+
+    return refreshedToken;
   }
 
   String _toUserFriendlyMessage(DioException error) {
@@ -313,36 +291,54 @@ class ProfileRepositoryImpl implements ProfileRepository {
     return null;
   }
 
-  // Future<String> _uploadImageToServer(String imagePath) async {
-  //   try {
+  Future<String?> _refreshAccessToken(
+    SimpleAuthStorage storage, {
+    String? accessToken,
+  }) async {
+    try {
+      final refreshToken = storage.getSavedRefreshToken();
+      if (refreshToken == null || refreshToken.isEmpty) {
+        return null;
+      }
 
-  //     final cleanPath = imagePath.replaceFirst('file://', '');
-  //     final File imageFile = File(cleanPath);
-  //
+      final refreshed = await _authApiService.refreshToken(
+        refreshToken: refreshToken,
+        accessToken: accessToken,
+      );
 
-  //     if (!await imageFile.exists()) {
-  //       throw Exception('Image file not found at: $cleanPath');
-  //     }
-  //
+      if (refreshed.token.isEmpty) {
+        return null;
+      }
 
-  //     final formData = FormData.fromMap({
-  //       'image': await MultipartFile.fromFile(
-  //         imageFile.path,
-  //         filename: 'profile_${DateTime.now().millisecondsSinceEpoch}.jpg',
-  //       ),
-  //     });
-  //
-  //
-  //     final response = await _apiService.post('/upload/profile-image', data: formData);
-  //
+      await storage.saveSession(
+        token: refreshed.token,
+        refreshToken: refreshed.refreshToken ?? refreshToken,
+        tokenExpiry: refreshed.expiresOn,
+        refreshTokenExpiry: refreshed.refreshTokenExpiration,
+      );
 
-  //     if (response.data['success'] == true && response.data['image_url'] != null) {
-  //       return response.data['image_url'];
-  //     } else {
-  //       throw Exception('Invalid response from server');
-  //     }
-  //   } catch (e) {
-  //     throw Exception('Failed to upload image: $e');
-  //   }
-  // }
+      return refreshed.token;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<void> _revokeAndClearSession(
+    SimpleAuthStorage storage, {
+    String? accessToken,
+  }) async {
+    final refreshToken = storage.getSavedRefreshToken();
+    if (refreshToken != null && refreshToken.isNotEmpty) {
+      try {
+        await _authApiService.revokeToken(
+          refreshToken: refreshToken,
+          accessToken: accessToken,
+        );
+      } catch (_) {
+        // Ignore revoke failures and continue with local cleanup.
+      }
+    }
+
+    await storage.clearCredentials();
+  }
 }

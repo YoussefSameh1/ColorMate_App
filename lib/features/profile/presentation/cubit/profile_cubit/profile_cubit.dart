@@ -151,8 +151,9 @@ class ProfileCubit extends Cubit<ProfileState> {
       );
 
       await _repository.updateUserProfile(updatedProfile);
+      final refreshedProfile = await _repository.getUserProfile();
       _selectedImagePath = null;
-      _safeEmit(ProfileUpdateSuccess(userProfile: updatedProfile));
+      _safeEmit(ProfileUpdateSuccess(userProfile: refreshedProfile));
     } catch (e) {
       _safeEmit(
         ProfileError(message: 'Failed to update profile: ${e.toString()}'),

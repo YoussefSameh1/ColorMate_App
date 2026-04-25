@@ -18,9 +18,9 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   void initState() {
     super.initState();
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   context.read<ProfileCubit>().fetchUserProfile();
-    // });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProfileCubit>().fetchUserProfile();
+    });
   }
 
   @override
