@@ -133,7 +133,6 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                     passwordController: passwordController,
                     isPasswordObscured: isPasswordObscured,
                     isRememberMe: isRememberMe,
-                    errorMessage: state.errorMessage,
                     isLoading: state.isLoading,
                     onRememberMeChanged: (value) {
                       setState(() => isRememberMe = value);

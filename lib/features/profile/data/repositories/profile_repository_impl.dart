@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 
 import 'package:colormate_app/core/storage/simple_auth_storage.dart';
+import 'package:colormate_app/core/services/auth_session_manager.dart';
 import 'package:colormate_app/features/authentication/auth_data/services/auth_api_service.dart';
 import 'package:colormate_app/features/profile/data/models/user_profile_model.dart';
 import 'package:colormate_app/features/profile/data/repositories/profile_repository.dart';
@@ -19,32 +20,41 @@ class ProfileApiException implements Exception {
 class ProfileRepositoryImpl implements ProfileRepository {
   static const int _maxPictureSizeInBytes = 10 * 1024 * 1024;
 
-  ProfileRepositoryImpl({Dio? dio, AuthApiService? authApiService})
-    : _dio =
-          dio ??
-          Dio(
-            BaseOptions(
-              baseUrl: 'http://colormate.runasp.net',
-              connectTimeout: const Duration(seconds: 20),
-              receiveTimeout: const Duration(seconds: 20),
-            ),
-          ),
-      _authApiService = authApiService ?? AuthApiService();
+  ProfileRepositoryImpl({
+    Dio? dio,
+    AuthApiService? authApiService,
+    AuthSessionManager? authSessionManager,
+  }) : _dio =
+           dio ??
+           Dio(
+             BaseOptions(
+               baseUrl: 'http://colormate.runasp.net',
+               connectTimeout: const Duration(seconds: 20),
+               receiveTimeout: const Duration(seconds: 20),
+             ),
+           ),
+       _authApiService = authApiService ?? AuthApiService(),
+       _sessionManager =
+           authSessionManager ??
+           AuthSessionManager(
+             authApiService: authApiService,
+             storage: SimpleAuthStorage(),
+           );
 
   final Dio _dio;
   final AuthApiService _authApiService;
+  final AuthSessionManager _sessionManager;
 
   @override
   Future<UserProfileModel> getUserProfile() async {
     try {
-      final storage = SimpleAuthStorage();
-      await storage.init();
-      final response = await _runAuthorizedRequest<Response<dynamic>>(
-        storage,
-        (headers) =>
-            _dio.get('/api/Profile', options: Options(headers: headers)),
+      await _sessionManager.init();
+      final token = await _sessionManager.getValidAccessToken();
+      final response = await _dio.get(
+        '/api/Profile',
+        options: Options(headers: _buildAuthHeaders(token)),
       );
-print("PROFILE RESPONSE: ${response.data}");
+      print("PROFILE RESPONSE: ${response.data}");
       final data = response.data;
       if (data is Map<String, dynamic>) {
         return UserProfileModel.fromJson(data);
@@ -63,8 +73,8 @@ print("PROFILE RESPONSE: ${response.data}");
   @override
   Future<String?> updateProfilePicture(String imagePath) async {
     try {
-      final storage = SimpleAuthStorage();
-      await storage.init();
+      await _sessionManager.init();
+      final token = await _sessionManager.getValidAccessToken();
 
       final normalizedPath = imagePath.replaceFirst('file://', '');
       final pictureFile = File(normalizedPath);
@@ -96,23 +106,18 @@ print("PROFILE RESPONSE: ${response.data}");
         );
       }
 
-      final response = await _runAuthorizedRequest<Response<dynamic>>(storage, (
-        headers,
-      ) async {
-        final formData = FormData.fromMap({
-          'Picture': await MultipartFile.fromFile(
-            pictureFile.path,
-            filename: pictureFile.uri.pathSegments.last,
-          ),
-        });
-
-        return _dio.put(
-          '/api/Profile/picture',
-          data: formData,
-          options: Options(headers: headers),
-        );
-        
+      final formData = FormData.fromMap({
+        'Picture': await MultipartFile.fromFile(
+          pictureFile.path,
+          filename: pictureFile.uri.pathSegments.last,
+        ),
       });
+
+      final response = await _dio.put(
+        '/api/Profile/picture',
+        data: formData,
+        options: Options(headers: _buildAuthHeaders(token)),
+      );
       print("UPLOAD RESPONSE: ${response.data}");
 
       return _extractImageUrl(response.data);
@@ -128,23 +133,24 @@ print("PROFILE RESPONSE: ${response.data}");
   @override
   Future<void> updateUserProfile(UserProfileModel profile) async {
     try {
-      final storage = SimpleAuthStorage();
-      await storage.init();
+      await _sessionManager.init();
+      final token = await _sessionManager.getValidAccessToken();
       final payload = {
         'firstName': profile.firstName,
         'lastName': profile.lastName,
         'phoneNumber': profile.phoneNumber,
       };
-
-      await _runAuthorizedRequest<void>(
-        storage,
-        (headers) => _dio.put(
-          '/api/Profile',
-          data: payload,
-          options: Options(headers: headers),
-        ),
+      await _dio.put(
+        '/api/Profile',
+        data: payload,
+        options: Options(headers: _buildAuthHeaders(token)),
       );
     } on DioException catch (error) {
+      if ((error.response?.statusCode ?? 0) == 401) {
+        await _sessionManager.clearSession();
+        throw const ProfileApiException('Unauthorized: please login again.');
+      }
+
       throw ProfileApiException(_toUserFriendlyMessage(error));
     } on ProfileApiException {
       rethrow;
@@ -160,57 +166,6 @@ print("PROFILE RESPONSE: ${response.data}");
     );
 
     return <String, dynamic>{'Authorization': 'Bearer $normalizedToken'};
-  }
-
-  Future<T> _runAuthorizedRequest<T>(
-    SimpleAuthStorage storage,
-    Future<T> Function(Map<String, dynamic> headers) request,
-  ) async {
-    var token = await _resolveUsableToken(storage);
-
-    try {
-      return await request(_buildAuthHeaders(token));
-    } on DioException catch (error) {
-      if ((error.response?.statusCode ?? 0) != 401) {
-        rethrow;
-      }
-
-      final refreshedToken = await _refreshAccessToken(
-        storage,
-        accessToken: token,
-      );
-
-      if (refreshedToken == null || refreshedToken.isEmpty) {
-        await _revokeAndClearSession(storage, accessToken: token);
-        throw error;
-      }
-
-      token = refreshedToken;
-      return request(_buildAuthHeaders(token));
-    }
-  }
-
-  Future<String> _resolveUsableToken(SimpleAuthStorage storage) async {
-    final token = storage.getSavedToken();
-    if (token == null || token.isEmpty) {
-      throw const ProfileApiException('Unauthorized: please login again.');
-    }
-
-    // Refresh before making the request to avoid a guaranteed 401 roundtrip.
-    if (!storage.isTokenExpired()) {
-      return token;
-    }
-
-    final refreshedToken = await _refreshAccessToken(
-      storage,
-      accessToken: token,
-    );
-    if (refreshedToken == null || refreshedToken.isEmpty) {
-      await _revokeAndClearSession(storage, accessToken: token);
-      throw const ProfileApiException('Unauthorized: please login again.');
-    }
-
-    return refreshedToken;
   }
 
   String _toUserFriendlyMessage(DioException error) {
@@ -289,56 +244,5 @@ print("PROFILE RESPONSE: ${response.data}");
     }
 
     return null;
-  }
-
-  Future<String?> _refreshAccessToken(
-    SimpleAuthStorage storage, {
-    String? accessToken,
-  }) async {
-    try {
-      final refreshToken = storage.getSavedRefreshToken();
-      if (refreshToken == null || refreshToken.isEmpty) {
-        return null;
-      }
-
-      final refreshed = await _authApiService.refreshToken(
-        refreshToken: refreshToken,
-        accessToken: accessToken,
-      );
-
-      if (refreshed.token.isEmpty) {
-        return null;
-      }
-
-      await storage.saveSession(
-        token: refreshed.token,
-        refreshToken: refreshed.refreshToken ?? refreshToken,
-        tokenExpiry: refreshed.expiresOn,
-        refreshTokenExpiry: refreshed.refreshTokenExpiration,
-      );
-
-      return refreshed.token;
-    } catch (_) {
-      return null;
-    }
-  }
-
-  Future<void> _revokeAndClearSession(
-    SimpleAuthStorage storage, {
-    String? accessToken,
-  }) async {
-    final refreshToken = storage.getSavedRefreshToken();
-    if (refreshToken != null && refreshToken.isNotEmpty) {
-      try {
-        await _authApiService.revokeToken(
-          refreshToken: refreshToken,
-          accessToken: accessToken,
-        );
-      } catch (_) {
-        // Ignore revoke failures and continue with local cleanup.
-      }
-    }
-
-    await storage.clearCredentials();
   }
 }

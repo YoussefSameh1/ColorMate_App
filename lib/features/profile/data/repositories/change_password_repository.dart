@@ -1,6 +1,6 @@
 abstract class ChangePasswordRepository {
-  Future<void> changePassword({
-    required String oldPassword,
+  Future<String> changePassword({
+    required String currentPassword,
     required String newPassword,
   });
 }

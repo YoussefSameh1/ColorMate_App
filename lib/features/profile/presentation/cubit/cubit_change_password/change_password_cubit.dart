@@ -9,19 +9,23 @@ class ChangePasswordCubit extends Cubit<ChangePasswordState> {
   ChangePasswordCubit(this._repository) : super(const ChangePasswordInitial());
 
   Future<void> changePassword({
-    required String oldPassword,
+    required String currentPassword,
     required String newPassword,
   }) async {
     emit(const ChangePasswordSubmitting());
 
     try {
-      await _repository.changePassword(
-        oldPassword: oldPassword,
+      final message = await _repository.changePassword(
+        currentPassword: currentPassword,
         newPassword: newPassword,
       );
-      emit(const ChangePasswordSuccess());
+      emit(ChangePasswordSuccess(message: message));
     } catch (e) {
-      emit(ChangePasswordFailure(message: e.toString()));
+      emit(
+        ChangePasswordFailure(
+          message: e.toString().replaceFirst('Exception: ', ''),
+        ),
+      );
     }
   }
 }

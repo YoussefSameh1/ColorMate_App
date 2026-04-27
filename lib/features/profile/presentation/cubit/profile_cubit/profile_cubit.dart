@@ -12,9 +12,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   ProfileCubit(this._repository, {ImagePickerService? imagePickerService})
     : _imagePickerService = imagePickerService ?? ImagePickerService(),
-      super(const ProfileInitial()) {
-    fetchUserProfile();
-  }
+      super(const ProfileInitial());
 
   void _safeEmit(ProfileState state) {
     if (!isClosed) emit(state);
@@ -33,6 +31,8 @@ class ProfileCubit extends Cubit<ProfileState> {
       final userProfile = await _repository.getUserProfile();
       _safeEmit(ProfileLoaded(userProfile: userProfile));
     } catch (e) {
+      // ignore: avoid_print
+      print('PROFILE FETCH ERROR: ${e.toString()}');
       _safeEmit(ProfileError(message: e.toString()));
     }
   }
@@ -63,6 +63,8 @@ class ProfileCubit extends Cubit<ProfileState> {
         await fetchUserProfile();
       }
     } catch (e) {
+      // ignore: avoid_print
+      print('PROFILE IMAGE PICK ERROR: ${e.toString()}');
       _safeEmit(ProfileError(message: 'Failed to pick image: ${e.toString()}'));
       await fetchUserProfile();
     }
@@ -93,6 +95,8 @@ class ProfileCubit extends Cubit<ProfileState> {
         await fetchUserProfile();
       }
     } catch (e) {
+      // ignore: avoid_print
+      print('PROFILE IMAGE CAMERA ERROR: ${e.toString()}');
       _safeEmit(ProfileError(message: 'Failed to take photo: ${e.toString()}'));
       await fetchUserProfile();
     }
@@ -155,6 +159,8 @@ class ProfileCubit extends Cubit<ProfileState> {
       _selectedImagePath = null;
       _safeEmit(ProfileUpdateSuccess(userProfile: refreshedProfile));
     } catch (e) {
+      // ignore: avoid_print
+      print('PROFILE UPDATE ERROR: ${e.toString()}');
       _safeEmit(
         ProfileError(message: 'Failed to update profile: ${e.toString()}'),
       );
