@@ -18,13 +18,21 @@ class TestViewBody extends StatelessWidget {
         if (state is TestFinished) {
           GoRouter.of(context).push(Routes.testResultView);
         }
+        if (state is TestError) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.message)));
+        }
       },
       builder: (context, state) {
         if (state is TestQuestionLoaded) {
           final question = state.questions[state.currentIndex];
           return Column(
             children: [
-              const CustomAppBar(title: 'Color Vision Test', isBackButtonVisible: false,),
+              const CustomAppBar(
+                title: 'Color Vision Test',
+                isBackButtonVisible: false,
+              ),
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -41,7 +49,7 @@ class TestViewBody extends StatelessWidget {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          'Question ${question.questionNumber} of ${state.questions.length}',
+                          'Question ${question.imageId} of ${state.questions.length}',
                           style: Styles.descriptionStyle.copyWith(
                             fontSize: 14.sp,
                           ),
@@ -76,10 +84,11 @@ class TestViewBody extends StatelessWidget {
                               itemBuilder: (context, index) {
                                 return GestureDetector(
                                   onTap:
-                                      () =>
-                                          context
-                                              .read<TestCubit>()
-                                              .selectAnswer(),
+                                      () => context
+                                          .read<TestCubit>()
+                                          .selectAnswer(
+                                            question.options[index],
+                                          ),
                                   child: AnswerOptionButton(
                                     option: '${question.options[index]}',
                                   ),
@@ -89,8 +98,9 @@ class TestViewBody extends StatelessWidget {
                             SizedBox(height: 12.h),
                             GestureDetector(
                               onTap:
-                                  () =>
-                                      context.read<TestCubit>().selectAnswer(),
+                                  () => context.read<TestCubit>().selectAnswer(
+                                    null,
+                                  ),
                               child: const AnswerOptionButton(
                                 option: 'None of the above',
                               ),
@@ -98,10 +108,11 @@ class TestViewBody extends StatelessWidget {
                             SizedBox(height: 4.h),
                             TextButton(
                               onPressed:
-                                  () =>
-                                      context.read<TestCubit>().selectAnswer(),
+                                  () => context.read<TestCubit>().selectAnswer(
+                                    null,
+                                  ),
                               child: Text(
-                                'Didn\'t see it!',
+                                "Didn't see it!",
                                 style: Styles.textButtonTextStyle,
                               ),
                             ),

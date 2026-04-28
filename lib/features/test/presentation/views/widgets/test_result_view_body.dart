@@ -15,6 +15,12 @@ class TestResultViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final result = context.read<TestCubit>().lastResult;
+
+    if (result == null) {
+      return const Center(child: Text('No result found.'));
+    }
+
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -23,9 +29,17 @@ class TestResultViewBody extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: Column(
               children: [
-                ColorBlindnessTypeSection(),
-                InfoAboutColorBlindnessTypeSection(),
+                ColorBlindnessTypeSection(diagnosis: result.diagnosis),
+
+                InfoAboutColorBlindnessTypeSection(
+                  diagnosis: result.diagnosis,
+                  correctAnswerCount: result.correctAnswerCount,
+                  protanAnswerCount: result.protanAnswerCount,
+                  deutanAnswerCount: result.deutanAnswerCount,
+                ),
+
                 SizedBox(height: 20.h),
+
                 TestResultButton(
                   text: 'Retake Test',
                   textColor: Colors.white,
@@ -35,24 +49,30 @@ class TestResultViewBody extends StatelessWidget {
                     GoRouter.of(context).go(Routes.testView);
                   },
                 ),
+
                 SizedBox(height: 16.h),
+
                 TestResultButton(
-                  text: 'Learn More About Deuteranomaly',
+                  text: 'Learn More About ${result.diagnosis}',
                   textColor: kPrimaryColor,
                   backgroundColor: kSecondaryColor,
                   onPressed: () {
                     GoRouter.of(context).push(Routes.chatbotView);
                   },
                 ),
+
                 SizedBox(height: 16.h),
+
                 TestResultButton(
                   text: 'Back To Home',
                   textColor: kPrimaryColor,
                   backgroundColor: Colors.white,
                   onPressed: () {
-                    GoRouter.of(context).push(Routes.homeView);
+                    GoRouter.of(context).go(Routes.homeView);
                   },
                 ),
+
+                SizedBox(height: 24.h),
               ],
             ),
           ),

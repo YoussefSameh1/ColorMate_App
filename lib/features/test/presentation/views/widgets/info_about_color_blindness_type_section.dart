@@ -6,7 +6,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class InfoAboutColorBlindnessTypeSection extends StatelessWidget {
   const InfoAboutColorBlindnessTypeSection({
     super.key,
+    required this.diagnosis,
+    required this.correctAnswerCount,
+    required this.protanAnswerCount,
+    required this.deutanAnswerCount,
   });
+
+  final String diagnosis;
+  final int correctAnswerCount;
+  final int protanAnswerCount;
+  final int deutanAnswerCount;
 
   @override
   Widget build(BuildContext context) {
@@ -21,20 +30,29 @@ class InfoAboutColorBlindnessTypeSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Understanding Your Result:',
-            style: Styles.testQuestionTextStyle,
-          ),
+          Text('Your Results:', style: Styles.testQuestionTextStyle),
           SizedBox(height: 10.h),
-          Text(
-            'Deuteranomaly',
-            style: Styles.testQuestionTextStyle,
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            'Deuteranomaly is a common type of red-green color blindness where the green-sensitive cones in your eyes detect too much red light. This shifts the perception of greens towards red.\nIndividuals with moderate Deuteranomaly may find it challenging to differentiate various shades of green, brown, and some grays. Traffic lights might appear differently, but often with enough contrast to be discernible.\nThis condition is congenital and affects more men than women. It does not typically worsen over time and does not impact overall eye health.',
-            style: Styles.testResultTextStyle,
-          ),
+
+          _buildScoreRow('Correct Answers', correctAnswerCount),
+          _buildScoreRow('Protan Score', protanAnswerCount),
+          _buildScoreRow('Deutan Score', deutanAnswerCount),
+
+          SizedBox(height: 12.h),
+
+          Text('Diagnosis: $diagnosis', style: Styles.testQuestionTextStyle),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildScoreRow(String label, int value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: Styles.testResultTextStyle),
+          Text('$value', style: Styles.testResultTextStyle),
         ],
       ),
     );

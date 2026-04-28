@@ -1,13 +1,15 @@
 class QuestionModel {
-  final int questionNumber;
+  final int imageId;
   final String image;
-  final int correctAnswer;
+  final String value;
   final List<int> options;
+  final bool usedForDiagnosis;
 
   QuestionModel({
-    required this.questionNumber,
+    required this.imageId,
     required this.image,
-    required this.correctAnswer,
+    required this.value,
     required this.options,
+    required this.usedForDiagnosis,
   });
 }

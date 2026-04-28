@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ColorBlindnessTypeSection extends StatelessWidget {
-  const ColorBlindnessTypeSection({super.key});
+  const ColorBlindnessTypeSection({super.key, required this.diagnosis});
+
+  final String diagnosis;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(left: 16.w, right: 16.w, top: 10.h),
+      padding: EdgeInsets.symmetric(vertical: 20.h),
       width: double.infinity,
       decoration: BoxDecoration(
         border: Border.all(color: kPrimaryColor, width: 2.w),
@@ -18,11 +21,11 @@ class ColorBlindnessTypeSection extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            'Deuteranomaly',
+            diagnosis,
             style: Styles.buttonTextStyle.copyWith(color: kPrimaryColor),
           ),
-          SizedBox(height: 30.h),
-          Text('Moderate', style: Styles.testQuestionTextStyle),
+          SizedBox(height: 16.h),
+          Text('Color Vision Test Result', style: Styles.testQuestionTextStyle),
         ],
       ),
     );
