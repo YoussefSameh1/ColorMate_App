@@ -25,6 +25,9 @@ class TestViewBody extends StatelessWidget {
         }
       },
       builder: (context, state) {
+        if (state is TestLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
         if (state is TestQuestionLoaded) {
           final question = state.questions[state.currentIndex];
           return Column(
@@ -83,12 +86,11 @@ class TestViewBody extends StatelessWidget {
                               itemCount: 4,
                               itemBuilder: (context, index) {
                                 return GestureDetector(
-                                  onTap:
-                                      () => context
-                                          .read<TestCubit>()
-                                          .selectAnswer(
-                                            question.options[index],
-                                          ),
+                                  onTap: () => context
+                                      .read<TestCubit>()
+                                      .selectAnswer(
+                                        '${question.options[index]}',
+                                      ),
                                   child: AnswerOptionButton(
                                     option: '${question.options[index]}',
                                   ),
@@ -97,20 +99,18 @@ class TestViewBody extends StatelessWidget {
                             ),
                             SizedBox(height: 12.h),
                             GestureDetector(
-                              onTap:
-                                  () => context.read<TestCubit>().selectAnswer(
-                                    null,
-                                  ),
+                              onTap: () => context
+                                  .read<TestCubit>()
+                                  .selectAnswer("x"),
                               child: const AnswerOptionButton(
                                 option: 'None of the above',
                               ),
                             ),
                             SizedBox(height: 4.h),
                             TextButton(
-                              onPressed:
-                                  () => context.read<TestCubit>().selectAnswer(
-                                    null,
-                                  ),
+                              onPressed: () => context
+                                  .read<TestCubit>()
+                                  .selectAnswer("x"),
                               child: Text(
                                 "Didn't see it!",
                                 style: Styles.textButtonTextStyle,
@@ -127,7 +127,7 @@ class TestViewBody extends StatelessWidget {
             ],
           );
         }
-        return const Center(child: CircularProgressIndicator());
+        return const SizedBox();
       },
     );
   }
