@@ -110,7 +110,10 @@ abstract class AppRouter {
 
       ShellRoute(
         builder: (context, state, child) {
-          return MainLayout(child: child);
+          return BlocProvider(
+            create: (_) => ProfileCubit(ProfileRepositoryImpl()),
+            child: MainLayout(child: child),
+          );
         },
         routes: [
           GoRoute(
@@ -137,12 +140,8 @@ abstract class AppRouter {
           GoRoute(
             path: Routes.profileView,
             pageBuilder:
-                (context, state) => slideTransitionPage(
-                  child: BlocProvider(
-                    create: (_) => ProfileCubit(ProfileRepositoryImpl()),
-                    child: const ProfileView(),
-                  ),
-                ),
+                (context, state) =>
+                    slideTransitionPage(child: const ProfileView()),
           ),
         ],
       ),

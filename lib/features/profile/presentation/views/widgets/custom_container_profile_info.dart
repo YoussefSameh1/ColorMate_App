@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomContainerProfileInfo extends StatelessWidget {
+  static const String _baseUrl = 'http://colormate.runasp.net';
+
   final UserProfileModel userProfile;
   final VoidCallback? onEditPressed;
 
@@ -17,6 +19,8 @@ class CustomContainerProfileInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final resolvedImageUrl = _resolveImageUrl(userProfile.profileImage);
+
     return Container(
       width: 342.w,
       decoration: BoxDecoration(
@@ -29,16 +33,21 @@ class CustomContainerProfileInfo extends StatelessWidget {
           SizedBox(height: 20.h),
           CircleAvatar(
             radius: 50,
-            backgroundImage:
-              userProfile.profileImage != null &&
-                  userProfile.profileImage!.isNotEmpty
-                ? AssetImage(userProfile.profileImage!)
-                : null,
+            backgroundColor: AppColors.primary.withOpacity(0.1),
             child:
-              userProfile.profileImage == null ||
-                  userProfile.profileImage!.isEmpty
-                ? const Icon(Icons.person, size: 50)
-                : null,
+                resolvedImageUrl == null
+                    ? const Icon(Icons.person, size: 50)
+                    : ClipOval(
+                      child: Image.network(
+                        resolvedImageUrl,
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Icon(Icons.person, size: 50);
+                        },
+                      ),
+                    ),
           ),
           Text(
             userProfile.name,
@@ -59,5 +68,20 @@ class CustomContainerProfileInfo extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String? _resolveImageUrl(String? rawUrl) {
+    if (rawUrl == null || rawUrl.trim().isEmpty) return null;
+
+    final trimmed = rawUrl.trim().replaceAll('\\', '/');
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+      return trimmed;
+    }
+
+    final normalized = trimmed.replaceFirst(RegExp(r'^/+'), '');
+
+    // return '$_baseUrl/$normalized';
+    return Uri.parse('$_baseUrl/$normalized').toString();
+   
   }
 }

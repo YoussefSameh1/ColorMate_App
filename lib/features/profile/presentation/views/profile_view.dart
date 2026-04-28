@@ -1,5 +1,6 @@
 import 'package:colormate_app/core/routing/routes.dart';
 import 'package:colormate_app/core/widget/loaders.dart';
+import 'package:colormate_app/features/profile/data/models/user_profile_model.dart';
 import 'package:colormate_app/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:colormate_app/features/profile/presentation/views/widgets/profile_view_body.dart';
 import 'package:flutter/material.dart';
@@ -17,15 +18,14 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   void initState() {
     super.initState();
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   context.read<ProfileCubit>().fetchUserProfile();
-    // });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProfileCubit>().fetchUserProfile();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    
       body: BlocListener<ProfileCubit, ProfileState>(
         listener: (context, state) {
           if (state is ProfileError) {
@@ -46,8 +46,14 @@ class _ProfileViewState extends State<ProfileView> {
               return ProfileViewBody(
                 userProfile: state.userProfile,
                 isLoading: false,
-                onEditPressed: () {
-                  GoRouter.of(context).push(Routes.editProfileView);
+                onEditPressed: () async {
+                  final updatedProfile = await context.push<UserProfileModel?>(
+                    Routes.editProfileView,
+                  );
+                  if (!mounted) return;
+                  if (updatedProfile != null) {
+                    context.read<ProfileCubit>().syncProfile(updatedProfile);
+                  }
                 },
               );
             }

@@ -14,6 +14,7 @@ class EditProfileBody extends StatefulWidget {
 
 class _EditProfileBodyState extends State<EditProfileBody> {
   final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -24,6 +25,7 @@ class _EditProfileBodyState extends State<EditProfileBody> {
   @override
   void dispose() {
     emailController.dispose();
+    phoneController.dispose();
     passwordController.dispose();
     usernameController.dispose();
     super.dispose();
@@ -47,8 +49,9 @@ class _EditProfileBodyState extends State<EditProfileBody> {
   void _saveChanges(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       context.read<ProfileCubit>().updateUserProfile(
-        name: usernameController.text.trim(),
+        fullName: usernameController.text.trim(),
         email: emailController.text.trim(),
+        phoneNumber: phoneController.text.trim(),
         password:
             passwordController.text.isNotEmpty ? passwordController.text : null,
       );
@@ -60,9 +63,11 @@ class _EditProfileBodyState extends State<EditProfileBody> {
     return ProfileListener(
       usernameController: usernameController,
       emailController: emailController,
+      phoneController: phoneController,
       child: ProfileUIBuilder(
         formKey: _formKey,
         emailController: emailController,
+        phoneController: phoneController,
         passwordController: passwordController,
         usernameController: usernameController,
         isPasswordObscured: isPasswordObscured,

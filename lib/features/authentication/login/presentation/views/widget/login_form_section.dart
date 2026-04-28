@@ -19,7 +19,6 @@ class LoginFormSection extends StatelessWidget {
     required this.isRememberMe,
     required this.isLoading,
     required this.onRememberMeChanged,
-    this.errorMessage,
     this.onSubmit,
     this.onGooglePressed,
   });
@@ -31,7 +30,6 @@ class LoginFormSection extends StatelessWidget {
   final bool isRememberMe;
   final bool isLoading;
   final ValueChanged<bool> onRememberMeChanged;
-  final String? errorMessage;
   final VoidCallback? onSubmit;
   final VoidCallback? onGooglePressed;
 
@@ -48,8 +46,9 @@ class LoginFormSection extends StatelessWidget {
               keyboardType: TextInputType.text,
               hintText: 'Enter your email or username',
               prefixIcon: const Icon(Icons.person, color: AppColors.primary),
-              validator: (value) =>
-                  Validation.validateEmptyText('Email or username', value),
+              validator:
+                  (value) =>
+                      Validation.validateEmptyText('Email or username', value),
               labelText: 'Email or Username',
               icon: Icons.email,
             ),
@@ -60,8 +59,8 @@ class LoginFormSection extends StatelessWidget {
               controller: passwordController,
               keyboardType: TextInputType.visiblePassword,
               hintText: 'Enter your password',
-              validator: (value) =>
-                  Validation.validateEmptyText('Password', value),
+              validator:
+                  (value) => Validation.validateEmptyText('Password', value),
               prefixIcon: const Icon(Icons.lock, color: AppColors.primary),
               labelText: 'Password',
               icon: Icons.lock,
@@ -82,20 +81,6 @@ class LoginFormSection extends StatelessWidget {
               const Text('Remember me'),
             ],
           ),
-          const SizedBox(height: 20),
-          if (errorMessage != null)
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.error.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppColors.error, width: 1),
-              ),
-              child: Text(
-                errorMessage!,
-                style: const TextStyle(color: AppColors.error, fontSize: 14),
-              ),
-            ),
           const SizedBox(height: 30),
           PrimaryShadowButton(
             text: 'Login',
