@@ -30,7 +30,7 @@ class _ChangePasswordBodyState extends State<ChangePasswordBody> {
   void _submitChangePassword() {
     if (_formKey.currentState!.validate()) {
       context.read<ChangePasswordCubit>().changePassword(
-        oldPassword: _oldPasswordController.text.trim(),
+        currentPassword: _oldPasswordController.text.trim(),
         newPassword: _newPasswordController.text.trim(),
       );
     }
@@ -41,11 +41,7 @@ class _ChangePasswordBodyState extends State<ChangePasswordBody> {
     return BlocListener<ChangePasswordCubit, ChangePasswordState>(
       listener: (context, state) {
         if (state is ChangePasswordSuccess) {
-          Loaders.success(
-            context,
-            title: 'Success',
-            message: 'Password changed successfully!',
-          );
+          Loaders.success(context, title: 'Success', message: state.message);
         } else if (state is ChangePasswordFailure) {
           Loaders.error(context, title: 'Error', message: state.message);
         }
