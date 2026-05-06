@@ -23,6 +23,7 @@ class ColorBlindnessTypeSection extends StatelessWidget {
           Text(
             diagnosis,
             style: Styles.buttonTextStyle.copyWith(color: kPrimaryColor),
+            textAlign: TextAlign.center,
           ),
           SizedBox(height: 16.h),
           Text('Color Vision Test Result', style: Styles.testQuestionTextStyle),

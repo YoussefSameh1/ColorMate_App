@@ -1,8 +1,11 @@
+import 'package:colormate_app/core/services/auth_session_manager.dart';
 import 'package:colormate_app/core/storage/simple_auth_storage.dart';
+import 'package:colormate_app/features/authentication/auth_data/services/auth_api_service.dart';
 import 'package:colormate_app/features/test/data/models/question_model.dart';
 import 'package:colormate_app/features/test/data/test_data.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 part 'test_state.dart';
 
 class TestCubit extends Cubit<TestState> {
@@ -14,7 +17,11 @@ class TestCubit extends Cubit<TestState> {
 
   TestFinished? lastResult;
 
-  final _storage = SimpleAuthStorage();
+  // ✅ AuthSessionManager handles token expiry + refresh automatically
+  final AuthSessionManager _sessionManager = AuthSessionManager(
+    authApiService: AuthApiService(),
+    storage: SimpleAuthStorage(),
+  );
 
   final Dio _dio = Dio(
     BaseOptions(
@@ -26,46 +33,44 @@ class TestCubit extends Cubit<TestState> {
   );
 
   void selectAnswer(String? selectedValue) {
-  final currentState = state;
-  if (currentState is! TestQuestionLoaded) return;
+    final currentState = state;
+    if (currentState is! TestQuestionLoaded) return;
 
-  final question = currentState.questions[currentState.currentIndex];
+    final question = currentState.questions[currentState.currentIndex];
 
-  final updatedAnswers = [
-    ...currentState.answers,
-    {
-      "imageId": question.imageId,
-      // ✅ Send "x" when user couldn't see it, otherwise the number as string
-      "value": selectedValue ?? "x",
-      // ✅ usedForDiagnosis is false only when user couldn't see the number
-      "usedForDiagnosis": selectedValue != null,
-    },
-  ];
+    final updatedAnswers = [
+      ...currentState.answers,
+      {
+        "imageId": question.imageId,
+        "value": selectedValue ?? "x",
+        "usedForDiagnosis": selectedValue != null && selectedValue != "x",
+      },
+    ];
 
-  if (currentState.currentIndex < currentState.questions.length - 1) {
-    emit(
-      TestQuestionLoaded(
-        currentIndex: currentState.currentIndex + 1,
-        questions: currentState.questions,
-        answers: updatedAnswers,
-      ),
-    );
-  } else {
-    _submitAnswers(updatedAnswers);
+    if (currentState.currentIndex < currentState.questions.length - 1) {
+      emit(
+        TestQuestionLoaded(
+          currentIndex: currentState.currentIndex + 1,
+          questions: currentState.questions,
+          answers: updatedAnswers,
+        ),
+      );
+    } else {
+      _submitAnswers(updatedAnswers);
+    }
   }
-}
 
   Future<void> _submitAnswers(List<Map<String, dynamic>> answers) async {
     emit(TestLoading());
     try {
-      await _storage.init();
+      // ✅ Initialize storage before reading anything
+      await _sessionManager.init();
 
-      final token = _storage.getSavedToken();
-
-      if (token == null || token.isEmpty) {
-        emit(TestError('You are not logged in. Please log in and try again.'));
-        return;
-      }
+      // ✅ getValidAccessToken() handles 3 cases automatically:
+      //    1. Token is valid       → returns it immediately
+      //    2. Token is expired     → refreshes it, saves new one, returns it
+      //    3. Refresh fails/missing → throws AuthSessionException
+      final token = await _sessionManager.getValidAccessToken();
 
       final response = await _dio.post(
         'Ishihara/submit-answers',
@@ -85,6 +90,9 @@ class TestCubit extends Cubit<TestState> {
       );
 
       emit(lastResult!);
+    } on AuthSessionException catch (e) {
+      // ✅ Token missing or refresh failed — user must log in again
+      emit(TestError(e.message));
     } on DioException catch (e) {
       final message = switch (e.type) {
         DioExceptionType.connectionTimeout =>
