@@ -6,21 +6,12 @@ import 'package:colormate_app/core/storage/simple_auth_storage.dart';
 import 'package:colormate_app/features/authentication/auth_data/models/login_request_model.dart';
 import 'package:colormate_app/features/authentication/auth_data/services/auth_api_service.dart';
 import 'package:colormate_app/features/authentication/login/view_model/login_state.dart';
+import 'package:colormate_app/features/authentication/auth_data/services/GoogleAuthService.dart';
 
 class LoginCubit extends Cubit<LoginState> {
-  LoginCubit(this._authApiService, {GoogleSignIn? googleSignIn})
-    : _googleSignIn =
-          googleSignIn ??
-          GoogleSignIn(
-            scopes: const ['email', 'profile'],
-            serverClientId:
-                _googleServerClientId.isEmpty ? null : _googleServerClientId,
-          ),
-      super(LoginState.initial());
+  LoginCubit(this._authApiService) : super(LoginState.initial());
 
   final AuthApiService _authApiService;
-  final GoogleSignIn _googleSignIn;
-
   static const String _googleServerClientId = String.fromEnvironment(
     'GOOGLE_SERVER_CLIENT_ID',
   );
@@ -100,60 +91,35 @@ class LoginCubit extends Cubit<LoginState> {
     );
 
     try {
-      await _googleSignIn.signOut();
-      final account = await _googleSignIn.signIn();
-      if (account == null) {
-        emit(
-          state.copyWith(
-            isLoading: false,
-            errorMessage: 'Google sign-in was cancelled.',
-          ),
-        );
-        return;
-      }
-
-      final auth = await account.authentication;
-      final idToken = auth.idToken;
+      final idToken = await GoogleAuthService.handleSignIn();
 
       if (idToken == null || idToken.isEmpty) {
         emit(
           state.copyWith(
             isLoading: false,
-            errorMessage:
-                'Google idToken is missing. Set GOOGLE_SERVER_CLIENT_ID with your Web Client ID.',
+            errorMessage: 'Google sign-in was cancelled or failed.',
           ),
         );
         return;
       }
 
       final response = await _authApiService.loginWithGoogle(idToken: idToken);
+
       if (!response.isAuthenticated || response.token.isEmpty) {
         throw const AuthApiException('Google login failed. Please try again.');
       }
 
-      final preview =
-          response.token.isEmpty
-              ? 'EMPTY'
-              : response.token.substring(
-                0,
-                response.token.length < 20 ? response.token.length : 20,
-              );
-
-      print('📝 Saving credentials from Google with token: $preview...');
       await SimpleAuthStorage().saveSession(
         token: response.token,
         refreshToken: response.refreshToken,
         tokenExpiry: response.expiresOn,
         refreshTokenExpiry: response.refreshTokenExpiration,
       );
-      print('✓ Google credentials saved');
 
       emit(state.copyWith(isLoading: false, successMessage: response.message));
     } on AuthApiException catch (error) {
-      print('✗ Google login error: ${error.message}');
       emit(state.copyWith(isLoading: false, errorMessage: error.message));
     } catch (error) {
-      print('✗ Google login unexpected error: $error');
       emit(
         state.copyWith(
           isLoading: false,
