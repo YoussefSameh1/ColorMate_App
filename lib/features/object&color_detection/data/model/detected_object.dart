@@ -16,12 +16,12 @@ class DetectedObject {
   factory DetectedObject.fromJson(Map<String, dynamic> json) {
     return DetectedObject(
       objectId: _readInt(json, const ['object_id', 'objectId', 'id']),
-      className: _readString(json, const ['class_name', 'className', 'name']),
-      confidence: (json['confidence'] as num).toDouble(),
-      bbox:
-          (json['bbox'] as List)
-              .map((value) => (value as num).toDouble())
-              .toList(),
+      className: _readString(
+        json,
+        const ['class_name', 'className', 'name', 'label'],
+      ),
+      confidence: _readDouble(json, const ['confidence', 'score']),
+      bbox: _readDoubleList(json, const ['bbox', 'box']),
     );
   }
 
@@ -52,5 +52,35 @@ class DetectedObject {
     }
 
     throw const FormatException('Missing detected object class name.');
+  }
+
+  static double _readDouble(Map<String, dynamic> json, List<String> keys) {
+    for (final key in keys) {
+      final value = json[key];
+      if (value is num) return value.toDouble();
+      if (value is String) {
+        final parsed = double.tryParse(value);
+        if (parsed != null) return parsed;
+      }
+    }
+
+    throw const FormatException('Missing detected object confidence.');
+  }
+
+  static List<double> _readDoubleList(
+    Map<String, dynamic> json,
+    List<String> keys,
+  ) {
+    for (final key in keys) {
+      final value = json[key];
+      if (value is List) {
+        return value
+            .whereType<num>()
+            .map((item) => item.toDouble())
+            .toList(growable: false);
+      }
+    }
+
+    throw const FormatException('Missing detected object bbox.');
   }
 }

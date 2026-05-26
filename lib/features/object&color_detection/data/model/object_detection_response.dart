@@ -12,22 +12,51 @@ class ObjectDetectionResponse {
   });
 
   factory ObjectDetectionResponse.fromJson(Map<String, dynamic> json) {
-    const minConfidence = 0.5;
-
-    final rawObjects = json['objects'];
-    final filteredObjects =
+    final rawObjects = json['objects'] ?? json['detections'];
+    final parsedObjects =
         rawObjects is List
             ? rawObjects
                 .whereType<Map<String, dynamic>>()
                 .map(DetectedObject.fromJson)
-                .where((object) => object.confidence >= minConfidence)
                 .toList(growable: false)
             : const <DetectedObject>[];
 
+    final totalObjects =
+        _readInt(json, const ['totalObjects', 'total_objects', 'count']) ??
+        parsedObjects.length;
+
     return ObjectDetectionResponse(
-      success: json['success'] as bool,
-      objects: filteredObjects,
-      totalObjects: filteredObjects.length,
+      success: _readBool(json, const ['success']) ?? true,
+      objects: parsedObjects,
+      totalObjects: totalObjects,
     );
+  }
+
+  static int? _readInt(Map<String, dynamic> json, List<String> keys) {
+    for (final key in keys) {
+      final value = json[key];
+      if (value is int) return value;
+      if (value is num) return value.toInt();
+      if (value is String) {
+        final parsed = int.tryParse(value);
+        if (parsed != null) return parsed;
+      }
+    }
+
+    return null;
+  }
+
+  static bool? _readBool(Map<String, dynamic> json, List<String> keys) {
+    for (final key in keys) {
+      final value = json[key];
+      if (value is bool) return value;
+      if (value is String) {
+        final normalized = value.trim().toLowerCase();
+        if (normalized == 'true') return true;
+        if (normalized == 'false') return false;
+      }
+    }
+
+    return null;
   }
 }
