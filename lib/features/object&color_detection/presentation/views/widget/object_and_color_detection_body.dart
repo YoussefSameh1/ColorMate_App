@@ -385,7 +385,6 @@ class _HeroChip extends StatelessWidget {
   }
 }
 
-
 class _InfoLine extends StatelessWidget {
   const _InfoLine({
     required this.icon,
