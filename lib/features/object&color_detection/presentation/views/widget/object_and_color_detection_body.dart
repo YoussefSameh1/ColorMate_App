@@ -18,7 +18,8 @@ class ObjectAndColorDetectionBody extends StatefulWidget {
       _ObjectAndColorDetectionBodyState();
 }
 
-class _ObjectAndColorDetectionBodyState extends State<ObjectAndColorDetectionBody> {
+class _ObjectAndColorDetectionBodyState
+    extends State<ObjectAndColorDetectionBody> {
   List<UserDetectionHistoryItem> _historyItems = const [];
   bool _isHistoryLoading = false;
 
@@ -102,10 +103,13 @@ class _ObjectAndColorDetectionBodyState extends State<ObjectAndColorDetectionBod
                           padding: const EdgeInsets.fromLTRB(18, 14, 18, 0),
                           child: _SectionCard(
                             title: 'Recent detections',
-                            subtitle: 'Tap a card to reopen the image and bounding boxes.',
+                            subtitle:
+                                'Tap a card to reopen the image and bounding boxes.',
                             child: _HistoryPreviewRow(
                               historyItems: historyItems,
-                              onTap: (item) => _openSingleHistoryItem(context, item),
+                              onTap:
+                                  (item) =>
+                                      _openSingleHistoryItem(context, item),
                             ),
                           ),
                         )
@@ -114,7 +118,8 @@ class _ObjectAndColorDetectionBodyState extends State<ObjectAndColorDetectionBod
                           padding: const EdgeInsets.fromLTRB(18, 14, 18, 0),
                           child: _SectionCard(
                             title: 'Recent detections',
-                            subtitle: 'Your saved history will appear here automatically.',
+                            subtitle:
+                                'Your saved history will appear here automatically.',
                             child: _EmptyHistoryState(),
                           ),
                         ),
@@ -122,7 +127,8 @@ class _ObjectAndColorDetectionBodyState extends State<ObjectAndColorDetectionBod
                         padding: const EdgeInsets.fromLTRB(18, 14, 18, 0),
                         child: _SectionCard(
                           title: 'Upload image',
-                          subtitle: 'Choose a new photo, then run object detection.',
+                          subtitle:
+                              'Choose a new photo, then run object detection.',
                           child: ImageUploadSection(
                             isLoading: isLoading,
                             imagePath: imagePath,
@@ -130,13 +136,18 @@ class _ObjectAndColorDetectionBodyState extends State<ObjectAndColorDetectionBod
                                 () => showImagePicker(
                                   context: context,
                                   onCameraSelected: () {
-                                    context.read<ImagePickerCubit>().pickFromCamera();
+                                    context
+                                        .read<ImagePickerCubit>()
+                                        .pickFromCamera();
                                   },
                                   onGallerySelected: () {
-                                    context.read<ImagePickerCubit>().pickFromGallery();
+                                    context
+                                        .read<ImagePickerCubit>()
+                                        .pickFromGallery();
                                   },
                                 ),
-                            detectedObjects: successState?.detectedObjects ?? const [],
+                            detectedObjects:
+                                successState?.detectedObjects ?? const [],
                             originalImageSize: successState?.originalImageSize,
                             selectedObjectId: successState?.selectedObjectId,
                             imageFit: BoxFit.contain,
@@ -144,15 +155,17 @@ class _ObjectAndColorDetectionBodyState extends State<ObjectAndColorDetectionBod
                                 successState == null
                                     ? null
                                     : (object) {
-                                      context.read<ImagePickerCubit>().onDetectedObjectTapped(
-                                        object,
-                                      );
+                                      context
+                                          .read<ImagePickerCubit>()
+                                          .onDetectedObjectTapped(object);
                                     },
                             onImageTap:
                                 successState == null
                                     ? null
                                     : (point) {
-                                      context.read<ImagePickerCubit>().onImageTapped(point);
+                                      context
+                                          .read<ImagePickerCubit>()
+                                          .onImageTapped(point);
                                     },
                           ),
                         ),
@@ -168,14 +181,18 @@ class _ObjectAndColorDetectionBodyState extends State<ObjectAndColorDetectionBod
                                   text: 'Start Detection',
                                   isLoading: isDetecting,
                                   onPressed: () {
-                                    context.read<ImagePickerCubit>().detectObjects();
+                                    context
+                                        .read<ImagePickerCubit>()
+                                        .detectObjects();
                                   },
                                 ),
                               ),
                             ],
                           ),
                         ),
-                      if (hasDetections || selectedObject != null || successState?.selectedObjectDominantColor != null)
+                      if (hasDetections ||
+                          selectedObject != null ||
+                          successState?.selectedObjectDominantColor != null)
                         Padding(
                           padding: const EdgeInsets.fromLTRB(18, 14, 18, 0),
                           child: _SectionCard(
@@ -199,13 +216,16 @@ class _ObjectAndColorDetectionBodyState extends State<ObjectAndColorDetectionBod
                                     accent: AppColors.success,
                                   ),
                                 ],
-                                if (successState?.isExtractingDominantColor == true ||
-                                    successState?.selectedObjectDominantColor != null) ...[
+                                if (successState?.isExtractingDominantColor ==
+                                        true ||
+                                    successState?.selectedObjectDominantColor !=
+                                        null) ...[
                                   const SizedBox(height: 10),
                                   _InfoLine(
                                     icon: Icons.color_lens_rounded,
                                     text:
-                                        successState?.isExtractingDominantColor ?? false
+                                        successState?.isExtractingDominantColor ??
+                                                false
                                             ? 'Dominant color: extracting...'
                                             : 'Dominant color: ${_toColorName(successState?.selectedObjectDominantColor)}',
                                     accent: AppColors.primary,
@@ -302,7 +322,9 @@ class _ObjectAndColorDetectionBodyState extends State<ObjectAndColorDetectionBod
                     const SizedBox(height: 16),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 18),
-                      child: _HistorySheetHeader(historyCount: orderedHistory.length),
+                      child: _HistorySheetHeader(
+                        historyCount: orderedHistory.length,
+                      ),
                     ),
                     const SizedBox(height: 14),
                     Expanded(
@@ -310,7 +332,9 @@ class _ObjectAndColorDetectionBodyState extends State<ObjectAndColorDetectionBod
                           orderedHistory.isEmpty
                               ? Center(
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 24,
+                                  ),
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
@@ -319,7 +343,9 @@ class _ObjectAndColorDetectionBodyState extends State<ObjectAndColorDetectionBod
                                         height: 88,
                                         decoration: BoxDecoration(
                                           color: AppColors.secondary,
-                                          borderRadius: BorderRadius.circular(24),
+                                          borderRadius: BorderRadius.circular(
+                                            24,
+                                          ),
                                         ),
                                         child: const Icon(
                                           Icons.folder_open_outlined,
@@ -330,17 +356,15 @@ class _ObjectAndColorDetectionBodyState extends State<ObjectAndColorDetectionBod
                                       const SizedBox(height: 16),
                                       Text(
                                         'No history yet',
-                                        style: AppTextStyles.medium16().copyWith(
-                                          color: AppColors.primary,
-                                        ),
+                                        style: AppTextStyles.medium16()
+                                            .copyWith(color: AppColors.primary),
                                       ),
                                       const SizedBox(height: 6),
                                       Text(
                                         'Your previous detections will appear here after you start using the feature.',
                                         textAlign: TextAlign.center,
-                                        style: AppTextStyles.regular16().copyWith(
-                                          color: Colors.black54,
-                                        ),
+                                        style: AppTextStyles.regular16()
+                                            .copyWith(color: Colors.black54),
                                       ),
                                     ],
                                   ),
@@ -348,16 +372,24 @@ class _ObjectAndColorDetectionBodyState extends State<ObjectAndColorDetectionBod
                               )
                               : ListView.separated(
                                 controller: scrollController,
-                                padding: const EdgeInsets.fromLTRB(18, 0, 18, 24),
+                                padding: const EdgeInsets.fromLTRB(
+                                  18,
+                                  0,
+                                  18,
+                                  24,
+                                ),
                                 itemCount: orderedHistory.length,
                                 separatorBuilder:
                                     (_, __) => const SizedBox(height: 12),
                                 itemBuilder: (context, index) {
                                   final item = orderedHistory[index];
-                                  final thumbnailBytes = item.decodeImageBytes();
+                                  final thumbnailBytes =
+                                      item.decodeImageBytes();
 
                                   return Material(
-                                    color: AppColors.secondary.withOpacity(0.55),
+                                    color: AppColors.secondary.withOpacity(
+                                      0.55,
+                                    ),
                                     borderRadius: BorderRadius.circular(20),
                                     child: InkWell(
                                       borderRadius: BorderRadius.circular(20),
@@ -370,7 +402,8 @@ class _ObjectAndColorDetectionBodyState extends State<ObjectAndColorDetectionBod
                                         child: Row(
                                           children: [
                                             ClipRRect(
-                                              borderRadius: BorderRadius.circular(16),
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
                                               child: Container(
                                                 width: 78,
                                                 height: 78,
@@ -378,7 +411,8 @@ class _ObjectAndColorDetectionBodyState extends State<ObjectAndColorDetectionBod
                                                 child:
                                                     thumbnailBytes == null
                                                         ? const Icon(
-                                                          Icons.image_not_supported_outlined,
+                                                          Icons
+                                                              .image_not_supported_outlined,
                                                           color: Colors.black45,
                                                         )
                                                         : Image.memory(
@@ -395,31 +429,50 @@ class _ObjectAndColorDetectionBodyState extends State<ObjectAndColorDetectionBod
                                                 children: [
                                                   Text(
                                                     'Detection #${index + 1}',
-                                                    style: AppTextStyles.medium16().copyWith(
-                                                      color: AppColors.primary,
-                                                    ),
+                                                    style:
+                                                        AppTextStyles.medium16()
+                                                            .copyWith(
+                                                              color:
+                                                                  AppColors
+                                                                      .primary,
+                                                            ),
                                                   ),
                                                   const SizedBox(height: 4),
                                                   Text(
                                                     '${item.totalObjects} detected objects',
-                                                    style: AppTextStyles.regular16().copyWith(
-                                                      color: Colors.black54,
-                                                    ),
+                                                    style:
+                                                        AppTextStyles.regular16()
+                                                            .copyWith(
+                                                              color:
+                                                                  Colors
+                                                                      .black54,
+                                                            ),
                                                   ),
                                                   const SizedBox(height: 10),
                                                   Row(
                                                     children: [
                                                       _HistoryChip(
                                                         label: 'Open',
-                                                        backgroundColor: AppColors.white,
-                                                        textColor: AppColors.primary,
+                                                        backgroundColor:
+                                                            AppColors.white,
+                                                        textColor:
+                                                            AppColors.primary,
                                                       ),
-                                                      if (item.objDetectionWithImageId != null) ...[
-                                                        const SizedBox(width: 8),
+                                                      if (item.objDetectionWithImageId !=
+                                                          null) ...[
+                                                        const SizedBox(
+                                                          width: 8,
+                                                        ),
                                                         _HistoryChip(
-                                                          label: 'ID ${item.objDetectionWithImageId}',
-                                                          backgroundColor: AppColors.primary.withOpacity(0.08),
-                                                          textColor: AppColors.primary,
+                                                          label:
+                                                              'ID ${item.objDetectionWithImageId}',
+                                                          backgroundColor:
+                                                              AppColors.primary
+                                                                  .withOpacity(
+                                                                    0.08,
+                                                                  ),
+                                                          textColor:
+                                                              AppColors.primary,
                                                         ),
                                                       ],
                                                     ],
@@ -451,7 +504,10 @@ class _ObjectAndColorDetectionBodyState extends State<ObjectAndColorDetectionBod
     );
   }
 
-  void _openHistory(BuildContext context, List<UserDetectionHistoryItem> history) {
+  void _openHistory(
+    BuildContext context,
+    List<UserDetectionHistoryItem> history,
+  ) {
     _showHistorySheet(
       context,
       history,
@@ -470,11 +526,7 @@ class _ObjectAndColorDetectionBodyState extends State<ObjectAndColorDetectionBod
 }
 
 class _SectionCard extends StatelessWidget {
-  const _SectionCard({
-    required this.title,
-    this.subtitle,
-    required this.child,
-  });
+  const _SectionCard({required this.title, this.subtitle, required this.child});
 
   final String title;
   final String? subtitle;
@@ -501,17 +553,13 @@ class _SectionCard extends StatelessWidget {
         children: [
           Text(
             title,
-            style: AppTextStyles.medium16().copyWith(
-              color: AppColors.primary,
-            ),
+            style: AppTextStyles.medium16().copyWith(color: AppColors.primary),
           ),
           if (subtitle != null) ...[
             const SizedBox(height: 4),
             Text(
               subtitle!,
-              style: AppTextStyles.regular10().copyWith(
-                color: Colors.black54,
-              ),
+              style: AppTextStyles.regular10().copyWith(color: Colors.black54),
             ),
             const SizedBox(height: 14),
           ] else
@@ -601,7 +649,10 @@ class _HeroSection extends StatelessWidget {
             spacing: 8,
             runSpacing: 8,
             children: [
-              _HeroChip(label: '$historyCount history items', icon: Icons.history_rounded),
+              _HeroChip(
+                label: '$historyCount history items',
+                icon: Icons.history_rounded,
+              ),
               _HeroChip(label: 'Upload → Detect', icon: Icons.upload_rounded),
               _HeroChip(label: 'Tap to inspect', icon: Icons.touch_app_rounded),
             ],
@@ -682,9 +733,7 @@ class _HeroChip extends StatelessWidget {
           const SizedBox(width: 6),
           Text(
             label,
-            style: AppTextStyles.medium8().copyWith(
-              color: AppColors.white,
-            ),
+            style: AppTextStyles.medium8().copyWith(color: AppColors.white),
           ),
         ],
       ),
@@ -720,9 +769,7 @@ class _EmptyHistoryState extends StatelessWidget {
           Expanded(
             child: Text(
               'No saved detections yet. The history section will fill up after your first scans.',
-              style: AppTextStyles.regular16().copyWith(
-                color: Colors.black54,
-              ),
+              style: AppTextStyles.regular16().copyWith(color: Colors.black54),
             ),
           ),
         ],
@@ -765,9 +812,7 @@ class _InfoLine extends StatelessWidget {
           Expanded(
             child: Text(
               text,
-              style: AppTextStyles.regular16().copyWith(
-                color: Colors.black87,
-              ),
+              style: AppTextStyles.regular16().copyWith(color: Colors.black87),
             ),
           ),
         ],
@@ -777,10 +822,7 @@ class _InfoLine extends StatelessWidget {
 }
 
 class _HistoryPreviewRow extends StatelessWidget {
-  const _HistoryPreviewRow({
-    required this.historyItems,
-    required this.onTap,
-  });
+  const _HistoryPreviewRow({required this.historyItems, required this.onTap});
 
   final List<UserDetectionHistoryItem> historyItems;
   final ValueChanged<UserDetectionHistoryItem> onTap;
@@ -803,9 +845,7 @@ class _HistoryPreviewRow extends StatelessWidget {
             const Spacer(),
             Text(
               '${historyItems.length} total',
-              style: AppTextStyles.regular10().copyWith(
-                color: Colors.black45,
-              ),
+              style: AppTextStyles.regular10().copyWith(color: Colors.black45),
             ),
           ],
         ),
@@ -827,7 +867,9 @@ class _HistoryPreviewRow extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: AppColors.secondary.withOpacity(0.55),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppColors.primary.withOpacity(0.06)),
+                    border: Border.all(
+                      color: AppColors.primary.withOpacity(0.06),
+                    ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -906,10 +948,7 @@ class _HistorySheetHeader extends StatelessWidget {
             color: AppColors.secondary,
             borderRadius: BorderRadius.circular(18),
           ),
-          child: const Icon(
-            Icons.history_rounded,
-            color: AppColors.primary,
-          ),
+          child: const Icon(Icons.history_rounded, color: AppColors.primary),
         ),
         const SizedBox(width: 12),
         Expanded(

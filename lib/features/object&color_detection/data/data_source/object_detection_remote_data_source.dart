@@ -6,24 +6,28 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 class ObjectDetectionRemoteDataSource {
-  ObjectDetectionRemoteDataSource({Dio? dio, AuthSessionManager? sessionManager})
-    : _dio =
-          dio ??
-          Dio(
-            BaseOptions(
-              baseUrl: 'http://colormate.runasp.net',
-              connectTimeout: const Duration(seconds: 20),
-              receiveTimeout: const Duration(seconds: 20),
-            ),
-          ),
-      _sessionManager =
-          sessionManager ?? AuthSessionManager(storage: SimpleAuthStorage());
+  ObjectDetectionRemoteDataSource({
+    Dio? dio,
+    AuthSessionManager? sessionManager,
+  }) : _dio =
+           dio ??
+           Dio(
+             BaseOptions(
+               baseUrl: 'http://colormate.runasp.net',
+               connectTimeout: const Duration(seconds: 20),
+               receiveTimeout: const Duration(seconds: 20),
+             ),
+           ),
+       _sessionManager =
+           sessionManager ?? AuthSessionManager(storage: SimpleAuthStorage());
 
   final AuthSessionManager _sessionManager;
 
   final Dio _dio;
 
-  Future<Map<String, dynamic>> detectObjects({required String imagePath}) async {
+  Future<Map<String, dynamic>> detectObjects({
+    required String imagePath,
+  }) async {
     try {
       final normalizedPath = imagePath.replaceFirst('file://', '');
       final imageFile = File(normalizedPath);
@@ -83,7 +87,9 @@ class ObjectDetectionRemoteDataSource {
 
       return _extractMapList(response.data);
     } on DioException catch (error) {
-      _logDebug('ObjDetection history error status: ${error.response?.statusCode}');
+      _logDebug(
+        'ObjDetection history error status: ${error.response?.statusCode}',
+      );
       _logDebug('ObjDetection history error body: ${error.response?.data}');
 
       if (_isEmptyHistoryResponse(error)) {
@@ -105,24 +111,14 @@ class ObjectDetectionRemoteDataSource {
     }
   }
 
-  Future<Response<dynamic>> _postAuthorized(
-    String path, {
-    dynamic data,
-  }) async {
+  Future<Response<dynamic>> _postAuthorized(String path, {dynamic data}) async {
     final headers = await _buildAuthorizedHeaders();
-    return _dio.post(
-      path,
-      data: data,
-      options: Options(headers: headers),
-    );
+    return _dio.post(path, data: data, options: Options(headers: headers));
   }
 
   Future<Response<dynamic>> _getAuthorized(String path) async {
     final headers = await _buildAuthorizedHeaders();
-    return _dio.get(
-      path,
-      options: Options(headers: headers),
-    );
+    return _dio.get(path, options: Options(headers: headers));
   }
 
   Future<Map<String, dynamic>> _buildAuthorizedHeaders() async {

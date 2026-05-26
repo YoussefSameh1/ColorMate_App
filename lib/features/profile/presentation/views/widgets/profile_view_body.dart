@@ -71,14 +71,16 @@ class ProfileViewBody extends StatelessWidget {
                             ),
                             actions: [
                               TextButton(
-                                onPressed: () => Navigator.pop(dialogContext, false),
+                                onPressed:
+                                    () => Navigator.pop(dialogContext, false),
                                 child: const Text('Cancel'),
                               ),
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.red,
                                 ),
-                                onPressed: () => Navigator.pop(dialogContext, true),
+                                onPressed:
+                                    () => Navigator.pop(dialogContext, true),
                                 child: const Text('Delete'),
                               ),
                             ],

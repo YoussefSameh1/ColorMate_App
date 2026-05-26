@@ -29,11 +29,7 @@ class _ProfileViewState extends State<ProfileView> {
       body: BlocListener<ProfileCubit, ProfileState>(
         listener: (context, state) {
           if (state is ProfileDeletionSuccess) {
-            Loaders.success(
-              context,
-              title: 'Deleted',
-              message: state.message,
-            );
+            Loaders.success(context, title: 'Deleted', message: state.message);
             context.go(Routes.loginView);
             return;
           }

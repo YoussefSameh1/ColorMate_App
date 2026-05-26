@@ -9,10 +9,7 @@ class ImagePickerInitial extends ImagePickerState {
   final List<UserDetectionHistoryItem> history;
   final bool isLoadingHistory;
 
-  ImagePickerInitial({
-    this.history = const [],
-    this.isLoadingHistory = false,
-  });
+  ImagePickerInitial({this.history = const [], this.isLoadingHistory = false});
 
   ImagePickerInitial copyWith({
     List<UserDetectionHistoryItem>? history,

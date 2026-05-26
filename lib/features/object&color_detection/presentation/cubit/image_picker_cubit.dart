@@ -107,7 +107,8 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
     }
 
     try {
-      final items = await _objectDetectionRepository.fetchUserDetectionsHistory();
+      final items =
+          await _objectDetectionRepository.fetchUserDetectionsHistory();
       final latest = state;
       if (latest is ImagePickerSuccess) {
         emit(latest.copyWith(history: items, isLoadingHistory: false));
@@ -138,7 +139,10 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
       }
 
       final tmpDir = Directory.systemTemp;
-      final file = await File('${tmpDir.path}/colormate_history_${DateTime.now().microsecondsSinceEpoch}.png').create();
+      final file =
+          await File(
+            '${tmpDir.path}/colormate_history_${DateTime.now().microsecondsSinceEpoch}.png',
+          ).create();
       await file.writeAsBytes(bytes, flush: true);
 
       final imageSize = await _dominantColorExtractor.getImageSize(file.path);

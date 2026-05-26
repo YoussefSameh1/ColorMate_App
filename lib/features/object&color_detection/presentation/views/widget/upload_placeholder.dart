@@ -36,7 +36,9 @@ class UploadPlaceholder extends StatelessWidget {
                   const SizedBox(height: 14),
                   Text(
                     'Upload Image',
-                    style: AppTextStyles.bold18().copyWith(color: AppColors.primary),
+                    style: AppTextStyles.bold18().copyWith(
+                      color: AppColors.primary,
+                    ),
                   ),
                   const SizedBox(height: 6),
                   Padding(

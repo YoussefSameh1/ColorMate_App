@@ -111,11 +111,14 @@ class _ResetPasswordFormSectionState extends State<ResetPasswordFormSection> {
                           ? null
                           : () {
                             if (_formKey.currentState?.validate() ?? false) {
-                              final resetToken = widget.resetToken?.trim() ?? '';
+                              final resetToken =
+                                  widget.resetToken?.trim() ?? '';
                               if (resetToken.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                    content: Text('Reset token is missing. Please verify the OTP again.'),
+                                    content: Text(
+                                      'Reset token is missing. Please verify the OTP again.',
+                                    ),
                                     backgroundColor: Colors.red,
                                     behavior: SnackBarBehavior.floating,
                                   ),

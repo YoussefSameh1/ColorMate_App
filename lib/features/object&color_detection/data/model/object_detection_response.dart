@@ -16,7 +16,9 @@ class ObjectDetectionResponse {
       success: json['success'] as bool,
       objects:
           (json['objects'] as List)
-              .map((item) => DetectedObject.fromJson(item as Map<String, dynamic>))
+              .map(
+                (item) => DetectedObject.fromJson(item as Map<String, dynamic>),
+              )
               .toList(),
       totalObjects: json['total_objects'] as int,
     );

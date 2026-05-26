@@ -108,9 +108,10 @@ class AuthApiService {
             data: attempt.body,
             options: Options(
               contentType: attempt.contentType,
-              headers: normalizedAccessToken == null
-                  ? null
-                  : {'Authorization': 'Bearer $normalizedAccessToken'},
+              headers:
+                  normalizedAccessToken == null
+                      ? null
+                      : {'Authorization': 'Bearer $normalizedAccessToken'},
             ),
           );
 
@@ -156,9 +157,10 @@ class AuthApiService {
             data: attempt.body,
             options: Options(
               contentType: attempt.contentType,
-              headers: normalizedAccessToken == null
-                  ? null
-                  : {'Authorization': 'Bearer $normalizedAccessToken'},
+              headers:
+                  normalizedAccessToken == null
+                      ? null
+                      : {'Authorization': 'Bearer $normalizedAccessToken'},
             ),
           );
 
