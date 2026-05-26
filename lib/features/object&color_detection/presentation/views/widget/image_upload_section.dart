@@ -34,7 +34,7 @@ class ImageUploadSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.sizeOf(context).height;
     final previewHeight =
-        imagePath != null ? (screenHeight * 0.52).clamp(420.0, 560.0) : 320.h;
+        imagePath != null ? (screenHeight * 0.52).clamp(420.0, 560.0) : 270.h;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 30),
@@ -47,7 +47,7 @@ class ImageUploadSection extends StatelessWidget {
         child: Container(
           height: previewHeight,
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           child:
               isLoading
                   ? const Center(child: CircularProgressIndicator())

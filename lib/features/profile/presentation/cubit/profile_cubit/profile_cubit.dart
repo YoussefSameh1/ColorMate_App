@@ -169,6 +169,17 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
+  Future<void> deleteAccount() async {
+    _safeEmit(const ProfileDeletionInProgress());
+
+    try {
+      final message = await _repository.deleteAccount();
+      _safeEmit(ProfileDeletionSuccess(message: message));
+    } catch (e) {
+      _safeEmit(ProfileError(message: e.toString()));
+    }
+  }
+
   void clearSelectedImage() {
     _selectedImagePath = null;
     fetchUserProfile();

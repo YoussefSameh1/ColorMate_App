@@ -1,6 +1,9 @@
 import 'package:colormate_app/core/routing/routes.dart';
 import 'package:colormate_app/core/utils/main_layout.dart';
 import 'package:colormate_app/features/authentication/login/presentation/views/login_view.dart';
+import 'package:colormate_app/features/authentication/presentation/views/forgot_password_view_refactored.dart';
+import 'package:colormate_app/features/authentication/presentation/views/verify_password_otp_view_refactored.dart';
+import 'package:colormate_app/features/authentication/presentation/views/reset_password_view_refactored.dart';
 import 'package:colormate_app/features/games/color_collector_game/presentation/views/color_collector_game_view.dart';
 import 'package:colormate_app/features/games/color_the_picture_game/presentation/views/color_the_picture_game_view.dart';
 import 'package:colormate_app/features/games/find_the_object_game/presentation/views/find_the_object_game.dart';
@@ -95,6 +98,37 @@ abstract class AppRouter {
         pageBuilder:
             (context, state) => slideTransitionPage(
               child: const LoginView(),
+              key: state.pageKey,
+            ),
+      ),
+      GoRoute(
+        path: Routes.forgotPasswordView,
+        pageBuilder:
+            (context, state) => slideTransitionPage(
+              child: const ForgotPasswordView(),
+              key: state.pageKey,
+            ),
+      ),
+      GoRoute(
+        path: Routes.verifyPasswordOtpView,
+        pageBuilder:
+            (context, state) => slideTransitionPage(
+              child: VerifyPasswordOtpView(
+                email: state.uri.queryParameters['email'] ?? '',
+              ),
+              key: state.pageKey,
+            ),
+      ),
+      GoRoute(
+        path: Routes.resetPasswordView,
+        pageBuilder:
+            (context, state) => slideTransitionPage(
+              child: ResetPasswordView(
+                email: state.uri.queryParameters['email'],
+                resetToken:
+                    state.uri.queryParameters['resetToken'] ??
+                    state.uri.queryParameters['token'],
+              ),
               key: state.pageKey,
             ),
       ),

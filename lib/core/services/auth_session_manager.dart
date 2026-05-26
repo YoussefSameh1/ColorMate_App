@@ -1,5 +1,3 @@
-import 'package:dio/dio.dart';
-
 import 'package:colormate_app/core/storage/simple_auth_storage.dart';
 import 'package:colormate_app/features/authentication/auth_data/services/auth_api_service.dart';
 

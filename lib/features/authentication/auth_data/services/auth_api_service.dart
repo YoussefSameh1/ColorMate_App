@@ -106,13 +106,11 @@ class AuthApiService {
           final response = await _dio.post(
             '/api/Users/refreshToken',
             data: attempt.body,
-            queryParameters: attempt.query,
             options: Options(
               contentType: attempt.contentType,
-              headers:
-                  normalizedAccessToken == null
-                      ? null
-                      : {'Authorization': 'Bearer $normalizedAccessToken'},
+              headers: normalizedAccessToken == null
+                  ? null
+                  : {'Authorization': 'Bearer $normalizedAccessToken'},
             ),
           );
 
@@ -156,13 +154,11 @@ class AuthApiService {
           final response = await _dio.post(
             '/api/Users/revokeToken',
             data: attempt.body,
-            queryParameters: attempt.query,
             options: Options(
               contentType: attempt.contentType,
-              headers:
-                  normalizedAccessToken == null
-                      ? null
-                      : {'Authorization': 'Bearer $normalizedAccessToken'},
+              headers: normalizedAccessToken == null
+                  ? null
+                  : {'Authorization': 'Bearer $normalizedAccessToken'},
             ),
           );
 
@@ -418,11 +414,6 @@ class AuthApiService {
     return null;
   }
 
-  String _asBearer(String rawToken) {
-    final normalized = _normalizeToken(rawToken) ?? rawToken;
-    return 'Bearer $normalized';
-  }
-
   String? _normalizeToken(String? rawToken) {
     if (rawToken == null || rawToken.trim().isEmpty) {
       return null;
@@ -437,7 +428,6 @@ class AuthApiService {
     required String refreshToken,
     String? accessToken,
   }) {
-    final _ = accessToken;
     final normalizedRefreshToken = refreshToken.trim();
     final attempts = <_TokenExchangeAttempt>[
       // Swagger indicates raw string body; try this first.
@@ -468,9 +458,8 @@ class AuthApiService {
 }
 
 class _TokenExchangeAttempt {
-  const _TokenExchangeAttempt({this.body, this.query, this.contentType});
+  const _TokenExchangeAttempt({this.body, this.contentType});
 
   final dynamic body;
-  final Map<String, dynamic>? query;
   final String? contentType;
 }

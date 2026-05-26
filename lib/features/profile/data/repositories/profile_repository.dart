@@ -4,4 +4,5 @@ abstract class ProfileRepository {
   Future<UserProfileModel> getUserProfile();
   Future<void> updateUserProfile(UserProfileModel profile);
   Future<String?> updateProfilePicture(String imagePath);
+  Future<String> deleteAccount();
 }

@@ -4,9 +4,11 @@ import 'package:colormate_app/core/services/image_picker_service.dart';
 import 'package:colormate_app/features/object&color_detection/presentation/cubit/dominant_color_extractor.dart';
 import 'package:colormate_app/features/object&color_detection/data/repo/object_detection_repository.dart';
 import 'package:colormate_app/features/object&color_detection/data/model/detected_object.dart';
+import 'package:colormate_app/features/object&color_detection/data/model/user_detection_history_item.dart';
 import 'package:colormate_app/features/object&color_detection/presentation/cubit/image_picker_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:io';
 
 class ImagePickerCubit extends Cubit<ImagePickerState> {
   final ImagePickerService _imagePickerService;
@@ -22,14 +24,21 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
        _dominantColorExtractor = dominantColorExtractor,
        super(ImagePickerInitial());
 
+  List<UserDetectionHistoryItem> _historyFromState(ImagePickerState state) {
+    if (state is ImagePickerSuccess) return state.history;
+    if (state is ImagePickerInitial) return state.history;
+    return const [];
+  }
+
   Future<void> pickFromCamera() async {
+    final cachedHistory = _historyFromState(state);
     emit(ImagePickerLoading());
     try {
       final path = await _imagePickerService.pickImageFromCamera();
       if (path != null) {
-        emit(ImagePickerSuccess(path));
+        emit(ImagePickerSuccess(path, history: cachedHistory));
       } else {
-        emit(ImagePickerInitial());
+        emit(ImagePickerInitial(history: cachedHistory));
       }
     } catch (e) {
       emit(ImagePickerError(e.toString()));
@@ -37,13 +46,14 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
   }
 
   Future<void> pickFromGallery() async {
+    final cachedHistory = _historyFromState(state);
     emit(ImagePickerLoading());
     try {
       final path = await _imagePickerService.pickImageFromGallery();
       if (path != null) {
-        emit(ImagePickerSuccess(path));
+        emit(ImagePickerSuccess(path, history: cachedHistory));
       } else {
-        emit(ImagePickerInitial());
+        emit(ImagePickerInitial(history: cachedHistory));
       }
     } catch (e) {
       emit(ImagePickerError(e.toString()));
@@ -51,10 +61,10 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
   }
 
   void reset() {
-    emit(ImagePickerInitial());
+    emit(ImagePickerInitial(history: _historyFromState(state)));
   }
 
-  Future<void> detectObjectsWithMockData() async {
+  Future<void> detectObjects() async {
     final currentState = state;
     if (currentState is! ImagePickerSuccess) {
       return;
@@ -85,6 +95,66 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
       emit(currentState.copyWith(isDetecting: false));
       emit(ImagePickerError(e.toString()));
       emit(currentState.copyWith(isDetecting: false));
+    }
+  }
+
+  Future<List<UserDetectionHistoryItem>> fetchUserDetectionsHistory() async {
+    final currentState = state;
+    if (currentState is ImagePickerSuccess) {
+      emit(currentState.copyWith(isLoadingHistory: true));
+    } else if (currentState is ImagePickerInitial) {
+      emit(currentState.copyWith(isLoadingHistory: true));
+    }
+
+    try {
+      final items = await _objectDetectionRepository.fetchUserDetectionsHistory();
+      final latest = state;
+      if (latest is ImagePickerSuccess) {
+        emit(latest.copyWith(history: items, isLoadingHistory: false));
+      } else if (latest is ImagePickerInitial) {
+        emit(latest.copyWith(history: items, isLoadingHistory: false));
+      }
+
+      return items;
+    } catch (e) {
+      final latest = state;
+      if (latest is ImagePickerSuccess) {
+        emit(latest.copyWith(isLoadingHistory: false));
+      } else if (latest is ImagePickerInitial) {
+        emit(latest.copyWith(isLoadingHistory: false));
+      }
+      emit(ImagePickerError(e.toString()));
+      return const <UserDetectionHistoryItem>[];
+    }
+  }
+
+  /// Open a history item: write its base64 image to a temporary file and
+  /// set the current state to show that image with the parsed detected objects.
+  Future<void> openHistoryItem(UserDetectionHistoryItem item) async {
+    try {
+      final bytes = item.decodeImageBytes();
+      if (bytes == null) {
+        throw Exception('Invalid image data in history item.');
+      }
+
+      final tmpDir = Directory.systemTemp;
+      final file = await File('${tmpDir.path}/colormate_history_${DateTime.now().microsecondsSinceEpoch}.png').create();
+      await file.writeAsBytes(bytes, flush: true);
+
+      final imageSize = await _dominantColorExtractor.getImageSize(file.path);
+
+      emit(
+        ImagePickerSuccess(
+          file.path,
+          detectedObjects: item.objects,
+          history: _historyFromState(state),
+          originalImageSize: imageSize,
+          isDetecting: false,
+          isExtractingDominantColor: false,
+        ),
+      );
+    } catch (e) {
+      emit(ImagePickerError(e.toString()));
     }
   }
 

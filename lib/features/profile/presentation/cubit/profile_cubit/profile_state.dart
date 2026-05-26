@@ -43,3 +43,13 @@ class ProfileUpdateSuccess extends ProfileState {
 class ProfileImagePicking extends ProfileState {
   const ProfileImagePicking();
 }
+
+class ProfileDeletionInProgress extends ProfileState {
+  const ProfileDeletionInProgress();
+}
+
+class ProfileDeletionSuccess extends ProfileState {
+  final String message;
+
+  const ProfileDeletionSuccess({required this.message});
+}

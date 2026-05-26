@@ -69,16 +69,31 @@ class LoginFormSection extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Checkbox(
-                value: isRememberMe,
-                onChanged: (value) {
-                  if (value != null) {
-                    onRememberMeChanged(value);
-                  }
-                },
+              Row(
+                children: [
+                  Checkbox(
+                    value: isRememberMe,
+                    onChanged: (value) {
+                      if (value != null) {
+                        onRememberMeChanged(value);
+                      }
+                    },
+                  ),
+                  const Text('Remember me'),
+                ],
               ),
-              const Text('Remember me'),
+              GestureDetector(
+                onTap:
+                    () => GoRouter.of(context).push(Routes.forgotPasswordView),
+                child: Text(
+                  'Forgot password?',
+                  style: AppTextStyles.bold10().copyWith(
+                    color: AppColors.primary,
+                  ),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 30),

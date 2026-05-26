@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:colormate_app/features/profile/data/services/profile_api_service.dart';
 import 'package:dio/dio.dart';
 
 import 'package:colormate_app/core/storage/simple_auth_storage.dart';
@@ -23,6 +24,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
   ProfileRepositoryImpl({
     Dio? dio,
     AuthApiService? authApiService,
+    ProfileApiService? profileApiService,
     AuthSessionManager? authSessionManager,
   }) : _dio =
            dio ??
@@ -33,7 +35,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
                receiveTimeout: const Duration(seconds: 20),
              ),
            ),
-       _authApiService = authApiService ?? AuthApiService(),
+       _profileApiService = profileApiService ?? ProfileApiService(),
        _sessionManager =
            authSessionManager ??
            AuthSessionManager(
@@ -42,7 +44,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
            );
 
   final Dio _dio;
-  final AuthApiService _authApiService;
+  final ProfileApiService _profileApiService;
   final AuthSessionManager _sessionManager;
 
   @override
@@ -125,6 +127,31 @@ class ProfileRepositoryImpl implements ProfileRepository {
       throw ProfileApiException(_toUserFriendlyMessage(error));
     } on ProfileApiException {
       rethrow;
+    } catch (_) {
+      throw const ProfileApiException('Unexpected error happened.');
+    }
+  }
+
+  @override
+  Future<String> deleteAccount() async {
+    try {
+      await _sessionManager.init();
+      final token = await _sessionManager.getValidAccessToken();
+      final message = await _profileApiService.deleteAccount(
+        accessToken: token,
+      );
+      await _sessionManager.clearSession();
+      return message;
+    } on ProfileApiException catch (error) {
+      if (error.message.toLowerCase().contains('unauthorized')) {
+        await _sessionManager.clearSession();
+      }
+      rethrow;
+    } on DioException catch (error) {
+      if ((error.response?.statusCode ?? 0) == 401) {
+        await _sessionManager.clearSession();
+      }
+      throw ProfileApiException(_toUserFriendlyMessage(error));
     } catch (_) {
       throw const ProfileApiException('Unexpected error happened.');
     }

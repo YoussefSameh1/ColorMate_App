@@ -28,13 +28,23 @@ class _ProfileViewState extends State<ProfileView> {
     return Scaffold(
       body: BlocListener<ProfileCubit, ProfileState>(
         listener: (context, state) {
+          if (state is ProfileDeletionSuccess) {
+            Loaders.success(
+              context,
+              title: 'Deleted',
+              message: state.message,
+            );
+            context.go(Routes.loginView);
+            return;
+          }
+
           if (state is ProfileError) {
             Loaders.error(context, title: 'Oops!', message: state.message);
           }
         },
         child: BlocBuilder<ProfileCubit, ProfileState>(
           builder: (context, state) {
-            if (state is ProfileLoading) {
+            if (state is ProfileLoading || state is ProfileDeletionInProgress) {
               return const Center(child: CircularProgressIndicator());
             }
 

@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:colormate_app/core/storage/simple_auth_storage.dart';
 import 'package:colormate_app/features/authentication/auth_data/models/login_request_model.dart';
@@ -12,9 +11,6 @@ class LoginCubit extends Cubit<LoginState> {
   LoginCubit(this._authApiService) : super(LoginState.initial());
 
   final AuthApiService _authApiService;
-  static const String _googleServerClientId = String.fromEnvironment(
-    'GOOGLE_SERVER_CLIENT_ID',
-  );
 
   Future<void> login({
     required String userNameOrEmail,

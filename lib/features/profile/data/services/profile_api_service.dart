@@ -43,6 +43,21 @@ class ProfileApiService {
     }
   }
 
+  Future<String> deleteAccount({required String accessToken}) async {
+    try {
+      final response = await _dio.delete(
+        '/api/Users/delete-account',
+        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+      );
+
+      return _extractMessage(response.data) ?? 'Account deleted successfully.';
+    } on DioException catch (error) {
+      throw ProfileApiException(_toUserFriendlyMessage(error));
+    } catch (_) {
+      throw const ProfileApiException('Unexpected error happened.');
+    }
+  }
+
   String _toUserFriendlyMessage(DioException error) {
     if (error.type == DioExceptionType.connectionTimeout ||
         error.type == DioExceptionType.sendTimeout ||
