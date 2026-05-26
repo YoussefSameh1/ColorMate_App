@@ -12,15 +12,22 @@ class ObjectDetectionResponse {
   });
 
   factory ObjectDetectionResponse.fromJson(Map<String, dynamic> json) {
+    const minConfidence = 0.5;
+
+    final rawObjects = json['objects'];
+    final filteredObjects =
+        rawObjects is List
+            ? rawObjects
+                .whereType<Map<String, dynamic>>()
+                .map(DetectedObject.fromJson)
+                .where((object) => object.confidence >= minConfidence)
+                .toList(growable: false)
+            : const <DetectedObject>[];
+
     return ObjectDetectionResponse(
       success: json['success'] as bool,
-      objects:
-          (json['objects'] as List)
-              .map(
-                (item) => DetectedObject.fromJson(item as Map<String, dynamic>),
-              )
-              .toList(),
-      totalObjects: json['total_objects'] as int,
+      objects: filteredObjects,
+      totalObjects: filteredObjects.length,
     );
   }
 }

@@ -17,19 +17,24 @@ class UserDetectionHistoryItem {
   });
 
   factory UserDetectionHistoryItem.fromJson(Map<String, dynamic> json) {
+    const minConfidence = 0.5;
+
     final objs = <DetectedObject>[];
     final rawObjects = json['objects'];
     if (rawObjects is List) {
       for (final item in rawObjects) {
         if (item is Map<String, dynamic>) {
-          objs.add(DetectedObject.fromJson(item));
+          final detectedObject = DetectedObject.fromJson(item);
+          if (detectedObject.confidence >= minConfidence) {
+            objs.add(detectedObject);
+          }
         }
       }
     }
 
     return UserDetectionHistoryItem(
       imageBase64: _normalizeBase64(json['imageBase64']),
-      totalObjects: json['totalObjects'] as int? ?? objs.length,
+      totalObjects: objs.length,
       objects: objs,
       objDetectionWithImageId: json['objDetectionWithImageId'] as int?,
     );
