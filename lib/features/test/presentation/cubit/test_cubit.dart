@@ -23,6 +23,8 @@ class TestCubit extends Cubit<TestState> {
     storage: SimpleAuthStorage(),
   );
 
+  final SimpleAuthStorage _storage = SimpleAuthStorage();
+
   final Dio _dio = Dio(
     BaseOptions(
       baseUrl: 'http://colormate.runasp.net/api/',
@@ -63,35 +65,47 @@ class TestCubit extends Cubit<TestState> {
   Future<void> _submitAnswers(List<Map<String, dynamic>> answers) async {
     emit(TestLoading());
     try {
-      // ✅ Initialize storage before reading anything
       await _sessionManager.init();
-
-      // ✅ getValidAccessToken() handles 3 cases automatically:
-      //    1. Token is valid       → returns it immediately
-      //    2. Token is expired     → refreshes it, saves new one, returns it
-      //    3. Refresh fails/missing → throws AuthSessionException
       final token = await _sessionManager.getValidAccessToken();
 
       final response = await _dio.post(
         'Ishihara/submit-answers',
         data: answers,
-        options: Options(
-          headers: {'Authorization': 'Bearer $token'},
-        ),
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
 
       final data = response.data;
 
+      final diagnosis = data['diagnosis'] ?? 'Unknown';
+      final correctAnswerCount = data['correctAnswerCount'] ?? 0;
+      final protanAnswerCount = data['protanAnswerCount'] ?? 0;
+      final deutanAnswerCount = data['deutanAnswerCount'] ?? 0;
+
+      // ✅ Format today's date as the test date
+      final now = DateTime.now();
+      final testDate =
+          '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+
+      // ✅ Build a readable description from the scores
+      final testDescription =
+          'Correct: $correctAnswerCount | Protan: $protanAnswerCount | Deutan: $deutanAnswerCount';
+
+      // ✅ Save to SharedPreferences so profile screen can read it
+      await _storage.saveTestResult(
+        diagnosis: diagnosis,
+        testDate: testDate,
+        testDescription: testDescription,
+      );
+
       lastResult = TestFinished(
-        diagnosis: data['diagnosis'] ?? 'Unknown',
-        correctAnswerCount: data['correctAnswerCount'] ?? 0,
-        protanAnswerCount: data['protanAnswerCount'] ?? 0,
-        deutanAnswerCount: data['deutanAnswerCount'] ?? 0,
+        diagnosis: diagnosis,
+        correctAnswerCount: correctAnswerCount,
+        protanAnswerCount: protanAnswerCount,
+        deutanAnswerCount: deutanAnswerCount,
       );
 
       emit(lastResult!);
     } on AuthSessionException catch (e) {
-      // ✅ Token missing or refresh failed — user must log in again
       emit(TestError(e.message));
     } on DioException catch (e) {
       final message = switch (e.type) {

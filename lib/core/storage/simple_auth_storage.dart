@@ -7,6 +7,10 @@ class SimpleAuthStorage {
   static const String _tokenExpiryKey = 'token_expiry';
   static const String _refreshTokenExpiryKey = 'refresh_token_expiry';
 
+  static const String _lastTestDateKey = 'last_test_date';
+  static const String _colorblindnessTypeKey = 'colorblindness_type';
+  static const String _testDescriptionKey = 'test_description';
+
   static final SimpleAuthStorage _instance = SimpleAuthStorage._internal();
 
   SimpleAuthStorage._internal();
@@ -134,5 +138,32 @@ class SimpleAuthStorage {
     }
 
     return DateTime.now().toUtc().isAfter(expiry.toUtc().subtract(skew));
+  }
+
+
+  Future<void> saveTestResult({
+    required String diagnosis,
+    required String testDate,
+    required String testDescription,
+  }) async {
+    await _ensureInitialized();
+    await _prefs.setString(_lastTestDateKey, testDate);
+    await _prefs.setString(_colorblindnessTypeKey, diagnosis);
+    await _prefs.setString(_testDescriptionKey, testDescription);
+  }
+
+  String? getSavedLastTestDate() {
+    if (!_isInitialized) return null;
+    return _prefs.getString(_lastTestDateKey);
+  }
+
+  String? getSavedColorblindnessType() {
+    if (!_isInitialized) return null;
+    return _prefs.getString(_colorblindnessTypeKey);
+  }
+
+  String? getSavedTestDescription() {
+    if (!_isInitialized) return null;
+    return _prefs.getString(_testDescriptionKey);
   }
 }
