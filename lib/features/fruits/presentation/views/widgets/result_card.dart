@@ -6,15 +6,20 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class ResultCard extends StatelessWidget {
   final String status;
   final double spoiledPercent;
+  final double confidence;
 
   const ResultCard({
     super.key,
     required this.status,
     required this.spoiledPercent,
+    required this.confidence,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isRotten = status == 'Not Fresh';
+    final statusColor = isRotten ? Colors.red : Colors.green;
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(16.r),
@@ -25,20 +30,17 @@ class ResultCard extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            'Fresh quality result',
+            'Fresh Quality Result',
             style: Styles.buttonTextStyle.copyWith(color: kPrimaryColor),
           ),
-          SizedBox(height: 30.h),
-
+          SizedBox(height: 20.h),
           Text(
-            'Status: $status',
-            style: Styles.testQuestionTextStyle,
+            status,
+            style: Styles.testQuestionTextStyle.copyWith(color: statusColor),
           ),
-
           SizedBox(height: 6.h),
-
           Text(
-            'Spoiled area ${spoiledPercent.toStringAsFixed(0)}%',
+            'Spoiled area: ${spoiledPercent.toStringAsFixed(1)}%',
             style: Styles.testQuestionTextStyle,
           ),
         ],

@@ -47,24 +47,35 @@ class FruitResultViewBody extends StatelessWidget {
     if (state is FruitResultSuccess) {
       return ImageCard(imagePath: state.imagePath);
     }
-
-    return const SizedBox();
+    // ✅ Show the image immediately while loading — better UX
+    return ImageCard(imagePath: imagePath);
   }
 
   Widget _buildResult(FruitResultState state) {
     if (state is FruitResultLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const Column(
+        children: [
+          CircularProgressIndicator(),
+          SizedBox(height: 12),
+          Text('Analyzing fruit...'),
+        ],
+      );
     }
 
     if (state is FruitResultSuccess) {
       return ResultCard(
         status: state.status,
         spoiledPercent: state.spoiledPercent,
+        confidence: state.confidence, // ✅ pass confidence
       );
     }
 
     if (state is FruitResultError) {
-      return Text(state.message);
+      return Text(
+        state.message,
+        style: const TextStyle(color: Colors.red),
+        textAlign: TextAlign.center,
+      );
     }
 
     return const SizedBox();
