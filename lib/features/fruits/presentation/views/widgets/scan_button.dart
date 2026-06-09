@@ -1,3 +1,4 @@
+// scan_button.dart
 import 'package:colormate_app/core/routing/routes.dart';
 import 'package:colormate_app/core/utils/constants.dart';
 import 'package:colormate_app/features/matching/presentation/cubit/upload_image_cubit.dart';
@@ -29,23 +30,23 @@ class ScanButton extends StatelessWidget {
           },
         );
       },
-      icon: const Icon(
+      icon: Icon(
         Icons.cloud_upload_outlined,
         color: Colors.white,
-        size: 24,
+        size: 22.r,  // responsive icon size
       ),
       label: Text(
         'Scan fruit',
         style: TextStyle(
           color: Colors.white,
-          fontSize: 24.sp,
+          fontSize: 18.sp,  // was 24.sp — more balanced across screen sizes
           fontWeight: FontWeight.w600,
         ),
       ),
       style: ElevatedButton.styleFrom(
         backgroundColor: kPrimaryColor,
-        padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 14.h),  // responsive padding
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.r)),
         elevation: 2,
       ),
     );

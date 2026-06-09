@@ -1,3 +1,4 @@
+// color_blindness_type_section.dart
 import 'package:colormate_app/core/utils/constants.dart';
 import 'package:colormate_app/core/utils/styles.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +12,8 @@ class ColorBlindnessTypeSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: 16.w, right: 16.w, top: 10.h),
-      padding: EdgeInsets.symmetric(vertical: 20.h),
+      margin: EdgeInsets.only(top: 10.h),   // removed horizontal margin — parent already has 16.w padding
+      padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 12.w),
       width: double.infinity,
       decoration: BoxDecoration(
         border: Border.all(color: kPrimaryColor, width: 2.w),
@@ -24,9 +25,15 @@ class ColorBlindnessTypeSection extends StatelessWidget {
             diagnosis,
             style: Styles.buttonTextStyle.copyWith(color: kPrimaryColor),
             textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
-          SizedBox(height: 16.h),
-          Text('Color Vision Test Result', style: Styles.testQuestionTextStyle),
+          SizedBox(height: 12.h),
+          Text(
+            'Color Vision Test Result',
+            style: Styles.testQuestionTextStyle,
+            textAlign: TextAlign.center,
+          ),
         ],
       ),
     );

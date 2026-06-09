@@ -1,3 +1,4 @@
+// test_result_view_body.dart
 import 'package:colormate_app/core/routing/routes.dart';
 import 'package:colormate_app/core/utils/constants.dart';
 import 'package:colormate_app/core/widget/custom_app_bar.dart';
@@ -30,16 +31,13 @@ class TestResultViewBody extends StatelessWidget {
             child: Column(
               children: [
                 ColorBlindnessTypeSection(diagnosis: result.diagnosis),
-
                 InfoAboutColorBlindnessTypeSection(
                   diagnosis: result.diagnosis,
                   correctAnswerCount: result.correctAnswerCount,
                   protanAnswerCount: result.protanAnswerCount,
                   deutanAnswerCount: result.deutanAnswerCount,
                 ),
-
                 SizedBox(height: 20.h),
-
                 TestResultButton(
                   text: 'Retake Test',
                   textColor: Colors.white,
@@ -49,9 +47,7 @@ class TestResultViewBody extends StatelessWidget {
                     GoRouter.of(context).go(Routes.testView);
                   },
                 ),
-
-                SizedBox(height: 16.h),
-
+                SizedBox(height: 12.h),
                 TestResultButton(
                   text: 'Learn More About ${result.diagnosis}',
                   textColor: kPrimaryColor,
@@ -60,9 +56,7 @@ class TestResultViewBody extends StatelessWidget {
                     GoRouter.of(context).push(Routes.chatbotView);
                   },
                 ),
-
-                SizedBox(height: 16.h),
-
+                SizedBox(height: 12.h),
                 TestResultButton(
                   text: 'Back To Home',
                   textColor: kPrimaryColor,
@@ -71,7 +65,6 @@ class TestResultViewBody extends StatelessWidget {
                     GoRouter.of(context).go(Routes.homeView);
                   },
                 ),
-
                 SizedBox(height: 24.h),
               ],
             ),

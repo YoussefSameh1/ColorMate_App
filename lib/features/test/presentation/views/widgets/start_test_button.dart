@@ -1,3 +1,4 @@
+// start_test_button.dart
 import 'package:colormate_app/core/routing/routes.dart';
 import 'package:colormate_app/core/utils/constants.dart';
 import 'package:colormate_app/core/utils/styles.dart';
@@ -16,8 +17,10 @@ class StartTestButton extends StatelessWidget {
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: kPrimaryColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-        minimumSize: Size(250.w, 50.h),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14.r),  // was raw 14
+        ),
+        minimumSize: Size(double.infinity, 52.h),     // full-width; was 250.w
         elevation: 0,
       ),
       child: Text('Start Test', style: Styles.buttonTextStyle),

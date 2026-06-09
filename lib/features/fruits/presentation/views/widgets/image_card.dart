@@ -1,3 +1,4 @@
+// image_card.dart
 import 'dart:io';
 
 import 'package:colormate_app/core/utils/constants.dart';
@@ -11,6 +12,8 @@ class ImageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final imageHeight = MediaQuery.of(context).size.height * 0.32; // 32% of screen height
+
     return Container(
       padding: EdgeInsets.all(10.r),
       decoration: BoxDecoration(
@@ -21,7 +24,7 @@ class ImageCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(8.r),
         child: Image.file(
           File(imagePath),
-          height: 300.h,
+          height: imageHeight,  // adapts to screen height instead of fixed 300.h
           width: double.infinity,
           fit: BoxFit.cover,
         ),

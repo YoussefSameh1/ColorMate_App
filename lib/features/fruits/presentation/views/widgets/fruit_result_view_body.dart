@@ -1,3 +1,4 @@
+// fruit_result_view_body.dart
 import 'package:colormate_app/core/routing/routes.dart';
 import 'package:colormate_app/core/widget/custom_app_bar.dart';
 import 'package:colormate_app/features/fruits/presentation/cubit/fruit_result_cubit.dart';
@@ -20,23 +21,30 @@ class FruitResultViewBody extends StatelessWidget {
       create: (_) => FruitResultCubit()..analyzeFruit(imagePath),
       child: BlocBuilder<FruitResultCubit, FruitResultState>(
         builder: (context, state) {
-          return Column(
-            children: [
-              CustomAppBar(
-                title: 'Fruits Scanner',
-                onBackPressed: () => context.go(Routes.homeView),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 50, left: 16, right: 16),
-                child: Column(
-                  children: [
-                    _buildImage(state),
-                    SizedBox(height: 20.h),
-                    _buildResult(state),
-                  ],
+          return SingleChildScrollView(  // prevents overflow when result card + image are both tall
+            child: Column(
+              children: [
+                CustomAppBar(
+                  title: 'Fruits Scanner',
+                  onBackPressed: () => context.go(Routes.homeView),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: 32.h,
+                    left: 16.w,
+                    right: 16.w,
+                    bottom: 24.h,
+                  ),
+                  child: Column(
+                    children: [
+                      _buildImage(state),
+                      SizedBox(height: 16.h),
+                      _buildResult(state),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           );
         },
       ),
@@ -47,17 +55,16 @@ class FruitResultViewBody extends StatelessWidget {
     if (state is FruitResultSuccess) {
       return ImageCard(imagePath: state.imagePath);
     }
-    // ✅ Show the image immediately while loading — better UX
     return ImageCard(imagePath: imagePath);
   }
 
   Widget _buildResult(FruitResultState state) {
     if (state is FruitResultLoading) {
-      return const Column(
+      return Column(
         children: [
-          CircularProgressIndicator(),
-          SizedBox(height: 12),
-          Text('Analyzing fruit...'),
+          const CircularProgressIndicator(),
+          SizedBox(height: 10.h),
+          const Text('Analyzing fruit...'),
         ],
       );
     }
@@ -66,7 +73,7 @@ class FruitResultViewBody extends StatelessWidget {
       return ResultCard(
         status: state.status,
         spoiledPercent: state.spoiledPercent,
-        confidence: state.confidence, // ✅ pass confidence
+        confidence: state.confidence,
       );
     }
 

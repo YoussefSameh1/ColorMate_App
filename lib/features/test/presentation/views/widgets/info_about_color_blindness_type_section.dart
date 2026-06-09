@@ -1,3 +1,4 @@
+// info_about_color_blindness_type_section.dart
 import 'package:colormate_app/core/utils/constants.dart';
 import 'package:colormate_app/core/utils/styles.dart';
 import 'package:flutter/material.dart';
@@ -20,8 +21,8 @@ class InfoAboutColorBlindnessTypeSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: 8.w, right: 8.w, top: 20.h),
-      padding: const EdgeInsets.all(12),
+      margin: EdgeInsets.only(top: 16.h),   // removed horizontal margin — parent has 16.w
+      padding: EdgeInsets.all(14.r),        // was const EdgeInsets.all(12) — now scales
       width: double.infinity,
       decoration: BoxDecoration(
         border: Border.all(color: kPrimaryColor, width: 2.w),
@@ -32,13 +33,10 @@ class InfoAboutColorBlindnessTypeSection extends StatelessWidget {
         children: [
           Text('Your Results:', style: Styles.testQuestionTextStyle),
           SizedBox(height: 10.h),
-
           _buildScoreRow('Correct Answers', correctAnswerCount),
           _buildScoreRow('Protan Score', protanAnswerCount),
           _buildScoreRow('Deutan Score', deutanAnswerCount),
-
           SizedBox(height: 12.h),
-
           Text('Diagnosis: $diagnosis', style: Styles.testQuestionTextStyle),
         ],
       ),
@@ -47,7 +45,7 @@ class InfoAboutColorBlindnessTypeSection extends StatelessWidget {
 
   Widget _buildScoreRow(String label, int value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: EdgeInsets.symmetric(vertical: 4.h),  // was const — now scales
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

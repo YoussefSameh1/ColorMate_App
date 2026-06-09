@@ -1,3 +1,4 @@
+// result_card.dart
 import 'package:colormate_app/core/utils/constants.dart';
 import 'package:colormate_app/core/utils/styles.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,7 @@ class ResultCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(16.r),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),  // responsive padding
       decoration: BoxDecoration(
         border: Border.all(color: kPrimaryColor),
         borderRadius: BorderRadius.circular(12.r),
@@ -33,7 +34,7 @@ class ResultCard extends StatelessWidget {
             'Fresh Quality Result',
             style: Styles.buttonTextStyle.copyWith(color: kPrimaryColor),
           ),
-          SizedBox(height: 20.h),
+          SizedBox(height: 16.h),
           Text(
             status,
             style: Styles.testQuestionTextStyle.copyWith(color: statusColor),
