@@ -13,20 +13,8 @@ class MatchingViewBody extends StatelessWidget {
     return Column(
       children: [
         CustomAppBar(title: 'Color Matching Assistant', isTitleLong: true),
-        Expanded(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.all(20.r),
-            child: Column(
-              children: [
-                UploadImageCard(),
-                SizedBox(height: 20.h),
-                OutfitScoreCard(score: 8.5),
-                SizedBox(height: 20.h),
-                OutfitSuggestionsCard(),
-              ],
-            ),
-          ),
-        ),
+        SizedBox(height: 16.h),
+        UploadImageCard(),
       ],
     );
   }

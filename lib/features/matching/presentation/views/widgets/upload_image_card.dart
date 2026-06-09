@@ -1,9 +1,11 @@
+import 'package:colormate_app/core/routing/routes.dart';
 import 'package:colormate_app/features/matching/presentation/cubit/upload_image_cubit.dart';
 import 'package:colormate_app/features/matching/presentation/cubit/upload_image_state.dart';
 import 'package:colormate_app/features/object&color_detection/presentation/views/widget/image_upload_section.dart';
 import 'package:colormate_app/features/object&color_detection/presentation/views/widget/show_image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class UploadImageCard extends StatelessWidget {
   const UploadImageCard({super.key});
@@ -16,6 +18,14 @@ class UploadImageCard extends StatelessWidget {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text(state.message)));
+        }
+
+        // ✅ Navigate to result screen as soon as image is picked
+        if (state is UploadImageSuccess) {
+          GoRouter.of(context).push(
+            Routes.outfitRatingView,
+            extra: state.imagePath,
+          );
         }
       },
       builder: (context, state) {

@@ -33,6 +33,7 @@ class OutfitScoreCard extends StatelessWidget {
             style: TextStyle(color: kPrimaryColor),
           ),
           SizedBox(height: 20.h),
+          // ✅ Pass real score
           ScoreCircle(score: score),
         ],
       ),

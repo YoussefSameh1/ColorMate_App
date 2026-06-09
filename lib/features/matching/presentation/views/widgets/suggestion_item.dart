@@ -3,14 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SuggestionItem extends StatelessWidget {
-  final String title;
-  final String description;
+  // ✅ Single string — API returns complete sentences like
+  // "Your outfit looks great together."
+  final String suggestion;
 
-  const SuggestionItem({
-    super.key,
-    required this.title,
-    required this.description,
-  });
+  const SuggestionItem({super.key, required this.suggestion});
 
   @override
   Widget build(BuildContext context) {
@@ -20,19 +17,9 @@ class SuggestionItem extends StatelessWidget {
         const Icon(Icons.check_circle_outline, color: kPrimaryColor),
         SizedBox(width: 10.w),
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: kPrimaryColor,
-                ),
-              ),
-              SizedBox(height: 4.h),
-              Text(description, style: const TextStyle(color: kPrimaryColor)),
-            ],
+          child: Text(
+            suggestion,
+            style: const TextStyle(color: kPrimaryColor),
           ),
         ),
       ],

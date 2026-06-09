@@ -26,7 +26,7 @@ class ImageCard extends StatelessWidget {
           File(imagePath),
           height: imageHeight,  // adapts to screen height instead of fixed 300.h
           width: double.infinity,
-          fit: BoxFit.cover,
+          fit: BoxFit.contain,
         ),
       ),
     );
