@@ -2,6 +2,7 @@ import 'package:colormate_app/core/theme/app_colors.dart';
 import 'package:colormate_app/core/theme/text_style.dart';
 import 'package:colormate_app/core/widget/buttons/primary_shadow_button.dart';
 import 'package:colormate_app/core/widget/custom_app_bar.dart';
+import 'package:colormate_app/features/object&color_detection/data/model/detected_object.dart';
 import 'package:colormate_app/features/object&color_detection/presentation/cubit/image_picker_cubit.dart';
 import 'package:colormate_app/features/object&color_detection/presentation/cubit/image_picker_state.dart';
 import 'package:colormate_app/features/object&color_detection/presentation/views/widget/image_upload_section.dart';
@@ -36,6 +37,8 @@ class _ObjectAndColorDetectionBodyState
         final isDetecting = successState?.isDetecting ?? false;
         final hasDetections =
             (successState?.detectedObjects.isNotEmpty ?? false);
+        final showObjectsList =
+            (successState?.detectedObjects.length ?? 0) >= 5;
         final selectedObject =
             successState == null
                 ? null
@@ -66,44 +69,65 @@ class _ObjectAndColorDetectionBodyState
                           title: 'Upload image',
                           subtitle:
                               'Choose a new photo, then run object detection.',
-                          child: ImageUploadSection(
-                            isLoading: isLoading,
-                            imagePath: imagePath,
-                            onChoosePhoto:
-                                () => showImagePicker(
-                                  context: context,
-                                  onCameraSelected: () {
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              ImageUploadSection(
+                                isLoading: isLoading,
+                                imagePath: imagePath,
+                                onChoosePhoto:
+                                    () => showImagePicker(
+                                      context: context,
+                                      onCameraSelected: () {
+                                        context
+                                            .read<ImagePickerCubit>()
+                                            .pickFromCamera();
+                                      },
+                                      onGallerySelected: () {
+                                        context
+                                            .read<ImagePickerCubit>()
+                                            .pickFromGallery();
+                                      },
+                                    ),
+                                detectedObjects:
+                                    successState?.detectedObjects ?? const [],
+                                originalImageSize:
+                                    successState?.originalImageSize,
+                                selectedObjectId:
+                                    successState?.selectedObjectId,
+                                showLabels: !showObjectsList,
+                                imageFit: BoxFit.contain,
+                                onObjectTap:
+                                    successState == null
+                                        ? null
+                                        : (object) {
+                                          context
+                                              .read<ImagePickerCubit>()
+                                              .onDetectedObjectTapped(object);
+                                        },
+                                onImageTap:
+                                    successState == null
+                                        ? null
+                                        : (point) {
+                                          context
+                                              .read<ImagePickerCubit>()
+                                              .onImageTapped(point);
+                                        },
+                              ),
+                              if (showObjectsList) ...[
+                                const SizedBox(height: 6),
+                                _DetectedObjectsListCard(
+                                  objects: successState!.detectedObjects,
+                                  selectedObjectId:
+                                      successState.selectedObjectId,
+                                  onObjectSelected: (object) {
                                     context
                                         .read<ImagePickerCubit>()
-                                        .pickFromCamera();
-                                  },
-                                  onGallerySelected: () {
-                                    context
-                                        .read<ImagePickerCubit>()
-                                        .pickFromGallery();
+                                        .onDetectedObjectTapped(object);
                                   },
                                 ),
-                            detectedObjects:
-                                successState?.detectedObjects ?? const [],
-                            originalImageSize: successState?.originalImageSize,
-                            selectedObjectId: successState?.selectedObjectId,
-                            imageFit: BoxFit.contain,
-                            onObjectTap:
-                                successState == null
-                                    ? null
-                                    : (object) {
-                                      context
-                                          .read<ImagePickerCubit>()
-                                          .onDetectedObjectTapped(object);
-                                    },
-                            onImageTap:
-                                successState == null
-                                    ? null
-                                    : (point) {
-                                      context
-                                          .read<ImagePickerCubit>()
-                                          .onImageTapped(point);
-                                    },
+                              ],
+                            ],
                           ),
                         ),
                       ),
@@ -420,6 +444,199 @@ class _InfoLine extends StatelessWidget {
             child: Text(
               text,
               style: AppTextStyles.regular16().copyWith(color: Colors.black87),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DetectedObjectsListCard extends StatelessWidget {
+  const _DetectedObjectsListCard({
+    required this.objects,
+    required this.selectedObjectId,
+    required this.onObjectSelected,
+  });
+
+  final List<DetectedObject> objects;
+  final int? selectedObjectId;
+  final ValueChanged<DetectedObject> onObjectSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF7F9FC),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.primary.withOpacity(0.08)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  Icons.view_list_rounded,
+                  size: 18,
+                  color: AppColors.primary,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Detected objects',
+                      style: AppTextStyles.medium16().copyWith(
+                        color: AppColors.primary,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Tap any item to light up its box on the image.',
+                      style: AppTextStyles.regular10().copyWith(
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            height: 272,
+            child: ListView.separated(
+              itemCount: objects.length,
+              padding: EdgeInsets.zero,
+              separatorBuilder: (context, index) => const SizedBox(height: 10),
+              itemBuilder: (context, index) {
+                final object = objects[index];
+                final isSelected = object.objectId == selectedObjectId;
+
+                return InkWell(
+                  borderRadius: BorderRadius.circular(18),
+                  onTap: () => onObjectSelected(object),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 220),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 12,
+                    ),
+                    decoration: BoxDecoration(
+                      color:
+                          isSelected
+                              ? AppColors.success.withOpacity(0.12)
+                              : AppColors.white,
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(
+                        color:
+                            isSelected
+                                ? AppColors.success.withOpacity(0.55)
+                                : AppColors.primary.withOpacity(0.08),
+                        width: isSelected ? 1.6 : 1,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(
+                            isSelected ? 0.06 : 0.03,
+                          ),
+                          blurRadius: 12,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 220),
+                          width: 42,
+                          height: 42,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors:
+                                  isSelected
+                                      ? [AppColors.success, AppColors.primary]
+                                      : [
+                                        AppColors.primary.withOpacity(0.9),
+                                        AppColors.primary.withOpacity(0.65),
+                                      ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: Center(
+                            child: Text(
+                              '${index + 1}',
+                              style: AppTextStyles.medium16().copyWith(
+                                color: AppColors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                object.className,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppTextStyles.medium16().copyWith(
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Confidence ${(object.confidence * 100).toStringAsFixed(1)}%',
+                                style: AppTextStyles.regular10().copyWith(
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color:
+                                isSelected
+                                    ? AppColors.success.withOpacity(0.16)
+                                    : AppColors.primary.withOpacity(0.06),
+                            borderRadius: BorderRadius.circular(999),
+                          ),
+                          child: Icon(
+                            isSelected
+                                ? Icons.check_rounded
+                                : Icons.touch_app_rounded,
+                            size: 16,
+                            color:
+                                isSelected
+                                    ? AppColors.success
+                                    : AppColors.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ],

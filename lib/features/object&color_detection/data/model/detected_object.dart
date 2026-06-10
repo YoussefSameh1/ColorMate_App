@@ -20,7 +20,7 @@ class DetectedObject {
         json,
         const ['class_name', 'className', 'name', 'label'],
       ),
-      confidence: _readDouble(json, const ['confidence', 'score']),
+      confidence: _readDouble(json, const ['confidence']),
       bbox: _readDoubleList(json, const ['bbox', 'box']),
     );
   }

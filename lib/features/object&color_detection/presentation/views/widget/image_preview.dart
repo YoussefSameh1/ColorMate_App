@@ -15,6 +15,7 @@ class ImagePreview extends StatelessWidget {
     this.selectedObjectId,
     this.onObjectTap,
     this.onImageTap,
+    this.showLabels = true,
     this.imageFit = BoxFit.cover,
   });
 
@@ -25,6 +26,7 @@ class ImagePreview extends StatelessWidget {
   final int? selectedObjectId;
   final ValueChanged<DetectedObject>? onObjectTap;
   final ValueChanged<Offset>? onImageTap;
+  final bool showLabels;
   final BoxFit imageFit;
 
   @override
@@ -135,38 +137,64 @@ class ImagePreview extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               border: Border.all(
-                color: AppColors.white,
-                width: isSelected ? 3 : 2,
+                color:
+                    isSelected
+                        ? AppColors.success
+                        : AppColors.white.withOpacity(0.75),
+                width: isSelected ? 3.5 : 2,
               ),
               borderRadius: BorderRadius.circular(6),
               color: Colors.transparent,
+              boxShadow:
+                  isSelected
+                      ? [
+                        BoxShadow(
+                          color: AppColors.success.withOpacity(0.26),
+                          blurRadius: 12,
+                          spreadRadius: 1,
+                        ),
+                      ]
+                      : null,
             ),
           ),
         ),
-        Positioned(
-          left: safeLeftLabel,
-          top: safeTopLabel,
-          child: GestureDetector(
-            onTap:
-                onObjectTap != null ? () => onObjectTap!(detectedObject) : null,
-            child: Container(
-              constraints: const BoxConstraints(maxWidth: 120),
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: isSelected ? AppColors.success : AppColors.primary,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                '${detectedObject.className} ${(detectedObject.confidence * 100).toStringAsFixed(1)}%',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.medium16().copyWith(
-                  color: AppColors.white,
+        if (showLabels || isSelected)
+          Positioned(
+            left: safeLeftLabel,
+            top: safeTopLabel,
+            child: GestureDetector(
+              onTap:
+                  onObjectTap != null
+                      ? () => onObjectTap!(detectedObject)
+                      : null,
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 120),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: isSelected ? AppColors.success : AppColors.primary,
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color:
+                          isSelected
+                              ? AppColors.success.withOpacity(0.26)
+                              : AppColors.primary.withOpacity(0.18),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Text(
+                  '${detectedObject.className} ${(detectedObject.confidence * 100).toStringAsFixed(1)}%',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.medium16().copyWith(
+                    color: AppColors.white,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
       ];
     }).toList();
   }

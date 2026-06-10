@@ -17,6 +17,7 @@ class ImageUploadSection extends StatelessWidget {
     this.selectedObjectId,
     this.onObjectTap,
     this.onImageTap,
+    this.showLabels = true,
     this.imageFit = BoxFit.cover,
   });
 
@@ -28,6 +29,7 @@ class ImageUploadSection extends StatelessWidget {
   final int? selectedObjectId;
   final ValueChanged<DetectedObject>? onObjectTap;
   final ValueChanged<Offset>? onImageTap;
+  final bool showLabels;
   final BoxFit imageFit;
 
   @override
@@ -60,6 +62,7 @@ class ImageUploadSection extends StatelessWidget {
                     selectedObjectId: selectedObjectId,
                     onObjectTap: onObjectTap,
                     onImageTap: onImageTap,
+                    showLabels: showLabels,
                     imageFit: imageFit,
                   )
                   : UploadPlaceholder(onChoosePhoto: onChoosePhoto),

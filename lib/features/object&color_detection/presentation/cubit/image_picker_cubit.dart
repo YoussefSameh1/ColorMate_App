@@ -10,6 +10,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:io';
 
 class ImagePickerCubit extends Cubit<ImagePickerState> {
+  static const double _minVisibleConfidence = 0.6;
+
   final ImagePickerService _imagePickerService;
   final ObjectDetectionRepository _objectDetectionRepository;
   final DominantColorExtractor _dominantColorExtractor;
@@ -67,13 +69,17 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
       final response = await _objectDetectionRepository.detectObjects(
         imagePath: currentState.imagePath,
       );
+      final visibleObjects = response.objects
+          .where((object) => object.confidence >= _minVisibleConfidence)
+          .toList(growable: false);
+      final deduplicatedObjects = _deduplicateObjects(visibleObjects);
       final imageSize = await _dominantColorExtractor.getImageSize(
         currentState.imagePath,
       );
 
       emit(
         currentState.copyWith(
-          detectedObjects: response.objects,
+          detectedObjects: deduplicatedObjects,
           originalImageSize: imageSize,
           isDetecting: false,
           clearSelectedObjectId: true,
@@ -245,5 +251,54 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
       right.toDouble(),
       bottom.toDouble(),
     );
+  }
+
+  List<DetectedObject> _deduplicateObjects(List<DetectedObject> objects) {
+    if (objects.length < 2) {
+      return objects;
+    }
+
+    final sortedObjects = List<DetectedObject>.from(objects)
+      ..sort((left, right) => right.confidence.compareTo(left.confidence));
+
+    final uniqueObjects = <DetectedObject>[];
+
+    for (final object in sortedObjects) {
+      final isDuplicate = uniqueObjects.any(
+        (candidate) =>
+            candidate.className.toLowerCase() == object.className.toLowerCase() &&
+            _intersectionOverUnion(candidate.toRect(), object.toRect()) >= 0.75,
+      );
+
+      if (!isDuplicate) {
+        uniqueObjects.add(object);
+      }
+    }
+
+    return uniqueObjects;
+  }
+
+  double _intersectionOverUnion(Rect first, Rect second) {
+    final left = first.left > second.left ? first.left : second.left;
+    final top = first.top > second.top ? first.top : second.top;
+    final right = first.right < second.right ? first.right : second.right;
+    final bottom = first.bottom < second.bottom ? first.bottom : second.bottom;
+
+    final intersectionWidth = right - left;
+    final intersectionHeight = bottom - top;
+    if (intersectionWidth <= 0 || intersectionHeight <= 0) {
+      return 0;
+    }
+
+    final intersectionArea = intersectionWidth * intersectionHeight;
+    final firstArea = first.width * first.height;
+    final secondArea = second.width * second.height;
+    final unionArea = firstArea + secondArea - intersectionArea;
+
+    if (unionArea <= 0) {
+      return 0;
+    }
+
+    return intersectionArea / unionArea;
   }
 }
