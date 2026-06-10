@@ -266,7 +266,8 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
     for (final object in sortedObjects) {
       final isDuplicate = uniqueObjects.any(
         (candidate) =>
-            candidate.className.toLowerCase() == object.className.toLowerCase() &&
+            candidate.className.toLowerCase() ==
+                object.className.toLowerCase() &&
             _intersectionOverUnion(candidate.toRect(), object.toRect()) >= 0.75,
       );
 
