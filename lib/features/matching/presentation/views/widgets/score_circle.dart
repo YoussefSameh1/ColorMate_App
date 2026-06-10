@@ -21,14 +21,16 @@ class ScoreCircle extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              '$score',
+              // ✅ Show as integer (85, not 85.0)
+              score.toStringAsFixed(0),
               style: TextStyle(
                 fontSize: 28.sp,
                 fontWeight: FontWeight.bold,
                 color: kPrimaryColor,
               ),
             ),
-            const Text("/10", style: TextStyle(color: kPrimaryColor)),
+            // ✅ Score is out of 100 not 10
+            const Text("/100", style: TextStyle(color: kPrimaryColor)),
           ],
         ),
       ),

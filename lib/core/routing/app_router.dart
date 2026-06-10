@@ -20,6 +20,7 @@ import 'package:colormate_app/features/image_correction/di/image_correction_di.d
 import 'package:colormate_app/features/home/presentation/views/home_view.dart';
 import 'package:colormate_app/features/matching/presentation/views/matching_view.dart';
 import 'package:colormate_app/features/image_correction/presentation/views/image_correction_view.dart';
+import 'package:colormate_app/features/matching/presentation/views/outfit_rating_view.dart';
 import 'package:colormate_app/features/object&color_detection/di/object_and_color_detection_di.dart';
 import 'package:colormate_app/features/object&color_detection/presentation/views/object_and_color_detection_view.dart';
 import 'package:colormate_app/features/onboarding/presentation/views/onboarding_view.dart';
@@ -245,6 +246,13 @@ abstract class AppRouter {
         pageBuilder:
             (context, state) =>
                 slideTransitionPage(child: const MatchingView()),
+      ),
+      GoRoute(
+        path: Routes.outfitRatingView,
+        builder: (context, state) {
+          final imagePath = state.extra as String;
+          return OutfitRatingView(imagePath: imagePath);
+        },
       ),
       GoRoute(
         path: Routes.gameSelectionView,

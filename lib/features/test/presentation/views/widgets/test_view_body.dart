@@ -1,3 +1,4 @@
+// test_view_body.dart
 import 'package:colormate_app/core/routing/routes.dart';
 import 'package:colormate_app/core/utils/styles.dart';
 import 'package:colormate_app/core/widget/custom_app_bar.dart';
@@ -19,17 +20,18 @@ class TestViewBody extends StatelessWidget {
           GoRouter.of(context).push(Routes.testResultView);
         }
         if (state is TestError) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.message)));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(state.message)));
         }
       },
       builder: (context, state) {
         if (state is TestLoading) {
           return const Center(child: CircularProgressIndicator());
         }
+
         if (state is TestQuestionLoaded) {
           final question = state.questions[state.currentIndex];
+
           return Column(
             children: [
               const CustomAppBar(
@@ -42,25 +44,27 @@ class TestViewBody extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(height: 16.h),
+                      SizedBox(height: 12.h),
                       Text(
                         'What number do you see in the circle?',
                         style: Styles.testQuestionTextStyle,
                         textAlign: TextAlign.center,
                       ),
-                      SizedBox(height: 8.h),
+                      SizedBox(height: 6.h),
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
                           'Question ${question.imageId} of ${state.questions.length}',
                           style: Styles.descriptionStyle.copyWith(
-                            fontSize: 14.sp,
+                            fontSize: 13.sp,
                           ),
                         ),
                       ),
-                      SizedBox(height: 16.h),
+                      SizedBox(height: 12.h),
+
+                      // Image takes proportional share of vertical space
                       Expanded(
-                        flex: 6,
+                        flex: 5,
                         child: AspectRatio(
                           aspectRatio: 1,
                           child: Image.asset(
@@ -69,20 +73,23 @@ class TestViewBody extends StatelessWidget {
                           ),
                         ),
                       ),
+
+                      // Answers take remaining space, never overflow
                       Expanded(
                         flex: 5,
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             GridView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    childAspectRatio: 3.5,
-                                    crossAxisSpacing: 16.w,
-                                    mainAxisSpacing: 12.h,
-                                  ),
+                                crossAxisCount: 2,
+                                childAspectRatio: 3.2,   // slightly wider tap targets
+                                crossAxisSpacing: 12.w,
+                                mainAxisSpacing: 10.h,
+                              ),
                               itemCount: 4,
                               itemBuilder: (context, index) {
                                 return GestureDetector(
@@ -97,20 +104,18 @@ class TestViewBody extends StatelessWidget {
                                 );
                               },
                             ),
-                            SizedBox(height: 12.h),
+                            SizedBox(height: 10.h),
                             GestureDetector(
-                              onTap: () => context
-                                  .read<TestCubit>()
-                                  .selectAnswer("x"),
+                              onTap: () =>
+                                  context.read<TestCubit>().selectAnswer("x"),
                               child: const AnswerOptionButton(
                                 option: 'None of the above',
                               ),
                             ),
-                            SizedBox(height: 4.h),
+                            SizedBox(height: 2.h),
                             TextButton(
-                              onPressed: () => context
-                                  .read<TestCubit>()
-                                  .selectAnswer("x"),
+                              onPressed: () =>
+                                  context.read<TestCubit>().selectAnswer("x"),
                               child: Text(
                                 "Didn't see it!",
                                 style: Styles.textButtonTextStyle,
@@ -119,6 +124,7 @@ class TestViewBody extends StatelessWidget {
                           ],
                         ),
                       ),
+
                       SizedBox(height: 8.h),
                     ],
                   ),
@@ -127,6 +133,7 @@ class TestViewBody extends StatelessWidget {
             ],
           );
         }
+
         return const SizedBox();
       },
     );

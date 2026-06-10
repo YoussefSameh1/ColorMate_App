@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class OutfitSuggestionsCard extends StatelessWidget {
-  const OutfitSuggestionsCard({super.key});
+  // ✅ Accept real suggestions list from API
+  final List<String> suggestions;
+
+  const OutfitSuggestionsCard({super.key, required this.suggestions});
 
   @override
   Widget build(BuildContext context) {
@@ -31,16 +34,12 @@ class OutfitSuggestionsCard extends StatelessWidget {
             style: TextStyle(color: kPrimaryColor),
           ),
           SizedBox(height: 20.h),
-          SuggestionItem(
-            title: "Add a pop of color",
-            description:
-                "Consider a scarf or accessory in complementary yellow to brighten your look.",
-          ),
-          SizedBox(height: 20.h),
-          SuggestionItem(
-            title: "Refine your silhouette",
-            description:
-                "Try a belt to cinch the waist and create a more defined shape.",
+          // ✅ Render each suggestion from the API dynamically
+          ...suggestions.map(
+            (suggestion) => Padding(
+              padding: EdgeInsets.only(bottom: 16.h),
+              child: SuggestionItem(suggestion: suggestion),
+            ),
           ),
         ],
       ),

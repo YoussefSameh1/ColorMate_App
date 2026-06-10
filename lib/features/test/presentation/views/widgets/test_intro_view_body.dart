@@ -1,3 +1,4 @@
+// test_intro_view_body.dart
 import 'package:colormate_app/core/routing/routes.dart';
 import 'package:colormate_app/core/utils/assets_data.dart';
 import 'package:colormate_app/core/utils/constants.dart';
@@ -13,37 +14,48 @@ class TestIntroViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        CustomAppBar(
-          title: 'Test',
-          onBackPressed: () => context.go(Routes.homeView),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: [
-              SizedBox(height: 30.h),
-              Icon(
-                Icons.remove_red_eye_outlined,
-                size: 100,
-                color: kPrimaryColor,
-              ),
-              Text('Ishihara Test', style: Styles.titleStyle),
-              SizedBox(height: 20.h),
-              Text(
-                'Spot hidden numbers in colored dots to check how well you see colors',
-                style: Styles.descriptionStyle,
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 20.h),
-              Image.asset(AssetsData.test, height: 250.h, width: 250.w),
-              SizedBox(height: 50.h),
-              const StartTestButton(),
-            ],
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    return SingleChildScrollView(   // prevents overflow on short screens
+      child: Column(
+        children: [
+          CustomAppBar(
+            title: 'Test',
+            onBackPressed: () => context.go(Routes.homeView),
           ),
-        ),
-      ],
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: Column(
+              children: [
+                SizedBox(height: 24.h),
+                Icon(
+                  Icons.remove_red_eye_outlined,
+                  size: 80.r,            // was raw 100 — now scales with screen
+                  color: kPrimaryColor,
+                ),
+                SizedBox(height: 8.h),
+                Text('Ishihara Test', style: Styles.titleStyle),
+                SizedBox(height: 16.h),
+                Text(
+                  'Spot hidden numbers in colored dots to check how well you see colors',
+                  style: Styles.descriptionStyle,
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 16.h),
+                Image.asset(
+                  AssetsData.test,
+                  height: screenHeight * 0.28,   // proportional to screen height
+                  width: screenHeight * 0.28,
+                  fit: BoxFit.contain,
+                ),
+                SizedBox(height: 36.h),
+                const StartTestButton(),
+                SizedBox(height: 24.h),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

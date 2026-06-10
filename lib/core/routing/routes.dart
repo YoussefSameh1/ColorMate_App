@@ -41,4 +41,5 @@ class Routes {
   static const String sequenceGameView = '/sequence_game_view';
   static const String findTheObjectGameView = '/find_the_object_game_view';
   static const String homeView = '/home_view';
+  static const String outfitRatingView = '/outfit_rating_view';
 }

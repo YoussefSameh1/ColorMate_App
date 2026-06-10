@@ -1,3 +1,4 @@
+import 'package:colormate_app/core/storage/simple_auth_storage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:colormate_app/features/profile/data/models/user_profile_model.dart';
 import 'package:colormate_app/features/profile/data/repositories/profile_repository.dart';
@@ -29,9 +30,24 @@ class ProfileCubit extends Cubit<ProfileState> {
 
     try {
       final userProfile = await _repository.getUserProfile();
-      _safeEmit(ProfileLoaded(userProfile: userProfile));
+
+      // ✅ Read saved test result from SharedPreferences
+      final storage = SimpleAuthStorage();
+      await storage.init();
+
+      final savedDate = storage.getSavedLastTestDate();
+      final savedType = storage.getSavedColorblindnessType();
+      final savedDescription = storage.getSavedTestDescription();
+
+      // ✅ Merge: prefer API values if they exist, fall back to locally saved ones
+      final mergedProfile = userProfile.copyWith(
+        lastTestDate: userProfile.lastTestDate ?? savedDate,
+        colorblindnessType: userProfile.colorblindnessType ?? savedType,
+        testDescription: userProfile.testDescription ?? savedDescription,
+      );
+
+      _safeEmit(ProfileLoaded(userProfile: mergedProfile));
     } catch (e) {
-      // ignore: avoid_print
       print('PROFILE FETCH ERROR: ${e.toString()}');
       _safeEmit(ProfileError(message: e.toString()));
     }
