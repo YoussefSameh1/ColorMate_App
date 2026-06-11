@@ -50,6 +50,78 @@ class DominantColorExtractor {
     return _calculateDominantColor(cropped);
   }
 
+  /// استخراج لون من نقطة مباشرة أو متوسط صغير حول النقطة (Color Picker)
+  Future<Color> extractColorFromPoint({
+    required String imagePath,
+    required Offset point,
+    double sampleRadius = 8.0,
+  }) async {
+    final bytes = await File(imagePath).readAsBytes();
+    final decoded = img.decodeImage(bytes);
+    if (decoded == null) {
+      throw Exception('Failed to decode image for color extraction.');
+    }
+
+    final maxX = decoded.width - 1;
+    final maxY = decoded.height - 1;
+
+    final x = point.dx.floor().clamp(0, maxX);
+    final y = point.dy.floor().clamp(0, maxY);
+
+    // استخراج متوسط اللون حول النقطة
+    return _getAverageColorAround(decoded, x, y, sampleRadius.toInt());
+  }
+
+  /// حساب متوسط اللون في منطقة صغيرة حول النقطة
+  Color _getAverageColorAround(
+    img.Image image,
+    int centerX,
+    int centerY,
+    int radius,
+  ) {
+    var sumR = 0;
+    var sumG = 0;
+    var sumB = 0;
+    var count = 0;
+
+    final startX = (centerX - radius).clamp(0, image.width - 1);
+    final endX = (centerX + radius).clamp(0, image.width - 1);
+    final startY = (centerY - radius).clamp(0, image.height - 1);
+    final endY = (centerY + radius).clamp(0, image.height - 1);
+
+    for (var yPos = startY; yPos <= endY; yPos++) {
+      for (var xPos = startX; xPos <= endX; xPos++) {
+        final pixel = image.getPixel(xPos, yPos);
+        // تجاهل البيكسلات الشفافة تماماً
+        if (pixel.a.toInt() < 100) {
+          continue;
+        }
+        sumR += pixel.r.toInt();
+        sumG += pixel.g.toInt();
+        sumB += pixel.b.toInt();
+        count++;
+      }
+    }
+
+    if (count == 0) {
+      // إذا كانت جميع البيكسلات شفافة، خذ لون النقطة الوحيدة
+      final pixel = image.getPixel(centerX, centerY);
+      return Color.fromARGB(
+        255,
+        pixel.r.toInt(),
+        pixel.g.toInt(),
+        pixel.b.toInt(),
+      );
+    }
+
+    return Color.fromARGB(
+      255,
+      (sumR / count).round().clamp(0, 255),
+      (sumG / count).round().clamp(0, 255),
+      (sumB / count).round().clamp(0, 255),
+    );
+  }
+
   Color _calculateDominantColor(img.Image image) {
     final resized = _resizeForColorAnalysis(image);
     final sampledColors = _sampleColorsForClustering(resized);

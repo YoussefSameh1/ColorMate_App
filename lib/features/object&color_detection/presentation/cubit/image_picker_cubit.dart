@@ -170,9 +170,16 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
     );
 
     try {
-      final dominantColor = await _dominantColorExtractor.extractFromImagePath(
+      // استخراج اللون من مركز المنطقة المحددة (Color Picker)
+      final centerPoint = Offset(
+        cropRect.center.dx,
+        cropRect.center.dy,
+      );
+
+      final dominantColor = await _dominantColorExtractor.extractColorFromPoint(
         imagePath: currentState.imagePath,
-        cropRect: cropRect,
+        point: centerPoint,
+        sampleRadius: 8.0, // متوسط لون في نطاق 8 بيكسل حول النقطة
       );
 
       final latestState = state;
