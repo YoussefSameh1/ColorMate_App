@@ -171,10 +171,7 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
 
     try {
       // استخراج اللون من مركز المنطقة المحددة (Color Picker)
-      final centerPoint = Offset(
-        cropRect.center.dx,
-        cropRect.center.dy,
-      );
+      final centerPoint = Offset(cropRect.center.dx, cropRect.center.dy);
 
       final dominantColor = await _dominantColorExtractor.extractColorFromPoint(
         imagePath: currentState.imagePath,
