@@ -34,8 +34,6 @@ class InfoAboutColorBlindnessTypeSection extends StatelessWidget {
           Text('Your Results:', style: Styles.testQuestionTextStyle),
           SizedBox(height: 10.h),
           _buildScoreRow('Correct Answers', correctAnswerCount),
-          _buildScoreRow('Protan Score', protanAnswerCount),
-          _buildScoreRow('Deutan Score', deutanAnswerCount),
           SizedBox(height: 12.h),
           Text('Diagnosis: $diagnosis', style: Styles.testQuestionTextStyle),
         ],

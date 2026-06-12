@@ -27,15 +27,15 @@ class SocialAuthButtons extends StatelessWidget {
             height: iconSize,
           ),
         ),
-        SizedBox(width: spacing),
-        IconButton(
-          onPressed: onFacebookPressed ?? () {},
-          icon: Image.asset(
-            'assets/icons/facebook_icon.png',
-            width: iconSize,
-            height: iconSize,
-          ),
-        ),
+        // SizedBox(width: spacing),
+        // IconButton(
+        //   onPressed: onFacebookPressed ?? () {},
+        //   icon: Image.asset(
+        //     'assets/icons/facebook_icon.png',
+        //     width: iconSize,
+        //     height: iconSize,
+        //   ),
+        // ),
       ],
     );
   }
