@@ -159,7 +159,7 @@ class ImageCorrectionBody extends StatelessWidget {
                           return CorrectionFilterCard(
                             title: filter.title,
                             imageAsset:
-                                filter.previewAsset ??
+                                filter.previewAssetForMode(correctionState.mode) ??
                                 'assets/images/object_detection_sample.png',
                             isSelected: isSelected,
                             onTap: () {
