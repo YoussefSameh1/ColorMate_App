@@ -6,12 +6,16 @@ class CvdFilterItemData {
     required this.title,
     required this.type,
     required this.previewAsset,
+    this.simulationPreviewAsset,
+    this.correctionPreviewAsset,
   });
 
   final String id;
   final String title;
   final CvdType type;
   final String previewAsset;
+  final String? simulationPreviewAsset;
+  final String? correctionPreviewAsset;
 
   CvdFilterOption toDomain() {
     return CvdFilterOption(
@@ -19,6 +23,8 @@ class CvdFilterItemData {
       title: title,
       type: type,
       previewAsset: previewAsset,
+      simulationPreviewAsset: simulationPreviewAsset,
+      correctionPreviewAsset: correctionPreviewAsset,
     );
   }
 }
