@@ -8,14 +8,12 @@ class CustomAppBar extends StatelessWidget {
     super.key,
     required this.title,
     this.isBackButtonVisible = true,
-    this.isTitleLong = false,
     this.onBackPressed,
   });
 
   final String title;
   final bool isBackButtonVisible;
   final VoidCallback? onBackPressed;
-  final bool isTitleLong;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +45,7 @@ class CustomAppBar extends StatelessWidget {
                     icon: Icon(
                       Icons.arrow_back_ios_new_rounded,
                       color: kPrimaryColor,
-                      size: isTitleLong ? 20.sp : 28.sp,
+                      size:20.sp,
                     ),
                   ),
                 ),
@@ -55,7 +53,7 @@ class CustomAppBar extends StatelessWidget {
               Text(
                 title,
                 style: Styles.titleStyle.copyWith(
-                  fontSize: isTitleLong ? 24.sp : 32.sp,
+                  fontSize:  24.sp,
                 ),
               ),
               const Spacer(flex: 3),

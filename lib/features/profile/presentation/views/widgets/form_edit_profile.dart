@@ -39,7 +39,7 @@ class FormEditProfile extends StatelessWidget {
             textFieldModel: TextFieldModel(
               controller: usernameController,
               keyboardType: TextInputType.name,
-              hintText: 'mariam naeem',
+              hintText: '',
               validator: Validation.validateFullName,
               prefixIcon: Icon(Icons.person, color: AppColors.primary),
               icon: Icons.person,
@@ -52,7 +52,7 @@ class FormEditProfile extends StatelessWidget {
             textFieldModel: TextFieldModel(
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
-              hintText: 'mariam@example.com',
+              hintText: '',
               validator: Validation.emailValidation,
               prefixIcon: const Icon(Icons.email, color: AppColors.primary),
               icon: Icons.email,

@@ -39,6 +39,11 @@ class ColorMateApp extends StatelessWidget {
           title: 'ColorMate App',
           theme: ThemeData.light().copyWith(
             scaffoldBackgroundColor: AppColors.white,
+            progressIndicatorTheme: ProgressIndicatorThemeData(
+              color: AppColors.primary,
+              strokeWidth: 3.0,
+              circularTrackColor: Colors.transparent,
+            ),
           ),
         );
       },

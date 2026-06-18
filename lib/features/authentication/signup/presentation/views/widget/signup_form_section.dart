@@ -4,7 +4,6 @@ import 'package:colormate_app/core/theme/app_colors.dart';
 import 'package:colormate_app/core/theme/text_style.dart';
 import 'package:colormate_app/core/validation/validation.dart';
 import 'package:colormate_app/core/widget/buttons/primary_shadow_button.dart';
-import 'package:colormate_app/core/widget/buttons/social_auth_buttons.dart';
 import 'package:colormate_app/core/widget/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -162,8 +161,6 @@ class SignupFormSection extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 20),
-          const SocialAuthButtons(iconSize: 44, spacing: 16),
         ],
       ),
     );

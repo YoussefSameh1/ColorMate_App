@@ -88,7 +88,7 @@ class TestCubit extends Cubit<TestState> {
 
       // ✅ Build a readable description from the scores
       final testDescription =
-          'Correct: $correctAnswerCount | Protan: $protanAnswerCount | Deutan: $deutanAnswerCount';
+          'Correct: $correctAnswerCount';
 
       // ✅ Save to SharedPreferences so profile screen can read it
       await _storage.saveTestResult(
