@@ -9,7 +9,7 @@ class FormEditProfile extends StatelessWidget {
     super.key,
     required this.formKey,
     required this.emailController,
-    required this.phoneController,
+    // required this.phoneController,
     required this.passwordController,
     required this.isPasswordObscured,
     this.errorMessage,
@@ -19,7 +19,7 @@ class FormEditProfile extends StatelessWidget {
 
   final GlobalKey<FormState> formKey;
   final TextEditingController emailController;
-  final TextEditingController phoneController;
+  // final TextEditingController phoneController;
   final TextEditingController passwordController;
   final TextEditingController usernameController;
   final bool isPasswordObscured;
@@ -59,23 +59,7 @@ class FormEditProfile extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          CustomFormSection(
-            label: 'Phone Number',
-            isRequired: true,
-            textFieldModel: TextFieldModel(
-              controller: phoneController,
-              keyboardType: TextInputType.phone,
-              hintText: '+201234567890',
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Phone number is required.';
-                }
-                return null;
-              },
-              prefixIcon: const Icon(Icons.phone, color: AppColors.primary),
-              icon: Icons.phone,
-            ),
-          ),
+         
           const SizedBox(height: 20),
           CustomFormSection(
             label: 'Password',

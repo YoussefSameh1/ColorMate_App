@@ -67,7 +67,7 @@ class _EditProfileBodyState extends State<EditProfileBody> {
       child: ProfileUIBuilder(
         formKey: _formKey,
         emailController: emailController,
-        phoneController: phoneController,
+        // phoneController: phoneController,
         passwordController: passwordController,
         usernameController: usernameController,
         isPasswordObscured: isPasswordObscured,
