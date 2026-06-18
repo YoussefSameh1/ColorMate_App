@@ -175,18 +175,18 @@ class ImageCorrectionBody extends StatelessWidget {
                       ),
                     ),
                   const SizedBox(height: 34),
-                  CorrectionActionsSection(
-                    canDownload: correctionState.hasProcessedImage,
-                    onReset: () {
-                      context.read<ImageCorrectionCubit>().reset();
-                      context.read<ImagePickerCubit>().reset();
-                    },
-                    onDownload: () {
-                      context.read<ImageCorrectionCubit>().saveProcessedImage(
-                        originalImagePath: sourceImagePath,
-                      );
-                    },
-                  ),
+                  // CorrectionActionsSection(
+                  //   canDownload: correctionState.hasProcessedImage,
+                  //   onReset: () {
+                  //     context.read<ImageCorrectionCubit>().reset();
+                  //     context.read<ImagePickerCubit>().reset();
+                  //   },
+                  //   onDownload: () {
+                  //     context.read<ImageCorrectionCubit>().saveProcessedImage(
+                  //       originalImagePath: sourceImagePath,
+                  //     );
+                  //   },
+                  // ),
                 ],
               );
             },
