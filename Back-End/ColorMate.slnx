@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="ColorMate.API/ColorMate.API.csproj" />
+  <Project Path="ColorMate.BL/ColorMate.BL.csproj" Id="2d1b7195-ff79-4c2c-8feb-462cff959e82" />
+  <Project Path="ColorMate.Core/ColorMate.Core.csproj" />
+  <Project Path="ColorMate.EF/ColorMate.EF.csproj" />
+</Solution>
