@@ -109,8 +109,6 @@ Update [`ColorMate.API/appsettings.json`](./ColorMate.API/appsettings.json) with
 }
 ```
 
-> ⚠️ **Security note:** the committed `appsettings.json` currently contains a real JWT signing key and a personal Gmail address. Before pushing further or deploying, move secrets like the JWT key, SMTP credentials, and OAuth client secrets into **user secrets** (`dotnet user-secrets`), environment variables, or a secrets manager — and rotate the exposed key.
-
 You'll also need to set Google/Facebook OAuth credentials (referenced in `Program.cs`):
 ```bash
 dotnet user-secrets set "Authentication_Google_ClientId" "<your-client-id>"
@@ -242,7 +240,6 @@ curl -X POST http://localhost:5000/api/Users/Login \
 
 ## ⚠️ Notes & Gotchas
 
-- **Secrets in `appsettings.json`**: see the security note above — rotate the committed JWT key before any public/production use.
 - **AI service URLs**: `ObjDetection`, `FruitsClassification`, and `OutfitRating` base URLs in `appsettings.json` currently point to an ngrok tunnel used during development. Update these to your local `AI-API` URL (e.g. `http://localhost:8000/...`) or your deployed AI service URL.
 - **CORS** origins are read from the `Domains` config array, which is currently empty — add your Flutter app's allowed origins as needed for web/testing scenarios.
 
